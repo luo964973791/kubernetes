@@ -3,7 +3,7 @@
 
 ### kubeadm编译好的版本md5sum
 ```javascript
-361430aaf1ab567355842f354a5cda4f  kubeadm-1.19.7
+09f0666263f0855f887ce722d81b9102  kubeadm-v1.20.6-amd64
 ```
 
 
