@@ -1,8 +1,8 @@
-```
+```javascript
 kubectl create configmap nginx-config --from-file /root/nginx.conf -n nginx
 kubectl create configmap php-ini --from-file /root/php.ini -n nginx
 ```
-```
+```javascript
 apiVersion: apps/v1
 kind: Deployment
 metadata:
