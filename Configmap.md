@@ -36,13 +36,13 @@ spec:
         - name: tcp80
           containerPort: 80
         volumeMounts:
-          - name: nginx-config
-            mountPath: "/etc/nginx/nginx.conf"
-            subPath: nginx.conf
-        volumeMounts:
           - name: php-ini
-            mountPath: "/usr/local/etc/php/php.ini"
+            mountPath: /usr/local/etc/php/php.ini
             subPath: php.ini
+        volumeMounts:
+          - name: nginx-config
+            mountPath: /etc/nginx/nginx.conf
+            subPath: nginx.conf
       volumes:
       - name: nginx-config
         configMap:
