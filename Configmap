@@ -1,0 +1,76 @@
+```
+kubectl create configmap nginx-config --from-file /root/nginx.conf -n nginx
+kubectl create configmap php-ini --from-file /root/php.ini -n nginx
+```
+```
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx
+  namespace: nginx
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+      - name: nginx
+        image: richarvey/nginx-php-fpm:1.10.3
+        imagePullPolicy: IfNotPresent
+        resources:
+          limits:
+            cpu: "500m"
+            memory: 512Mi
+          requests:
+            cpu: "250m"
+            memory: 256Mi
+        env:
+        - name: TZ
+          value: "Asia/Shanghai"
+        ports:
+        - name: tcp80
+          containerPort: 80
+        volumeMounts:
+          - name: nginx-config
+            mountPath: "/etc/nginx/nginx.conf"
+            subPath: nginx.conf
+        volumeMounts:
+          - name: php-ini
+            mountPath: "/usr/local/etc/php/php.ini"
+            subPath: php.ini
+      volumes:
+      - name: nginx-config
+        configMap:
+          name: nginx-config
+          items:
+          - key: nginx.conf
+            path: nginx.conf
+      - name: php-ini
+        configMap:
+          name: php-ini
+          items:
+          - key: php.ini
+            path: php.ini
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx
+  namespace: nginx
+  labels:
+    app: nginx
+spec:
+  type: NodePort
+  ports:
+  - port: 80
+    nodePort: 32080
+    protocol: TCP
+    name: http
+  selector:
+    app: nginx
+```
