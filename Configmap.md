@@ -1,13 +1,13 @@
 ```javascript
-kubectl create configmap nginx-config --from-file /root/nginx.conf -n nginx
-kubectl create configmap php-ini --from-file /root/php.ini -n nginx
+kubectl create configmap nginx-config --from-file /root/nginx.conf -n nginx-php-fpm
+kubectl create configmap php-ini --from-file /root/php.ini -n nginx-php-fpm
 ```
 ```javascript
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: nginx
-  namespace: nginx
+  namespace: nginx-php-fpm
 spec:
   replicas: 3
   selector:
@@ -36,32 +36,34 @@ spec:
         - name: tcp80
           containerPort: 80
         volumeMounts:
-          - name: php-ini
-            mountPath: /usr/local/etc/php/php.ini
-            subPath: php.ini
-        volumeMounts:
-          - name: nginx-config
+          - mountPath: /usr/local/etc/php/php.ini
+            name: php-ini
+            subPath: php.ini-production
+          - name: nginx-conf
             mountPath: /etc/nginx/nginx.conf
             subPath: nginx.conf
+          - name: html
+            mountPath: /var/www/html
       volumes:
-      - name: nginx-config
+      - name: html
+        persistentVolumeClaim:
+          claimName: csi-cephfs-pvc
+      - name: nginx-conf
         configMap:
-          name: nginx-config
+          name: nginx-conf
           items:
           - key: nginx.conf
             path: nginx.conf
       - name: php-ini
         configMap:
           name: php-ini
-          items:
-          - key: php.ini
-            path: php.ini
+        name: php-ini
 ---
 apiVersion: v1
 kind: Service
 metadata:
   name: nginx
-  namespace: nginx
+  namespace: nginx-php-fpm
   labels:
     app: nginx
 spec:
