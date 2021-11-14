@@ -39,7 +39,7 @@ spec:
           - mountPath: /usr/local/etc/php/php.ini
             name: php-ini
             subPath: php.ini-production
-          - name: nginx-conf
+          - name: nginx-config
             mountPath: /etc/nginx/nginx.conf
             subPath: nginx.conf
           - name: html
@@ -48,9 +48,9 @@ spec:
       - name: html
         persistentVolumeClaim:
           claimName: csi-cephfs-pvc
-      - name: nginx-conf
+      - name: nginx-config
         configMap:
-          name: nginx-conf
+          name: nginx-config
           items:
           - key: nginx.conf
             path: nginx.conf
