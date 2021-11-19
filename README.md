@@ -10,6 +10,7 @@
 ```javascript
 cd /root && wget https://github.com/kubernetes/kubernetes/archive/v1.19.7.tar.gz && tar zxvf v1.19.7.tar.gz
 kubectl get pod -A | grep Terminated | awk '{print "kubectl delete pod " $2 " -n" $1}'|bash #批量删除
+cat docker-images.txt | xargs -I{} -n 1 -P 10 docker pull {}
 kubectl get pod -A | grep -P 'kube-system|rook-ceph' #过滤.
 cd kubernetes-1.19.7
 ```
