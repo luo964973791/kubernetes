@@ -71,5 +71,5 @@ cp _output/local/bin/linux/amd64/kubeadm /usr/local/bin/kubeadm
 ### 检查证书
 
 ```javascript
-kubeadm alpha certs check-expiration
+kubeadm certs check-expiration
 ```
