@@ -1,5 +1,8 @@
 ### kubernetes更新证书
-
+```javascript
+sha256sum /root/kubeadm
+/root/kubespray/roles/download/defaults/main.yml  #更改main.yml里面kubeadm的sha256sum值.
+```
 
 ### kubeadm编译好的版本md5sum
 ```javascript
