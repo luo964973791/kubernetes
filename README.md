@@ -4,9 +4,9 @@ sha256sum /root/kubeadm
 /root/kubespray/roles/download/defaults/main.yml  #更改main.yml里面kubeadm的sha256sum值.
 ```
 
-### kubeadm编译好的版本md5sum
+### kubeadm编译好的版本sha256sum
 ```javascript
-09f0666263f0855f887ce722d81b9102  kubeadm-v1.20.6-amd64
+a85c3d93c3d4820e38e631310d3a34b0b30b596b77b54857a5d96de048795707 kubeadm-v1.23.1-amd64
 ```
 
 
