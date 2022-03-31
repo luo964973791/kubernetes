@@ -66,7 +66,7 @@ spec:
         - mountPath: "/usr/share/nginx/html"
           name: task-pv-storage
 https://github.com/kubernetes-sigs/kubespray/blob/master/docs/ansible.md
-kubespary ansible-playbook -i inventory/mycluster/hosts.yml cluster.yml -b -v   --tags=rbd-provisioner
+ansible-playbook -i inventory/mycluster/hosts.yml cluster.yml -b -v   --tags=rbd-provisioner  #按照tags进行按照部分插件.
 ```
 
 ### kubeadm编译好的版本sha256sum
