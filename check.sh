@@ -18,6 +18,8 @@ green()
     echo -e "\033[32m$currentTime    $1    $2\033[0m" >&2
 }
 
+shellName=$(basename "$0")
+
 check_city()
 {
     time_zone="Asia/Shanghai"
@@ -79,7 +81,17 @@ check_os()
     fi
 }
 
-check_city
-check_swap
-check_selinux
-check_os
+check_input()
+{
+    if [ $# -ne 0 ]; then
+        red "INFO" "Usage: bash $shellName"
+        return 1
+    else
+        check_city
+        check_swap
+        check_selinux
+        check_os
+    fi
+}
+
+check_input "$@"
