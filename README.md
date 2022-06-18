@@ -7,6 +7,9 @@ sha256sum /root/kubeadm
 vi kubespray/roles/download/defaults/main.yml
 download_run_once: true  #只下载一次镜像，其它的机器同步.
 download_localhost: true #只下载一次镜像，其它的机器同步.
+/usr/local/bin/nerdctl -n k8s.io image save -o /tmp/releases/images/registry.k8s.io_kube-proxy_v1.24.2.tar registry.k8s.io/kube-proxy:v1.24.2
+/usr/local/bin/nerdctl -n k8s.io image load < /tmp/releases/images/registry.k8s.io_kube-proxy_v1.24.2.tar
+/usr/local/bin/nerdctl -n k8s.io pull --quiet  registry.k8s.io/kube-proxy:v1.24.2
 cat /root/kubespray/inventory/mycluster/group_vars/all/all.yml | grep http_proxy
 http_proxy: "http://172.27.0.5:8118"    #使用代理.
 https_proxy: "https://172.27.0.5:8118"  #使用代理.
