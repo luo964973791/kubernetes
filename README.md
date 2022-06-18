@@ -6,6 +6,7 @@ sha256sum /root/kubeadm
 /root/kubespray/roles/download/defaults/main.yml  #更改main.yml里面kubeadm的sha256sum值.
 vi kubespray/roles/download/defaults/main.yml
 download_run_once: true  #只下载一次镜像，其它的机器同步.
+download_localhost: true #只下载一次镜像，其它的机器同步.
 cat /root/kubespray/inventory/mycluster/group_vars/all/all.yml | grep http_proxy
 http_proxy: "http://172.27.0.5:8118"    #使用代理.
 https_proxy: "https://172.27.0.5:8118"  #使用代理.
