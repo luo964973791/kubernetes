@@ -5,8 +5,8 @@ sed -e "s/k8s-//g" -e "s/-/./g" test
 sha256sum /root/kubeadm
 /root/kubespray/roles/download/defaults/main.yml  #更改main.yml里面kubeadm的sha256sum值.
 vi kubespray/roles/download/defaults/main.yml
-download_run_once: true  #只下载一次镜像，其它的机器同步.
-download_localhost: true #只下载一次镜像，其它的机器同步.
+download_run_once: true    #只下载一次镜像，其它的机器同步.
+download_force_cache: true #只下载一次镜像，其它的机器同步.
 /usr/local/bin/nerdctl -n k8s.io image save -o /tmp/releases/images/registry.k8s.io_kube-proxy_v1.24.2.tar registry.k8s.io/kube-proxy:v1.24.2
 /usr/local/bin/nerdctl -n k8s.io image load < /tmp/releases/images/registry.k8s.io_kube-proxy_v1.24.2.tar
 /usr/local/bin/nerdctl -n k8s.io pull --quiet  registry.k8s.io/kube-proxy:v1.24.2
