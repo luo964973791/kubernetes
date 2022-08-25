@@ -82,6 +82,7 @@ ansible-playbook -i inventory/mycluster/hosts.yaml cluster.yml -b -v   --tags=rb
 ### kubeadm编译好的版本sha256sum
 ```javascript
 a85c3d93c3d4820e38e631310d3a34b0b30b596b77b54857a5d96de048795707 kubeadm-v1.23.1-amd64
+d48216dfd42fa5db91b0662dc76d1051236a8bc77dc5c6565db00a1006714041 kubeadm-1.25.0-amd
 ```
 
 
