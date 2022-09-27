@@ -2,6 +2,7 @@
 ```javascript
 sed -e "s/\./-/g" -e "s/^/k8s-/g"  test
 sed -e "s/k8s-//g" -e "s/-/./g" test
+tcpdump -i any port 80 -s0 -A    #抓包命令
 sha256sum /root/kubeadm
 /root/kubespray/roles/download/defaults/main.yml  #更改main.yml里面kubeadm的sha256sum值.
 vi kubespray/roles/download/defaults/main.yml
