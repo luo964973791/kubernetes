@@ -45,6 +45,25 @@ rbd_provisioner_storage_class: rbd
 rbd_provisioner_reclaim_policy: Delete
 
 
+mkdir /data/disks/sdata #必须要做这一步
+sudo mount --bind /data/disks/sdata /data/disks/sdata  #必须做这一步
+
+local_volume_provisioner_enabled: true
+local_volume_provisioner_namespace: kube-system
+local_volume_provisioner_nodelabels:
+  - kubernetes.io/hostname
+#   - topology.kubernetes.io/region
+#   - topology.kubernetes.io/zone
+local_volume_provisioner_storage_classes:
+  local-storage:
+    host_dir: /data/disks
+    mount_dir: /data/disks
+    volume_mode: Filesystem
+    fs_type: xfs
+
+
+
+
 
 kind: PersistentVolumeClaim
 apiVersion: v1
