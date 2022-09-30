@@ -44,9 +44,13 @@ rbd_provisioner_image_features: layering
 rbd_provisioner_storage_class: rbd
 rbd_provisioner_reclaim_policy: Delete
 
-
-mkdir /data/disks/sdata #必须要做这一步
-sudo mount --bind /data/disks/sdata /data/disks/sdata  #必须做这一步
+#这几步必做,使用local_volume_provisioner
+mkdir -p /data/disks
+DISK_UUID=$(blkid -s UUID -o value /dev/sdb)
+sudo mkdir /data/disks/$DISK_UUID
+sudo mount -t xfs /dev/sdb /data/disks/$DISK_UUID
+echo UUID=`sudo blkid -s UUID -o value /dev/sdb` /data/disks/$DISK_UUID xfs defaults 0 2 | sudo tee -a /etc/fstab   
+#####
 
 local_volume_provisioner_enabled: true
 local_volume_provisioner_namespace: kube-system
