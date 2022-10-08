@@ -3,6 +3,9 @@
 sed -e "s/\./-/g" -e "s/^/k8s-/g"  test
 sed -e "s/k8s-//g" -e "s/-/./g" test
 tcpdump -i any port 80 -s0 -A    #抓包命令
+git clone  -c http.proxy="http://172.27.0.3:7890/" https://github.com/kubernetes-sigs/kubespray.git  #git使用代理
+pip3 install --upgrade setuptools --proxy=http://172.27.0.3:7890/    #pip使用代理
+export https_proxy=http://172.27.0.3:7890/ && helm repo update       #helm 使用代理
 kubectl rollout restart deploy -n xxx  xxxx  #批量重启pod
 sha256sum /root/kubeadm
 /root/kubespray/roles/download/defaults/main.yml  #更改main.yml里面kubeadm的sha256sum值.
