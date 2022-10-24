@@ -3,6 +3,7 @@
 sed -e "s/\./-/g" -e "s/^/k8s-/g"  test
 sed -e "s/k8s-//g" -e "s/-/./g" test
 tcpdump -i any port 80 -s0 -A    #抓包命令
+tcpdump -i eth0 dst port 6443 -c 10000 | awk '{print $3}' | awk -F. -v OFS="." '{print $1,$2,$3,$4}' | sort | uniq -c | sort -k1 -n #抓包
 git clone  -c http.proxy="http://172.27.0.3:7890/" https://github.com/kubernetes-sigs/kubespray.git  #git使用代理
 pip3 install --upgrade setuptools --proxy=http://172.27.0.3:7890/    #pip使用代理
 export https_proxy=http://172.27.0.3:7890/ && helm repo update       #helm 使用代理
