@@ -11,6 +11,7 @@ proxy=http://172.27.0.3:7890/                                        #vi /etc/yu
 kubectl rollout restart deploy -n xxx  xxxx  #批量重启pod
 kubectl get secret  -n metallb-system   memberlist  -o go-template='{{range $k,$v := .data}}{{printf "%s: " $k}}{{if not $v}}{{$v}}{{else}}{{$v | base64decode}}{{end}}{{"\n"}}{{end}}'      #快速查到sercet密码
 sha256sum /root/kubeadm
+kubectl api-resources  #api版本
 /root/kubespray/roles/download/defaults/main.yml  #更改main.yml里面kubeadm的sha256sum值.
 vi kubespray/roles/download/defaults/main.yml
 download_run_once: true    #只下载一次镜像，其它的机器同步.
