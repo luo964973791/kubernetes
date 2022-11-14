@@ -30,7 +30,7 @@ busybox()
 {
     check_binary kubectl
     kubectl run dns-test -it --rm --image=busybox:1.28.3 -- sh
-    busybox_res=$?
+    local busybox_res=$?
     if [[ $busybox_res -eq 0 ]];then
         echo_green "The busybox container was delete successfully"
         return 0
