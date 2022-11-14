@@ -14,18 +14,39 @@ echo_yellow()
 info()
 {
     echo_yellow "Please refer to the following examples for implementation!"
+    echo_yellow "e                   Examples: Using a proxy!"
     echo_yellow "box                 Examples: k box"
     echo_yellow "cm                  Examples: k cm  metallb-system config"
     echo_yellow "sc                  Examples: k sc  metallb-system   memberlist"
+    echo_yellow "scale               Examples: k scale  kube-system coredns 3"
 }
 
-function check_binary()
+check_binary()
 {
     if ! [ -x "$(command -v "$1")" ]; then
        echo_red "ERROR" "$1 binary file not be found."
        exit 1
     fi
 }
+
+use_http_proxy()
+{
+    if [[ -n $2 ]];then
+        export https_proxy=http://$*:7890/
+        local cmd_proxy=$?
+        if [[ $cmd_proxy -eq 0 ]];then
+            echo_green "Using a proxy successfully!"
+            return 0
+        fi
+        echo_red "Failed to use proxy!"
+        return 1
+    else
+        echo_red "Check https_proxy The first parameter is not present!"
+        info
+        exit 1
+    fi
+}
+
 busybox()
 {
     check_binary kubectl
@@ -75,17 +96,41 @@ k8s_secret()
     fi
 }
 
+k8s_scale()
+{
+    check_binary kubectl
+    if [[ -n $1 && -n $2 && -n $3 ]];then
+        kubectl scale deployments -n "$1" "$2" --replicas="$3"
+        local scale_shell=$?
+        if [[ $scale_shell -eq 0 ]];then
+            echo_green "Successful expansion and reduction of capacity!"
+            return 0
+        fi
+        echo_red "Failure to expand and reduce capacity!"
+        return 1
+    else
+        echo_red "Check scale The first and second parameter is not present!"
+        info
+        exit 1
+    fi
+}
 
 IN=$1
 case $IN in
     box)
         busybox
         ;;
+    e)
+        use_http_proxy "$@"
+        ;;
     cm)
         k8s_cm "$2" "$3"     
         ;;
     sc)
         k8s_secret "$2" "$3"
+        ;;
+    scale)
+        k8s_scale "$2" "$3" "$4"
         ;;
     *)
         info
