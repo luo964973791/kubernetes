@@ -109,7 +109,7 @@ k8s_scale()
         echo_red "Failure to expand and reduce capacity!"
         return 1
     else
-        echo_red "Check scale The first and second parameter is not present!"
+        echo_red "Check scale The first and second and third parameter  is not present!"
         info
         exit 1
     fi
