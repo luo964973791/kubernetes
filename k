@@ -42,12 +42,13 @@ pod_api()
 
 exec_pod()
 {
-    local num=no
     check_binary kubectl
     if [[ -n $1 && -n $2 && -n $3 ]];then
+        num=no
         all_pod=$(kubectl get pod -n "$1" | grep "$2"|nl|awk '$1=$1')
+        total_pod=$(kubectl get pod -n "$1" | grep "$2"|nl|awk '$1=$1'|wc -l)
         echo_green "$all_pod"
-        read -rp "Please enter the number?(1/2/3):" num
+        read -rp "Please enter the number?(1 to $total_pod):" num
         sleep 1
         if [[ "$num" == 1 ]]; then
             pod_name=$(kubectl get pod -n "$1" | grep "$2" | nl | awk '($1==1){print $2}')
@@ -62,7 +63,7 @@ exec_pod()
             kubectl exec -it -n "$1" "$pod_name" -- "$3"
             pod_api "$?"
         else
-            echo_red "Wrong number entered, please enter 1/2/3!"
+            echo_red "Wrong number entered, please enter (1 to $total_pod)!"
         fi
     else
         echo_red "Check pod first second third parameter not present!"
