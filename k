@@ -48,7 +48,7 @@ exec_pod()
         all_pod=$(kubectl get pod -n "$1" | grep "$2"|nl|awk '$1=$1')
         echo_green "$all_pod"
         read -rp "Please enter the number?(1/2/3):" num
-        sleep 2
+        sleep 1
         if [[ "$num" == 1 ]]; then
             pod_name=$(kubectl get pod -n "$1" | grep "$2" | nl | awk '($1==1){print $2}')
             kubectl exec -it -n "$1" "$pod_name" -- "$3"
