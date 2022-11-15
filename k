@@ -16,7 +16,7 @@ info()
     echo_yellow "Please refer to the following examples for implementation!"
     echo_yellow "e                   Examples: Using a proxy!"
     echo_yellow "box                 Examples: k box"
-    echo_yellow "exec                Examples: k exec kube-system  nodelocaldns"
+    echo_yellow "exec                Examples: k exec kube-system  nodelocaldns sh/orbash"
     echo_yellow "cm                  Examples: k cm  metallb-system config"
     echo_yellow "sc                  Examples: k sc  metallb-system   memberlist"
     echo_yellow "scale               Examples: k scale  kube-system coredns 3"
@@ -44,28 +44,28 @@ exec_pod()
 {
     local num=no
     check_binary kubectl
-    if [[ -n $1 && -n $2 ]];then
+    if [[ -n $1 && -n $2 && -n $3 ]];then
         all_pod=$(kubectl get pod -n "$1" | grep "$2"|nl|awk '$1=$1')
         echo_green "$all_pod"
         read -rp "Please enter the number?(1/2/3):" num
         sleep 2
         if [[ "$num" == 1 ]]; then
             pod_name=$(kubectl get pod -n "$1" | grep "$2" | nl | awk '($1==1){print $2}')
-            kubectl exec -it -n "$1" "$pod_name" -- sh
+            kubectl exec -it -n "$1" "$pod_name" -- "$3"
             pod_api "$?"
         elif [[ "$num" == 2 ]];then
             pod_name=$(kubectl get pod -n "$1" | grep "$2" | nl | awk '($1==2){print $2}')
-            kubectl exec -it -n "$1" "$pod_name" -- sh
+            kubectl exec -it -n "$1" "$pod_name" -- "$3"
             pod_api "$?"
         elif [[ "$num" == 3 ]];then
             pod_name=$(kubectl get pod -n "$1" | grep "$2" | nl | awk '($1==3){print $2}')
-            kubectl exec -it -n "$1" "$pod_name" -- sh
+            kubectl exec -it -n "$1" "$pod_name" -- "$3"
             pod_api "$?"
         else
             echo_red "Wrong number entered, please enter 1/2/3!"
         fi
     else
-        echo_red "Check pod The first and second parameter is not present!"
+        echo_red "Check pod first second third parameter not present!"
         info
         exit 1
     fi
@@ -169,7 +169,7 @@ case $IN in
         k8s_cm "$2" "$3"     
         ;;
     exec)
-        exec_pod "$2" "$3"
+        exec_pod "$2" "$3" "$4"
         ;;
     sc)
         k8s_secret "$2" "$3"
