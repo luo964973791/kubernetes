@@ -42,27 +42,28 @@ pod_api()
 
 exec_pod()
 {
+    local num=no
     check_binary kubectl
     if [[ -n $1 && -n $2 ]];then
         all_pod=$(kubectl get pod -n "$1" | grep "$2"|nl|awk '$1=$1')
         echo_green "$all_pod"
-        while read -r num; do
-            if [[ "$num" == 1 ]]; then
-                pod_name=$(kubectl get pod -n "$1" | grep "$2" | nl | awk '($1==1){print $2}')
-                kubectl exec -it -n "$1" "$pod_name" -- sh
-                pod_api "$?"
-            elif [[ "$num" == 2 ]];then
-                pod_name=$(kubectl get pod -n "$1" | grep "$2" | nl | awk '($1==2){print $2}')
-                kubectl exec -it -n "$1" "$pod_name" -- sh
-                pod_api "$?"
-            elif [[ "$num" == 3 ]];then
-                pod_name=$(kubectl get pod -n "$1" | grep "$2" | nl | awk '($1==3){print $2}')
-                kubectl exec -it -n "$1" "$pod_name" -- sh
-                pod_api "$?"
-            else
-                echo_red "Wrong number entered, please re-enter!"
-            fi
-        done
+        read -rp "Please enter the number?(1/2/3):" num
+        sleep 2
+        if [[ "$num" == 1 ]]; then
+            pod_name=$(kubectl get pod -n "$1" | grep "$2" | nl | awk '($1==1){print $2}')
+            kubectl exec -it -n "$1" "$pod_name" -- sh
+            pod_api "$?"
+        elif [[ "$num" == 2 ]];then
+            pod_name=$(kubectl get pod -n "$1" | grep "$2" | nl | awk '($1==2){print $2}')
+            kubectl exec -it -n "$1" "$pod_name" -- sh
+            pod_api "$?"
+        elif [[ "$num" == 3 ]];then
+            pod_name=$(kubectl get pod -n "$1" | grep "$2" | nl | awk '($1==3){print $2}')
+            kubectl exec -it -n "$1" "$pod_name" -- sh
+            pod_api "$?"
+        else
+            echo_red "Wrong number entered!"
+        fi
     else
         echo_red "Check pod The first and second parameter is not present!"
         info
