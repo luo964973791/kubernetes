@@ -63,7 +63,6 @@ exec_pod()
             pod_api "$?"
         else
             echo_red "Wrong number entered, please enter 1/2/3!"
-            exec_pod
         fi
     else
         echo_red "Check pod The first and second parameter is not present!"
