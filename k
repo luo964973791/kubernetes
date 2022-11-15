@@ -34,10 +34,10 @@ pod_api()
 {
     if [[ "$1" -eq 0 ]];then
         echo_green "Logouts to pod successful!"
-        exit 0
+        return 0
     fi
     echo_red "Failure to login in to pod!"
-    exit 1
+    return 1
 }
 
 exec_pod()
