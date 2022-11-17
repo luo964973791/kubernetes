@@ -32,12 +32,11 @@ check_binary()
 
 pod_api()
 {
-    if [[ "$1" -eq 0 ]];then
-        echo_green "Logouts to pod successful!"
-        return 0
-    fi
-    echo_red "Failure to login in to pod!"
-    return 1
+    [[ $? -eq 0 ]] || { 
+        echo_red "Failure to login in to pod!"
+        exit 1 
+    }
+    echo_green "Logouts to pod successful!"
 }
 
 exec_pod()
