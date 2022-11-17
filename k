@@ -1,15 +1,15 @@
 #!/bin/bash
 echo_green()
 {
-    echo -e "\e[01;32m$*\e[01;00m"
+    echo -e "\e[01;32m$(date "+%Y-%m-%d %H:%M:%S") [INFO] $*\e[01;00m"
 }
 echo_red()
 {
-    echo -e "\e[01;31m$*\e[01;00m"
+    echo -e "\e[01;31m$(date "+%Y-%m-%d %H:%M:%S") [ERROR] $*\e[01;00m"
 }
-echo_yellow() 
+echo_yellow()
 {
-    echo -e "\e[01;33m$*\e[01;00m"
+    echo -e "\e[01;33m$(date "+%Y-%m-%d %H:%M:%S") [Warning] $*\e[01;00m"
 }
 info()
 {
