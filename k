@@ -75,7 +75,7 @@ exec_pod()
 use_http_proxy()
 {
     if [[ -n $2 ]];then
-        export https_proxy=http://$*:7890/
+        echo "export https_proxy=http://$2:7890/"
         local cmd_proxy=$?
         if [[ $cmd_proxy -eq 0 ]];then
             echo_green "Using a proxy successfully!"
