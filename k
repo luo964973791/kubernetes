@@ -20,6 +20,7 @@ info()
     echo_yellow "cm                  Examples: k cm  metallb-system config"
     echo_yellow "sc                  Examples: k sc  metallb-system   memberlist"
     echo_yellow "scale               Examples: k scale  kube-system coredns 3"
+    echo_yellow "in                  Examples: k in pid"
 }
 
 check_binary()
@@ -157,6 +158,19 @@ k8s_scale()
     fi
 }
 
+nsenter_cmd()
+{
+    [[ $(kubectl get node -o wide | grep -q "docker") -eq 0 ]] || {
+        res=$(docker inspect -f "{{.State.Pid}}" "$1")
+        nsenter -n --target "$res"
+        pod_api
+    }
+    res=$(crictl inspect --output go-template --template "{{.info.pid}}" "$1")
+    nsenter -n --target "$res"
+    pod_api
+    
+}
+
 IN=$1
 case $IN in
     box)
@@ -176,6 +190,9 @@ case $IN in
         ;;
     scale)
         k8s_scale "$2" "$3" "$4"
+        ;;
+    in)
+        nsenter_cmd "$2"
         ;;
     *)
         info
