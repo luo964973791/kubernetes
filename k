@@ -53,15 +53,15 @@ exec_pod()
         if [[ "$num" == 1 ]]; then
             pod_name=$(kubectl get pod -n "$1" | grep "$2" | nl | awk '($1==1){print $2}')
             kubectl exec -it -n "$1" "$pod_name" -- "$3"
-            pod_api "$?"
+            pod_api
         elif [[ "$num" == 2 ]];then
             pod_name=$(kubectl get pod -n "$1" | grep "$2" | nl | awk '($1==2){print $2}')
             kubectl exec -it -n "$1" "$pod_name" -- "$3"
-            pod_api "$?"
+            pod_api
         elif [[ "$num" == 3 ]];then
             pod_name=$(kubectl get pod -n "$1" | grep "$2" | nl | awk '($1==3){print $2}')
             kubectl exec -it -n "$1" "$pod_name" -- "$3"
-            pod_api "$?"
+            pod_api
         else
             echo_red "Wrong number entered, please enter (1 to $total_pod)!"
         fi
