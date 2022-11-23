@@ -14,7 +14,7 @@ echo_yellow()
 info()
 {
     echo_yellow "Please refer to the following examples for implementation!"
-    echo_yellow "e                   Examples: Using a proxy!"
+    echo_yellow "e                   Examples: source k e 192.168.100.135"
     echo_yellow "box                 Examples: k box"
     echo_yellow "exec                Examples: k exec kube-system  nodelocaldns sh/orbash"
     echo_yellow "cm                  Examples: k cm  metallb-system config"
