@@ -164,7 +164,7 @@ etcd_bak()
     local leader
     local res
     leader=$(ETCDCTL_API=3 etcdctl --endpoints="$1" --cacert=/etc/ssl/etcd/ssl/ca.pem --cert=/etc/ssl/etcd/ssl/member-node1.pem --key=/etc/ssl/etcd/ssl/member-node1-key.pem endpoint status --write-out table | grep true | awk '{print $2}')
-    ETCDCTL_API=3 etcdctl --endpoints="$leader"  --cert="/etc/ssl/etcd/ssl/member-node1.pem"  --key="/etc/ssl/etcd/ssl/member-node1-key.pem"  --cacert="/etc/ssl/etcd/ssl/ca.pem"   snapshot save snap-"$(date +%Y%m%d%H%M)".db >/dev/null 2>&1
+    ETCDCTL_API=3 etcdctl --endpoints="$leader"  --cert="/etc/ssl/etcd/ssl/member-node1.pem"  --key="/etc/ssl/etcd/ssl/member-node1-key.pem"  --cacert="/etc/ssl/etcd/ssl/ca.pem"   snapshot save /tmp/snap-"$(date +%Y%m%d%H%M)".db >/dev/null 2>&1
     res=$?
     [[ $res -eq 0 ]] || { 
         echo_red "Backup of etcd data failed!"
