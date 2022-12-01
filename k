@@ -20,6 +20,7 @@ info()
     echo_yellow "cm                  Examples: k cm  metallb-system config"
     echo_yellow "sc                  Examples: k sc  metallb-system   memberlist"
     echo_yellow "scale               Examples: k scale  kube-system coredns 3"
+    echo_yellow "etcdbak             Examples: k etcdbak https://172.27.0.3:2379,https://172.27.0.4:2379,https://172.27.0.5:2379"
     echo_yellow "in                  Examples: k in pid"
 }
 
@@ -158,6 +159,22 @@ k8s_scale()
     fi
 }
 
+etcd_bak()
+{
+    local leader
+    local res
+    leader=$(ETCDCTL_API=3 etcdctl --endpoints="$1" --cacert=/etc/ssl/etcd/ssl/ca.pem --cert=/etc/ssl/etcd/ssl/member-node1.pem --key=/etc/ssl/etcd/ssl/member-node1-key.pem endpoint status --write-out table | grep true | awk '{print $2}')
+    ETCDCTL_API=3 etcdctl --endpoints="$leader"  --cert="/etc/ssl/etcd/ssl/member-node1.pem"  --key="/etc/ssl/etcd/ssl/member-node1-key.pem"  --cacert="/etc/ssl/etcd/ssl/ca.pem"   snapshot save snap-"$(date +%Y%m%d%H%M)".db >/dev/null 2>&1
+    res=$?
+    [[ $res -eq 0 ]] || { 
+        echo_red "Backup of etcd data failed!"
+        #mail_api "$(date "+%Y-%m-%d %H:%M:%S")" [ERROR] crontab定时任务备份etcd数据失败"  #邮箱api接口  
+        exit 1 
+    }
+    echo_green "Backup of etcd data successful!"
+}
+
+
 nsenter_cmd()
 {
     [[ $(kubectl get node -o wide | grep -q "docker") -eq 0 ]] || {
@@ -193,6 +210,9 @@ case $IN in
         ;;
     in)
         nsenter_cmd "$2"
+        ;;
+    etcdbak)
+        etcd_bak "$2"
         ;;
     *)
         info
