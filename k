@@ -1,16 +1,24 @@
 #!/bin/bash
+
+
 echo_green()
 {
     echo -e "\e[01;32m$(date "+%Y-%m-%d %H:%M:%S") [INFO] $*\e[01;00m"
 }
+
+
 echo_red()
 {
     echo -e "\e[01;31m$(date "+%Y-%m-%d %H:%M:%S") [ERROR] $*\e[01;00m"
 }
+
+
 echo_yellow()
 {
     echo -e "\e[01;33m$(date "+%Y-%m-%d %H:%M:%S") [Warning] $*\e[01;00m"
 }
+
+
 info()
 {
     echo_yellow "Please refer to the following examples for implementation!"
@@ -20,9 +28,11 @@ info()
     echo_yellow "cm                  Examples: k cm  metallb-system config"
     echo_yellow "sc                  Examples: k sc  metallb-system   memberlist"
     echo_yellow "scale               Examples: k scale  kube-system coredns 3"
-    echo_yellow "etcdbak             Examples: k etcdbak https://172.27.0.3:2379,https://172.27.0.4:2379,https://172.27.0.5:2379"
+    echo_yellow "etcdbak             Examples: k etcdbak https://{etcd-server}:2379"
     echo_yellow "in                  Examples: k in pid"
+    echo_yellow "ssl                 Examples: k ssl"
 }
+
 
 check_binary()
 {
@@ -32,6 +42,7 @@ check_binary()
     fi
 }
 
+
 pod_api()
 {
     [[ $? -eq 0 ]] || { 
@@ -40,6 +51,7 @@ pod_api()
     }
     echo_green "Logouts to pod successful!"
 }
+
 
 exec_pod()
 {
@@ -73,6 +85,7 @@ exec_pod()
     fi
 }
 
+
 use_http_proxy()
 {
     if [[ -n $2 ]];then
@@ -91,6 +104,7 @@ use_http_proxy()
     fi
 }
 
+
 busybox()
 {
     check_binary kubectl
@@ -103,6 +117,8 @@ busybox()
     echo_red "busybox container creation failed"
     return 1
 }
+
+
 k8s_cm()
 {
     check_binary kubectl
@@ -121,6 +137,8 @@ k8s_cm()
         exit 1
     fi
 }
+
+
 k8s_secret()
 {
     check_binary kubectl
@@ -140,6 +158,7 @@ k8s_secret()
     fi
 }
 
+
 k8s_scale()
 {
     check_binary kubectl
@@ -158,6 +177,7 @@ k8s_scale()
         exit 1
     fi
 }
+
 
 etcd_bak()
 {
@@ -185,8 +205,18 @@ nsenter_cmd()
     res=$(crictl inspect --output go-template --template "{{.info.pid}}" "$1")
     nsenter -n --target "$res"
     pod_api
-    
 }
+
+
+kubeadm_ssl()
+{
+    [[ $(kubeadm certs check-expiration >/dev/null 2>&1) -eq 0 ]] || {
+        echo_red "Query certificate validity failure!"
+    }
+    echo_green "$(kubeadm certs check-expiration)"
+    echo_green "Check the certificate validity successfully!"
+}
+
 
 IN=$1
 case $IN in
@@ -197,7 +227,7 @@ case $IN in
         use_http_proxy "$@"
         ;;
     cm)
-        k8s_cm "$2" "$3"     
+        k8s_cm "$2" "$3"
         ;;
     exec)
         exec_pod "$2" "$3" "$4"
@@ -213,6 +243,9 @@ case $IN in
         ;;
     etcdbak)
         etcd_bak "$2"
+        ;;
+    ssl)
+        kubeadm_ssl
         ;;
     *)
         info
