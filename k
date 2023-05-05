@@ -1,23 +1,19 @@
 #!/bin/bash
 
-
 echo_green()
 {
     echo -e "\e[01;32m$(date "+%Y-%m-%d %H:%M:%S") [INFO] $*\e[01;00m"
 }
-
 
 echo_red()
 {
     echo -e "\e[01;31m$(date "+%Y-%m-%d %H:%M:%S") [ERROR] $*\e[01;00m"
 }
 
-
 echo_yellow()
 {
     echo -e "\e[01;33m$(date "+%Y-%m-%d %H:%M:%S") [Warning] $*\e[01;00m"
 }
-
 
 info()
 {
@@ -33,7 +29,6 @@ info()
     echo_yellow "ssl                 Examples: k ssl"
 }
 
-
 check_binary()
 {
     if ! [ -x "$(command -v "$1")" ]; then
@@ -41,7 +36,6 @@ check_binary()
        exit 1
     fi
 }
-
 
 pod_api()
 {
@@ -51,7 +45,6 @@ pod_api()
     }
     echo_green "Logouts to pod successful!"
 }
-
 
 exec_pod()
 {
@@ -85,7 +78,6 @@ exec_pod()
     fi
 }
 
-
 use_http_proxy()
 {
     if [[ -n $2 ]];then
@@ -104,7 +96,6 @@ use_http_proxy()
     fi
 }
 
-
 busybox()
 {
     check_binary kubectl
@@ -117,7 +108,6 @@ busybox()
     echo_red "busybox container creation failed"
     return 1
 }
-
 
 k8s_cm()
 {
@@ -138,7 +128,6 @@ k8s_cm()
     fi
 }
 
-
 k8s_secret()
 {
     check_binary kubectl
@@ -157,7 +146,6 @@ k8s_secret()
         exit 1
     fi
 }
-
 
 k8s_scale()
 {
@@ -178,7 +166,6 @@ k8s_scale()
     fi
 }
 
-
 etcd_bak()
 {
     local leader
@@ -194,7 +181,6 @@ etcd_bak()
     echo_green "Backup of etcd data successful!"
 }
 
-
 nsenter_cmd()
 {
     [[ $(kubectl get node -o wide | grep -q "docker") -eq 0 ]] || {
@@ -207,7 +193,6 @@ nsenter_cmd()
     pod_api
 }
 
-
 kubeadm_ssl()
 {
     [[ $(kubeadm certs check-expiration >/dev/null 2>&1) -eq 0 ]] || {
@@ -216,7 +201,6 @@ kubeadm_ssl()
     echo_green "$(kubeadm certs check-expiration)"
     echo_green "Check the certificate validity successfully!"
 }
-
 
 IN=$1
 case $IN in
