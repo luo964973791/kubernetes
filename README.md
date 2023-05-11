@@ -1,7 +1,6 @@
 ### kubernetes更新证书
 ```javascript
-sed -e "s/\./-/g" -e "s/^/k8s-/g"  test
-sed -e "s/k8s-//g" -e "s/-/./g" test
+for i in $(cat /data/cluster.info);do echo "$i" "k8s-"$i | sed 's/\./-/g';done    #批量更改主机名
 tcpdump -i any port 80 -s0 -A    #抓包命令
 kubectl create job --from=cronjob/etcd etcd-$(date '+%Y%m%d%H%M') -n etcd   #定时执行job任务
 tcpdump -i eth0 dst port 6443 -c 10000 | awk '{print $3}' | awk -F. -v OFS="." '{print $1,$2,$3,$4}' | sort | uniq -c | sort -nr #抓包
