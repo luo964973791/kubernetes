@@ -183,15 +183,17 @@ etcd_bak()
 
 nsenter_cmd()
 {
-    [[ $(kubectl get node -o wide | grep -q "docker") -eq 0 ]] || {
+    if  [[ $(systemctl status kubelet | grep -q "dockerd.sock") -eq 0 ]]; then
         res=$(docker inspect -f "{{.State.Pid}}" "$1")
         nsenter -n --target "$res"
         pod_api
-    }
-    res=$(crictl inspect --output go-template --template "{{.info.pid}}" "$1")
-    nsenter -n --target "$res"
-    pod_api
+    else
+        res=$(crictl inspect --output go-template --template "{{.info.pid}}" "$1")
+        nsenter -n --target "$res"
+        pod_api
+    fi
 }
+
 
 kubeadm_ssl()
 {
