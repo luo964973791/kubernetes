@@ -1,5 +1,6 @@
 ### kubernetes更新证书
 ```javascript
+jmap -heap $pid    #查看应用占用的cpu mem信息
 for i in $(cat /data/cluster.info);do echo "$i" "k8s-"$i | sed 's/\./-/g';done    #批量更改主机名
 https://github.com/kubernetes-sigs/kubespray/blob/master/docs/mirror.md #KubeSpray 也支持 国内镜像加速了。
 tcpdump -i any port 80 -s0 -A    #抓包命令
