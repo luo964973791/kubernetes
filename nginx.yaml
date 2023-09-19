@@ -1,23 +1,16 @@
+# nginx.yaml - 创建一个Namespace
 apiVersion: v1
-kind: PersistentVolumeClaim
+kind: Namespace
 metadata:
-  name: nginx-web-pvc
-  namespace: nginx
-spec:
-  accessModes:
-  - ReadWriteOnce
-  resources:
-    requests:
-      storage: 1Gi
-  storageClassName: local-path
+  name: nginx
+
 ---
+# nginx-deployment.yaml - 创建一个使用特定镜像的Deployment，包括资源请求和资源限制
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: nginx-deploy
+  name: nginx-deployment
   namespace: nginx
-  labels:
-    app: nginx
 spec:
   replicas: 3
   selector:
@@ -29,58 +22,105 @@ spec:
         app: nginx
     spec:
       containers:
-      - name: nginx
-        image:  nginx:alpine
-        ports:
-        - containerPort: 80
-        resources:
-          requests:
-            cpu: "100m"
-            memory: "32Mi"
-          limits:
-            cpu: "200m"
-            memory: "64Mi"
-        volumeMounts:
-        - name: www
-          mountPath: /usr/share/nginx/html
-          subPath: html
+        - name: nginx-container
+          image: nginx:alpine  # 在这里指定你想要使用的Nginx镜像
+          ports:
+            - containerPort: 80
+          resources:
+            requests:
+              memory: "128Mi"  # 设置资源请求
+              cpu: "250m"
+            limits:
+              memory: "256Mi"  # 设置资源限制
+              cpu: "500m"
+          volumeMounts:
+            - name: nginx-config
+              mountPath: /etc/nginx/conf.d
       volumes:
-      - name: www
-        persistentVolumeClaim:
-          claimName: nginx-web-pvc
-#反亲和.
-#      affinity:
-#        podAntiAffinity:
-#          requiredDuringSchedulingIgnoredDuringExecution:
-#          - topologyKey: kubernetes.io/hostname
-#            labelSelector:
-#              matchExpressions: 
-#              - key: kubernetes.io/os
-#                operator: In 
-#                values: 
-#                - linux
-
-#亲和.
+        - name: nginx-config
+          configMap:
+            name: nginx-config  # 这里指定ConfigMap的名称
       affinity:
         nodeAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
             nodeSelectorTerms:
             - matchExpressions:
-              - key: kubernetes.io/hostname
-                operator: In
+              - key: cicd
+                operator: In    # 亲和,只调度到cicd=jenkins的node,反亲和是NotIn
                 values:
-                - "node2"
-                - "node3"
+                  - jenkins
+
 ---
+# nginx-configmap.yaml - 创建一个ConfigMap
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nginx-config
+  namespace: nginx
+data:
+  # 在这里定义你的Nginx配置
+  default.conf: |
+    server {
+        listen       80;
+        listen  [::]:80;
+        server_name  localhost;
+
+        #access_log  /var/log/nginx/host.access.log  main;
+
+        location / {
+            root   /usr/share/nginx/html;
+            index  index.html index.htm;
+        }
+
+        location /stub_status {
+            stub_status on;
+        }
+
+        #error_page  404              /404.html;
+
+        # redirect server error pages to the static page /50x.html
+        #
+        error_page   500 502 503 504  /50x.html;
+        location = /50x.html {
+            root   /usr/share/nginx/html;
+        }
+
+        # proxy the PHP scripts to Apache listening on 127.0.0.1:80
+        #
+        #location ~ \.php$ {
+        #    proxy_pass   http://127.0.0.1;
+        #}
+
+        # pass the PHP scripts to FastCGI server listening on 127.0.0.1:9000
+        #
+        #location ~ \.php$ {
+        #    root           html;
+        #    fastcgi_pass   127.0.0.1:9000;
+        #    fastcgi_index  index.php;
+        #    fastcgi_param  SCRIPT_FILENAME  /scripts$fastcgi_script_name;
+        #    include        fastcgi_params;
+        #}
+
+        # deny access to .htaccess files, if Apache's document root
+        # concurs with nginx's one
+        #
+        #location ~ /\.ht {
+        #    deny  all;
+        #}
+    }
+
+---
+# nginx-service.yaml - 创建一个Nginx服务并使用NodePort类型暴露
 apiVersion: v1
 kind: Service
 metadata:
   name: nginx-service
   namespace: nginx
 spec:
-  ports:
-  - port: 80
-    protocol: TCP
   selector:
     app: nginx
-  type: LoadBalancer
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+  type: NodePort  # 将Service类型设置为NodePort
