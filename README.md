@@ -1,6 +1,8 @@
 ### kubernetes更新证书
 ```javascript
 cat demo.txt |awk '{print $1":2181"}' |tr '\n' ',' | sed 's/,$//'  #列转换行命令.
+./arcconf GETCONFIG 1 LD  #硬raid查看信息.
+./storcli /c0/vall show all | grep -E "RAID|Onln" #硬raid查看信息.
 jmap -heap $pid    #查看应用占用的cpu mem信息
 awk -v a="node-" '{print a$1}' demo.txt  |sed 's/\./-/g'    #批量更改主机名
 https://github.com/kubernetes-sigs/kubespray/blob/master/docs/mirror.md #KubeSpray 也支持 国内镜像加速了。
