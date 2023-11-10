@@ -123,4 +123,4 @@ spec:
     - protocol: TCP
       port: 80
       targetPort: 80
-  type: NodePort  # 将Service类型设置为NodePort
+  type: NodePort
