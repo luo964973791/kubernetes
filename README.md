@@ -1,6 +1,8 @@
 ### kubernetes更新证书
 ```javascript
 cat demo.txt |awk '{print $1":2181"}' |tr '\n' ',' | sed 's/,$//'  #列转换行命令.
+kubectl  get podcidr -A  #查看网络地址
+kubectl get ipr -A  #查看网络地址
 dd if=/dev/zero of=/dev/sdb bs=512 count=1  #快速清空磁盘数据至裸盘.
 ./arcconf GETCONFIG 1 LD  #硬raid查看信息.
 ./storcli /c0/vall show all | grep -E "RAID|Onln" #硬raid查看信息.
