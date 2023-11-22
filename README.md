@@ -1,5 +1,9 @@
 ### kubernetes更新证书
 ```javascript
+kubectl describe svc -n kube-system                        mysql   #查看svc关注Endpoints:是后端的pod地址   Selector:匹配
+kubectl get pods -A --selector=kubernetes.io/name=node1   #查看pod标签是否匹配svc
+ssmctl check -c mysql -i mysql mysql-pod  #检查pod所有状态
+kubectl edit ss -n kube-system        mysql-pod -o yaml    #edit 扩容pv
 cat demo.txt |awk '{print $1":2181"}' |tr '\n' ',' | sed 's/,$//'  #列转换行命令.
 kubectl  get podcidr -A  #查看网络地址
 kubectl get ipr -A  #查看网络地址
