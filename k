@@ -218,7 +218,7 @@ kubeadm_ssl()
 
 dns_demo() {
     check_binary dig
-    for dns_server in $(kubectl get pod -A -o wide | grep coredns | awk '{print $9}' | xargs); do
+    for dns_server in $(kubectl describe svc -n kube-system coredns | awk '/Endpoints:/ {print $2}' | head -n 1 | sed 's/:53,*/ /g'); do
         if dig @"$dns_server" "$1" |grep -q "status: NOERROR"  &> /dev/null; then
             echo_green "The $1 is successfully resolved on the $dns_server!"
         else
