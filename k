@@ -27,13 +27,24 @@ info()
     echo_yellow "etcdbak             Examples: k etcdbak https://{etcd-server}:2379"
     echo_yellow "in                  Examples: k in pid"
     echo_yellow "ssl                 Examples: k ssl"
+    echo_yellow "dns                 Examples: k dns"
 }
 
 check_binary()
 {
-    if ! [ -x "$(command -v "$1")" ]; then
-       echo_red "ERROR" "$1 binary file not be found."
-       exit 1
+    if ! command -v "$1" &> /dev/null; then
+        echo_red "ERROR" "$1 binary file not be found. Installing..."
+        
+        # 使用 yum 安装
+        sudo yum install -y "$1"
+
+        # 再次检查是否安装成功
+        if ! command -v "$1" &> /dev/null; then
+            echo_red "ERROR" "Failed to install $1. Please install it manually."
+            exit 1
+        else
+            echo_green "SUCCESS" "$1 installed successfully."
+        fi
     fi
 }
 
@@ -204,6 +215,19 @@ kubeadm_ssl()
     echo_green "Check the certificate validity successfully!"
 }
 
+
+dns_demo() {
+    check_binary dig
+    for dns_server in $(kubectl get pod -A -o wide | grep coredns | awk '{print $9}' | xargs); do
+        if dig @"$dns_server" "$1" |grep -q "status: NOERROR"  &> /dev/null; then
+            echo_green "The $1 is successfully resolved on the $dns_server!"
+        else
+            echo_red "$1 resolved failed on $dns_server!"
+        fi
+    done
+}
+
+
 IN=$1
 case $IN in
     box)
@@ -232,6 +256,9 @@ case $IN in
         ;;
     ssl)
         kubeadm_ssl
+        ;;
+    dns)
+        dns_demo "$2"
         ;;
     *)
         info
