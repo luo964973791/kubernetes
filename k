@@ -28,6 +28,7 @@ info()
     echo_yellow "in                  Examples: k in pid"
     echo_yellow "ssl                 Examples: k ssl"
     echo_yellow "dns                 Examples: k dns"
+    echo_yellow "del                 Examples: k del"
 }
 
 check_binary()
@@ -228,6 +229,11 @@ dns_demo() {
 }
 
 
+delete_pod() {
+    kubectl get pods --all-namespaces --field-selector=status.phase!=Running,status.phase!=Succeeded -o custom-columns="NAMESPACE:.metadata.namespace,NAME:.metadata.name" --no-headers=true | xargs -I {} kubectl delete pod {} --namespace={}
+}
+
+
 IN=$1
 case $IN in
     box)
@@ -259,6 +265,9 @@ case $IN in
         ;;
     dns)
         dns_demo "$2"
+        ;;
+    del)
+        delete_pod
         ;;
     *)
         info
