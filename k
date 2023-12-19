@@ -218,7 +218,7 @@ kubeadm_ssl()
 
 
 dns_demo() {
-    check_binary dig
+    (command -v dig && echo_green "dig command is installed!") || sudo yum install -y bind-utils || echo_red "Unable to install dig, please install it manually."
     for dns_server in $(kubectl describe svc -n kube-system coredns | awk '/Endpoints:/ {print $2}' | head -n 1 | sed 's/:53,*/ /g'); do
         if dig @"$dns_server" "$1" |grep -q "status: NOERROR"  &> /dev/null; then
             echo_green "The $1 is successfully resolved on the $dns_server!"
