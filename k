@@ -230,7 +230,7 @@ dns_demo() {
 
 
 delete_pod() {
-    kubectl get pods --all-namespaces --field-selector=status.phase!=Running,status.phase!=Succeeded,status.phase!=Completed -o custom-columns="NAMESPACE:.metadata.namespace,NAME:.metadata.name" --no-headers=true | xargs -I {} kubectl delete pod {} --namespace={}
+    kubectl get pod -A | grep -Ev 'NAME|1/1|2/2|3/3|Completed' | awk '{print $1,$2}' | xargs -L1 kubectl delete pod
 }
 
 
