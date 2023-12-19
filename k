@@ -230,7 +230,7 @@ dns_demo() {
 
 
 delete_pod() {
-    kubectl get pod -A | grep -Ev 'NAME|1/1|2/2|3/3|Completed' | awk '{print $1,$2}' | xargs -L1 kubectl delete pod
+    kubectl get pod -A | grep -Ev 'NAME|1/1|2/2|3/3|Completed' | awk '{print $1,$2}' | xargs -L1 kubectl delete pod -n
 }
 
 
