@@ -1,0 +1,73 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: app-server-stable
+  namespace: nginx
+spec:
+  selector:
+    matchLabels:
+      app: go-test
+      version: stable
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        app: go-test
+        version: stable
+    spec:
+      containers:
+      - name: app-server
+        image: registry.cn-hangzhou.aliyuncs.com/rookieops/go-test:v1
+        imagePullPolicy: IfNotPresent
+        ports:
+        - name: http
+          containerPort: 8080
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 8080
+          initialDelaySeconds: 5
+          periodSeconds: 10
+        resources:
+          limits:
+            cpu: 200m
+            memory: 256Mi
+          requests:
+            cpu: 100m
+            memory: 128Mi
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: app-server-stable-svc
+  namespace: nginx
+spec:
+  selector:
+    app: go-test
+    version: stable
+  ports:
+  - name: http
+    port: 8080
+  type: LoadBalancer
+
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: app-server-stable-ingress
+  namespace: nginx
+  annotations:
+    kubernetes.io/ingress.class: "nginx"
+spec:
+  rules:
+  - host: www.demo.com
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: app-server-stable-svc
+            port:
+              number: 8080
