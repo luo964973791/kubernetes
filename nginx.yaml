@@ -39,7 +39,7 @@ spec:
               subPath: default.conf  #匹配/etc/nginx/sites-available目录下的default.conf文件
             - name: php-ini
               mountPath: /usr/local/etc/php/php.ini
-              subPath: php.ini #匹配/usr/local/etc/php/php.ini目录下的php.ini文件
+              subPath: php.ini #匹配/usr/local/etc/php目录下的php.ini文件
       volumes:
         - name: default-conf
           configMap:
