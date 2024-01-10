@@ -1,30 +1,4 @@
 ```shell
-[root@node1 tasks]# grep -vEn '^\s*$|^\s*#' /etc/filebeat/filebeat.yml
-15:filebeat.inputs:
-21:- type: log
-24:  enabled: true
-27:  symlinks: true    #这个必须打开,否则收集不到符号链接目录的日志
-28:  paths:
-29:    - "/var/log/containers/*.log"
-30:    - "/var/log/*.log"
-69:filebeat.config.modules:
-71:  path: ${path.config}/modules.d/*.yml
-74:  reload.enabled: true
-81:setup.template.settings:
-82:  index.number_of_shards: 1
-118:setup.kibana:
-161:# ------------------------------ Kafka Output ----------------------------------
-162:output.kafka:
-163:  hosts:  ["172.27.0.7:9092"]
-164:  topic: "demo_log"
-185:processors:
-186:  - add_host_metadata: ~
-187:  - add_cloud_metadata: ~
-188:  - add_docker_metadata: ~
-189:  - add_kubernetes_metadata: ~
-
-
-## 不带行号.
 [root@node1 tasks]# grep -vE '^\s*$|^\s*#' /etc/filebeat/filebeat.yml
 filebeat.inputs:
 - type: log
@@ -39,10 +13,10 @@ filebeat.config.modules:
 setup.template.settings:
   index.number_of_shards: 1
 setup.kibana:
-# ------------------------------ Kafka Output ----------------------------------
+# ------------------------------ Kafka Output ---------------------------------- #大约161行
 output.kafka:
   hosts:  ["172.27.0.7:9092"]
-  topic: "172-27-0-6-log"
+  topic: "demo_log"
 processors:
   - add_host_metadata: ~
   - add_cloud_metadata: ~
