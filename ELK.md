@@ -3,25 +3,14 @@
 filebeat.inputs:
 - type: log
   enabled: true
-  symlinks: true
+  symlinks: true      #大约27行添加
   paths:
     - "/var/log/containers/*.log"
     - "/var/log/*.log"
-filebeat.config.modules:
-  path: ${path.config}/modules.d/*.yml
-  reload.enabled: true
-setup.template.settings:
-  index.number_of_shards: 1
-setup.kibana:
-# ------------------------------ Kafka Output ---------------------------------- #大约161行
+# ------------------------------ Kafka Output ---------------------------------- #大约161行添加
 output.kafka:
   hosts:  ["172.27.0.7:9092"]
   topic: "demo_log"
-processors:
-  - add_host_metadata: ~
-  - add_cloud_metadata: ~
-  - add_docker_metadata: ~
-  - add_kubernetes_metadata: ~
 ```
 
 
@@ -53,6 +42,7 @@ EOF
 
 
 ```shell
+for i in {2..4};do ./bin/kafka-topics.sh --bootstrap-server 172.27.0.7:9092 --create --topic 172-27-0-$i-log --partitions 3 --replication-factor 3;done
 shell run sed -i "s/demo_log/$(hostname -I | awk '{print $1}' | sed 's/\./-/g;s/$/-log/')/g" /etc/filebeat/filebeat.yml
 shell run sed -i "s/demo_log/$(hostname -I | awk '{print $1}' | sed 's/\./-/g;s/$/-log/')/g" /etc/logstash/conf.d/linux.conf
 systemctl restart filebeat
