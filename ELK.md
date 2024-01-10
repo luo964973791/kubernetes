@@ -13,6 +13,7 @@
 81:setup.template.settings:
 82:  index.number_of_shards: 1
 118:setup.kibana:
+161:# ------------------------------ Kafka Output ----------------------------------
 162:output.kafka:
 163:  hosts:  ["172.27.0.7:9092"]
 164:  topic: "demo_log"
@@ -38,9 +39,10 @@ filebeat.config.modules:
 setup.template.settings:
   index.number_of_shards: 1
 setup.kibana:
+# ------------------------------ Kafka Output ----------------------------------
 output.kafka:
   hosts:  ["172.27.0.7:9092"]
-  topic: "demo_log"
+  topic: "172-27-0-6-log"
 processors:
   - add_host_metadata: ~
   - add_cloud_metadata: ~
