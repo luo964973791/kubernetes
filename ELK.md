@@ -23,17 +23,45 @@ input {
         auto_offset_reset => "latest" 
         consumer_threads => 1 
         decorate_events => true
-        topics => ["demo_log"]
+        topics => ["172-27-0-6-log"]
         codec => "json"
         group_id => "logstash"
     }
 }
+
+
+filter{
+    grok{
+      match => {"message" => "%{TIMESTAMP_ISO8601:log_timestamp} \| %{LOGLEVEL:level} %{SPACE}* \| (?<class>[__main__:[\w]*:\d*]+) \- %{GREEDYDATA:content}"}
+    }
+    mutate {
+        gsub =>[
+            "content", "'", '"'
+        ]
+        lowercase => [ "level" ]
+    }
+    json {
+        source => "content"
+    }
+    mutate {
+        remove_field => ["content", "@version", "tags"]
+    }
+}
+
+#输出调式模式
+#output {
+#  stdout {
+#    codec => rubydebug
+#  }
+#}
+
+
 output {
     elasticsearch {
         hosts => ["http://172.27.0.6:9200"]
         user => elastic
         password => "elastic"
-        index => "demo_log"
+        index => "172-27-0-6-log"
         ssl => false
     }  
 }
