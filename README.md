@@ -119,6 +119,22 @@ spec:
       volumeMounts:
         - mountPath: "/usr/share/nginx/html"
           name: task-pv-storage
+
+
+metallb_enabled: true
+metallb_speaker_enabled: "{{ metallb_enabled }}"
+metallb_namespace: metallb-system
+metallb_protocol: "layer2"
+metallb_config:
+  address_pools:
+    primary:
+      ip_range:
+        - 172.27.0.7-172.27.0.9
+      auto_assign: true
+  layer2:
+    - primary
+
+kubectl patch ipaddresspools primary -n metallb-system --type='json' -p='[{"op": "replace", "path": "/spec/addresses/0", "value": "172.27.0.7-172.27.0.69"}]'
 https://github.com/kubernetes-sigs/kubespray/blob/master/docs/ansible.md
 ansible-playbook -i inventory/mycluster/hosts.yaml cluster.yml -b -v   --tags=rbd-provisioner  #按照tags进行按照部分插件.
 ```
