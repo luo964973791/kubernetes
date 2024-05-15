@@ -14,6 +14,7 @@ jmap -heap $pid    #查看应用占用的cpu mem信息
 awk -v a="node-" '{print a$1}' demo.txt  |sed 's/\./-/g'    #批量更改主机名
 https://github.com/kubernetes-sigs/kubespray/blob/master/docs/mirror.md #KubeSpray 也支持 国内镜像加速了。
 tcpdump -i any port 80 -s0 -A    #抓包命令
+if [[ $(kubectl get pod -A | grep 0/1 | awk '{print $1,$2}' | wc -l) -gt 0 ]]; then kubectl get pod -A | grep 0/1 | awk '{print $1,$2}' | while read -r pod namespace; do kubectl delete pod "$namespace" -n "$pod"; done; fi  #删除异常的pod.
 kubectl create job --from=cronjob/etcd etcd-$(date '+%Y%m%d%H%M') -n etcd   #定时执行job任务
 tcpdump -i eth0 dst port 6443 -c 10000 | awk '{print $3}' | awk -F. -v OFS="." '{print $1,$2,$3,$4}' | sort | uniq -c | sort -nr #抓包
 git clone  -c http.proxy="http://172.27.0.3:7890/" https://github.com/kubernetes-sigs/kubespray.git  #git使用代理
