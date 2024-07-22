@@ -40,6 +40,8 @@ cat /root/kubespray/inventory/mycluster/group_vars/all/all.yml | grep http_proxy
 http_proxy: "http://172.27.0.5:8118/"    #使用代理.
 https_proxy: "https://172.27.0.5:8118/"  #使用代理.
 
+docker build --build-arg http_proxy=http://192.168.197.21:7890/ --build-arg https_proxy=http://192.168.197.21:7890/ -t node:v2 .  #build构建镜像使用代理.
+
 ceph osd pool create kube 1024
 ceph osd pool init kube
 ceph auth get-or-create client.kube mon 'allow r, allow command "osd blacklist"' osd 'allow class-read object_prefix rbd_children, allow rwx pool=kube' -o ceph.client.kube.keyring
