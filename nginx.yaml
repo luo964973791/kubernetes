@@ -1,73 +1,41 @@
-# kubectl create configmap default-conf --namespace=nginx --from-file=/root/default.conf
-# kubectl create configmap php-ini --namespace=nginx --from-file=/root/php.ini
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: nginx-deployment
-  namespace: nginx
+  name: php-nginx-deployment
+  namespace: kube-system
 spec:
   replicas: 2
   selector:
     matchLabels:
-      app: nginx
+      app: php-nginx
   template:
     metadata:
       labels:
-        app: nginx
+        app: php-nginx
     spec:
       containers:
-        - name: nginx-container
-          image: richarvey/nginx-php-fpm 
-          ports:
-            - containerPort: 80
-          readinessProbe:
-            httpGet:
-              path: /
-              port: 80
-            initialDelaySeconds: 5
-            periodSeconds: 10
-          resources:
-            requests:
-              memory: "128Mi"
-              cpu: "250m"
-            limits:
-              memory: "256Mi"
-              cpu: "500m"
-          volumeMounts:
-            - name: default-conf
-              mountPath: /etc/nginx/sites-available/default.conf
-              subPath: default.conf  #匹配/etc/nginx/sites-available目录下的default.conf文件
-            - name: php-ini
-              mountPath: /usr/local/etc/php/php.ini
-              subPath: php.ini #匹配/usr/local/etc/php目录下的php.ini文件
+      - name: php-nginx
+        image: trafex/php-nginx
+        ports:
+        - containerPort: 8080
+        volumeMounts:
+        - name: timezone
+          mountPath: /etc/localtime
       volumes:
-        - name: default-conf
-          configMap:
-            name: default-conf
-        - name: php-ini
-          configMap:
-            name: php-ini
-      affinity:
-        nodeAffinity:
-          requiredDuringSchedulingIgnoredDuringExecution:
-            nodeSelectorTerms:
-              - matchExpressions:
-                  - key: kubernetes.io/hostname
-                    operator: In
-                    values:
-                      - node1
-
+      - name: timezone
+        hostPath:
+          path: /usr/share/zoneinfo/Asia/Shanghai
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: nginx-service
-  namespace: nginx
+  name: php-nginx-service
+  namespace: kube-system
 spec:
   selector:
-    app: nginx
+    app: php-nginx
   ports:
     - protocol: TCP
       port: 80
-      targetPort: 80
+      targetPort: 8080
   type: LoadBalancer
