@@ -1,5 +1,7 @@
 ### kubernetes更新证书
 ```javascript
+cat /proc/cmdline | grep -q nokmem || (sed -i '/^GRUB_CMDLINE_LINUX=/ s/"$/ cgroup.memory=nokmem"/' /etc/default/grub && grub2-mkconfig --output=$(find /boot/ -name grub.cfg))
+sed -i '/ swap /s/^/#/' /etc/fstab
 kubectl describe svc -n kube-system                        mysql   #查看svc关注Endpoints:是后端的pod地址   Selector:匹配
 kubectl get pods -A --selector=kubernetes.io/name=node1   #查看pod标签是否匹配svc
 ssmctl check -c mysql -i mysql mysql-pod  #检查pod所有状态
