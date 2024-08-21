@@ -189,6 +189,7 @@ vi hack/lib/version.sh
 #pull 镜像
 cat /root/kubernetes-1.19.7/build/build-image/cross/VERSION
 docker pull us.gcr.io/k8s-artifacts-prod/build-image/kube-cross:v1.15.5-1
+docker pull registry.k8s.io/build-image/kube-cross:v1.28.10-go1.21.9-bullseye.0   #新版本镜像名称改掉
 
 #启动容器
 docker run --rm -v /root/kubernetes-1.19.7:/go/src/k8s.io/kubernetes -it us.gcr.io/k8s-artifacts-prod/build-image/kube-cross:v1.15.5-1 bash
