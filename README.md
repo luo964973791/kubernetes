@@ -9,7 +9,7 @@ kubectl edit ss -n kube-system        mysql-pod -o yaml    #edit 扩容pv
 cat demo.txt |awk '{print $1":2181"}' |tr '\n' ',' | sed 's/,$//'  #列转换行命令.
 kubectl  get podcidr -A  #查看网络地址
 kubectl get ipr -A  #查看网络地址
-dd if=/dev/zero of=/dev/sdX bs=4M status=progress  #快速清空磁盘数据至裸盘.
+dd if=/dev/zero of=/dev/sdb bs=4M status=progress  #快速清空磁盘数据至裸盘.
 blkdiscard /dev/sdb #快速清空SSD磁盘数据至裸盘.
 shred -v -n 2 /dev/sdb  #两次清空磁盘数据至裸盘.
 wipe -rfi /dev/sdb #快速清空SATA磁盘数据至裸盘.
