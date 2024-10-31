@@ -10,6 +10,7 @@ cat demo.txt |awk '{print $1":2181"}' |tr '\n' ',' | sed 's/,$//'  #列转换行
 kubectl  get podcidr -A  #查看网络地址
 kubectl get ipr -A  #查看网络地址
 dd if=/dev/zero of=/dev/sdb bs=4M status=progress  #快速清空磁盘数据至裸盘.
+wipefs -a /dev/sdb &&  mkfs.xfs /dev/sdb   #重新格式化和重新分区
 blkdiscard /dev/sdb #快速清空SSD磁盘数据至裸盘.
 shred -v -n 2 /dev/sdb  #两次清空磁盘数据至裸盘.
 wipe -rfi /dev/sdb #快速清空SATA磁盘数据至裸盘.
