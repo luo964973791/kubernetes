@@ -9,7 +9,6 @@ alias kbox='kubectl run dns-test -it --rm --image=busybox:1.28.3 -- sh'
 alias kallcm='kubectl get configmap -A'
 alias clear='export https_proxy=http://192.168.197.14:22; export http_proxy=http://192.168.197.14:22; export all_proxy=socks5://192.168.197.14:22; /usr/bin/clear'
 ke() {
-    echo "Parameter: $1"
     pod_info=$(kubectl get pod -A | grep "$1")
     if [ -z "$pod_info" ]; then
         echo "Pod not found."
@@ -19,6 +18,18 @@ ke() {
     local pod_name=$(echo "$pod_info" | awk '{print $2}')
 
     kubectl exec -it -n "$namespace" "$pod_name" -- bash || kubectl exec -it -n "$namespace" "$pod_name" -- sh
+}
+
+kdel() {
+    pod_info=$(kubectl get pod -A | grep "$1")
+    if [ -z "$pod_info" ]; then
+        echo "Pod not found."
+        return 1
+    fi
+    local namespace=$(echo "$pod_info" | awk '{print $1}')
+    local pod_name=$(echo "$pod_info" | awk '{print $2}')
+
+    kubectl delete pod -n "$namespace" "$pod_name"
 }
 
 kcatcm() {
