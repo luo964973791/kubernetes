@@ -1,6 +1,6 @@
 ### kubernetes更新证书
 ```javascript
-cat <<'EOF' >> /root/.bashrc
+vi /root/.bashrc
 
 # Kubernetes aliases and functions
 alias kl='kubectl get pod -A -o wide'
@@ -8,81 +8,68 @@ alias kg='kubectl get pod -A | grep'
 alias kbox='kubectl run dns-test -it --rm --image=busybox:1.28.3 -- sh'
 alias kallcm='kubectl get configmap -A'
 alias clear='export https_proxy=http://192.168.197.14:22; export http_proxy=http://192.168.197.14:22; export all_proxy=socks5://192.168.197.14:22; /usr/bin/clear'
-
 ke() {
-    pod_info=\$(kubectl get pod -A | grep "\$1")
-    if [ -z "\$pod_info" ]; then
+    echo "Parameter: $1"
+    pod_info=$(kubectl get pod -A | grep "$1")
+    if [ -z "$pod_info" ]; then
         echo "Pod not found."
         return 1
     fi
-    local namespace=\$(echo "\$pod_info" | awk '{print \$1}')
-    local pod_name=\$(echo "\$pod_info" | awk '{print \$2}')
+    local namespace=$(echo "$pod_info" | awk '{print $1}')
+    local pod_name=$(echo "$pod_info" | awk '{print $2}')
 
-    kubectl exec -it -n "\$namespace" "\$pod_name" -- bash || kubectl exec -it -n "\$namespace" "\$pod_name" -- sh
-}
-
-kdel() {
-    pod_info=\$(kubectl get pod -A | grep "\$1")
-    if [ -z "\$pod_info" ]; then
-        echo "Pod not found."
-        return 1
-    fi
-    local namespace=\$(echo "\$pod_info" | awk '{print \$1}')
-    local pod_name=\$(echo "\$pod_info" | awk '{print \$2}')
-
-    kubectl delete pod -n "\$namespace" "\$pod_name"
+    kubectl exec -it -n "$namespace" "$pod_name" -- bash || kubectl exec -it -n "$namespace" "$pod_name" -- sh
 }
 
 kcatcm() {
-    if [ -z "\$1" ]; then
+    if [ -z "$1" ]; then
         echo "Usage: kcm <configmap_name>"
         return 1
     fi
     
-    local configmap_name="\$1"
-    local cm_info=\$(kubectl get cm -A | grep "\$configmap_name")
+    local configmap_name="$1"
+    local cm_info=$(kubectl get cm -A | grep "$configmap_name")
     
-    if [ -z "\$cm_info" ]; then
+    if [ -z "$cm_info" ]; then
         echo "ConfigMap not found."
         return 1
     fi
     
-    local namespace=\$(echo "\$cm_info" | awk '{print \$1}')
-    local cm_name=\$(echo "\$cm_info" | awk '{print \$2}')
+    local namespace=$(echo "$cm_info" | awk '{print $1}')
+    local cm_name=$(echo "$cm_info" | awk '{print $2}')
     
-    if [ "\$cm_name" != "\$configmap_name" ]; then
+    if [ "$cm_name" != "$configmap_name" ]; then
         echo "ConfigMap name mismatch."
         return 1
     fi
     
-    kubectl get cm "\$configmap_name" --output="go-template={{ range \$k,\$v := .data}}{{ \$v }}{{ end }}" -n "\$namespace"
+    kubectl get cm "$configmap_name" --output="go-template={{ range \$k,\$v := .data}}{{ \$v }}{{ end }}" -n "$namespace"
 }
 
 keditcm() {
-    if [ -z "\$1" ]; then
+    if [ -z "$1" ]; then
         echo "Usage: keditcm <configmap_name>"
         return 1
     fi
     
-    local configmap_name="\$1"
-    local cm_info=\$(kubectl get cm -A | grep "\$configmap_name")
+    local configmap_name="$1"
+    local cm_info=$(kubectl get cm -A | grep "$configmap_name")
     
-    if [ -z "\$cm_info" ]; then
+    if [ -z "$cm_info" ]; then
         echo "ConfigMap not found."
         return 1
     fi
     
-    local namespace=\$(echo "\$cm_info" | awk '{print \$1}')
-    local cm_name=\$(echo "\$cm_info" | awk '{print \$2}')
+    local namespace=$(echo "$cm_info" | awk '{print $1}')
+    local cm_name=$(echo "$cm_info" | awk '{print $2}')
     
-    if [ "\$cm_name" != "\$configmap_name" ]; then
+    if [ "$cm_name" != "$configmap_name" ]; then
         echo "ConfigMap name mismatch."
         return 1
     fi
     
-    kubectl edit cm "\$configmap_name" -n "\$namespace"
+    kubectl edit cm "$configmap_name" -n "$namespace"
 }
-EOF
 
 # 让更改生效
 source /root/.bashrc
