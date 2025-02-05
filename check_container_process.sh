@@ -49,6 +49,7 @@ install_shellcheck() {
 
         wget -q "https://github.com/koalaman/shellcheck/releases/download/${scversion}/shellcheck-${scversion}.linux.x86_64.tar.xz" -O shellcheck.tar.xz
         tar -xJf shellcheck.tar.xz
+        sleep 6  # 添加延迟以确保文件系统操作完成
         cp "shellcheck-${scversion}/shellcheck" /usr/bin/
         shellcheck --version
 
