@@ -40,7 +40,15 @@ install_shellcheck() {
     if ! command -v shellcheck &> /dev/null; then
         log_info "shellcheck is not installed. Attempting to install..."
         scversion="stable"
-        wget -qO- "https://github.com/koalaman/shellcheck/releases/download/${scversion}/shellcheck-${scversion}.linux.x86_64.tar.xz" | tar -xJv
+        cd /tmp || exit
+
+        # 检查并删除现有的 shellcheck 目录
+        if [ -d "shellcheck-${scversion}" ]; then
+            rm -rf "shellcheck-${scversion}"
+        fi
+
+        wget -q "https://github.com/koalaman/shellcheck/releases/download/${scversion}/shellcheck-${scversion}.linux.x86_64.tar.xz" -O shellcheck.tar.xz
+        tar -xJf shellcheck.tar.xz
         cp "shellcheck-${scversion}/shellcheck" /usr/bin/
         shellcheck --version
 
