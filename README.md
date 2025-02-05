@@ -86,6 +86,72 @@ keditcm() {
 source /root/.bashrc
 
 
+##边车代理模式.
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: squid-conf
+  namespace: nginx
+data:
+  squid.conf: |
+    http_port 3128
+    acl all src all
+    http_access allow all
+    cache_peer 192.168.197.21 parent 22 0 no-query no-digest   #这是我的代理地址:192.168.197.21:22
+    never_direct allow all
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-with-proxy
+  namespace: nginx
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: nginx-with-proxy
+  template:
+    metadata:
+      labels:
+        app: nginx-with-proxy
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:latest
+        ports:
+        - containerPort: 80
+        env:
+        - name: HTTP_PROXY
+          value: "http://localhost:3128"
+        - name: HTTPS_PROXY
+          value: "http://localhost:3128"
+      - name: http-proxy
+        image: sameersbn/squid:latest
+        ports:
+        - containerPort: 3128
+        volumeMounts:
+        - name: squid-conf
+          mountPath: /etc/squid/squid.conf
+          subPath: squid.conf
+      volumes:
+      - name: squid-conf
+        configMap:
+          name: squid-conf
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx-service
+  namespace: nginx
+spec:
+  selector:
+    app: nginx-with-proxy
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 80
+  type: NodePort
+
 
 
 cat /proc/cmdline | grep -q nokmem || (sed -i '/^GRUB_CMDLINE_LINUX=/ s/"$/ cgroup.memory=nokmem"/' /etc/default/grub && grub2-mkconfig --output=$(find /boot/ -name grub.cfg))
