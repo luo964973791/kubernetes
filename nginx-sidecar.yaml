@@ -1,0 +1,83 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-web
+  namespace: nginx
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: nginx-web
+  template:
+    metadata:
+      labels:
+        app: nginx-web
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:latest
+        ports:
+        - containerPort: 80
+        volumeMounts:
+        - name: varlog
+          mountPath: /var/log/nginx
+      - name: logstash
+        image: docker.elastic.co/logstash/logstash:7.10.1
+        volumeMounts:
+        - name: varlog
+          mountPath: /var/log/nginx
+        - name: logstash-config
+          mountPath: /usr/share/logstash/pipeline/logstash.conf
+          subPath: logstash.conf
+        env:
+        - name: POD_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+      volumes:
+      - name: varlog
+        emptyDir: {}
+      - name: logstash-config
+        configMap:
+          name: logstash-config
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: logstash-config
+  namespace: nginx
+data:
+  logstash.conf: |
+    input {
+      file {
+        path => "/var/log/nginx/*.log"
+        start_position => "beginning"
+      }
+    }
+    filter {
+      mutate {
+        add_field => { "pod_name" => "${POD_NAME}" }
+      }
+    }
+    output {
+      elasticsearch {
+        hosts => ["http://172.27.0.3:30000"]
+        user => "elastic"
+        password => "elastic"
+        index => "nginx-logs"
+      }
+    }
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx-web-service
+  namespace: nginx
+spec:
+  selector:
+    app: nginx-web
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+  type: NodePort
