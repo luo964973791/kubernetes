@@ -96,6 +96,7 @@ check_and_install_commands() {
     install_command tcpdump tcpdump
     install_command tar tar
     install_command wget wget
+    install_command telnet telnet
 }
 
 # 主函数
