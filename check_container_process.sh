@@ -128,6 +128,7 @@ main() {
 
     # 使用 nsenter 进入网络命名空间并运行 netstat
     log_info "pid: $pid"
+    log_info "Executed command: nsenter -t \"$pid\" -n netstat -tunlp"
     nsenter -t "$pid" -n netstat -tunlp
 }
 
