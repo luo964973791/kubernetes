@@ -84,8 +84,6 @@ get_container_pid() {
         log_error "Neither Docker nor containerd is running."
         exit 1
     fi
-
-    echo "$pid"
 }
 
 # 函数：检查并安装必要的命令
