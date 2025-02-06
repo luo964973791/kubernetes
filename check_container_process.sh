@@ -95,6 +95,7 @@ check_and_install_commands() {
     install_command netstat net-tools
     install_command tcpdump tcpdump
     install_command tar tar
+    install_command wget wget
 }
 
 # 主函数
