@@ -16,7 +16,7 @@ print_yellow() {
 }
 
 # 提示用户确认操作
-print_yellow "此操作将格式化除 sda 和 vda 之外的所有磁盘，数据将不可恢复。"
+print_yellow "此操作将格式化除sda vda sr0之外的所有磁盘，数据将不可恢复。"
 echo -e "\e[01;32m是否确定要继续？输入 'y' 确认，输入 'n' 退出: \e[01;00m\c"
 read -r confirm
 
