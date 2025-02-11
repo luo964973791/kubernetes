@@ -40,6 +40,7 @@ clear_device() {
             print_green "/dev/$device 上的数据已成功清空。"
         else
             print_red "清空 /dev/$device 上的数据失败。"
+            exit 1
         fi
     fi
 }
