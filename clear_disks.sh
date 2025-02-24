@@ -86,7 +86,7 @@ clear_device() {
 # run_shellcheck
 
 # 获取除 sda vda sr0之外的所有块设备列表
-devices=$(lsblk -dno NAME | grep -vE 'sda|vda|sr0' |awk '{print $1}')
+devices=$(lsblk -dno NAME | grep -vE 'sda|vda|vda|sr0' |awk '{print $1}')
 
 # 遍历每个设备并清空数据
 for device in $devices; do
