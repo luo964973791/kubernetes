@@ -67,6 +67,7 @@ clear_device() {
         cat /etc/fstab
     else
         print_red "清空 /dev/$device 上的数据失败。"
+        exit 1
     fi
 }
 
