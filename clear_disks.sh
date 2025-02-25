@@ -29,8 +29,10 @@ fi
 # 清空指定设备数据的函数
 clear_device() {
     local device=$1
-    local MOUNTPOINT=$(lsblk -no MOUNTPOINT /dev/"$device")
-    local UUID=$(blkid -s UUID -o value /dev/"$device")
+    local MOUNTPOINT
+    MOUNTPOINT=$(lsblk -no MOUNTPOINT /dev/"$device")
+    local UUID
+    UUID=$(blkid -s UUID -o value /dev/"$device")
     print_green "正在清空 /dev/$device 上的数据..."
 
     if [[ -n "$MOUNTPOINT" ]]; then
@@ -64,13 +66,7 @@ clear_device() {
         print_green "/dev/$device 上的数据已成功清空,请再次检查/etc/fstab文件是否清除干净,再三确认/etc/fstab文件没有问题以后,重启服务器"
         cat /etc/fstab
     else
-        # 检查是否是因为设备空间不足导致的错误
-        if [ $? -eq 1 ]; then
-            print_green "/dev/$device 上的数据已成功清空"
-        else
-            print_red "清空 /dev/$device 上的数据失败。"
-            exit 1
-        fi
+        print_red "清空 /dev/$device 上的数据失败。"
     fi
 }
 
