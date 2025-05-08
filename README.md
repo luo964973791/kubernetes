@@ -88,7 +88,7 @@ wipe -rfi /dev/sdb #快速清空SATA磁盘数据至裸盘.
 ./arcconf GETCONFIG 1 LD  #硬raid查看信息.
 ./storcli /c0/vall show all | grep -E "RAID|Onln" #硬raid查看信息.
 jmap -heap $pid    #查看应用占用的cpu mem信息
-awk -v a="node-" '{print a$1}' demo.txt  |sed 's/\./-/g'    #批量更改主机名
+hostnamectl set-hostname $(hostname -I | awk "{print \"node-\"\$1}" | sed "s/\./-/g")    #批量更改主机名
 https://github.com/kubernetes-sigs/kubespray/blob/master/docs/mirror.md #KubeSpray 也支持 国内镜像加速了。
 tcpdump -i any port 80 -s0 -A    #抓包命令
 if [[ $(kubectl get pod -A | grep 0/1 | awk '{print $1,$2}' | wc -l) -gt 0 ]]; then kubectl get pod -A | grep 0/1 | awk '{print $1,$2}' | while read -r pod namespace; do kubectl delete pod "$namespace" -n "$pod"; done; fi  #删除异常的pod.
