@@ -22,6 +22,7 @@ info()
     echo_yellow "box                 Examples: k box"
     echo_yellow "exec                Examples: k exec kube-system  nodelocaldns sh/orbash"
     echo_yellow "cm                  Examples: k cm  metallb-system config"
+    echo_yellow "edit_cm             Examples: k edit_cm kube-system coredns"
     echo_yellow "sc                  Examples: k sc  metallb-system   memberlist"
     echo_yellow "scale               Examples: k scale  kube-system coredns 3"
     echo_yellow "etcdbak             Examples: k etcdbak https://{etcd-server}:2379"
@@ -233,6 +234,48 @@ delete_pod() {
     kubectl get pod -A | grep -Ev 'NAME|1/1|2/2|3/3|Completed' | awk '{print $1,$2}' | xargs -L1 kubectl delete pod -n
 }
 
+k8s_cm_edit()
+{
+    check_binary kubectl
+    if [[ -n $1 && -n $2 ]];then
+        local temp_file="/tmp/${2}.yaml"
+
+        # Export current ConfigMap to a temporary file
+        kubectl get configmap -n "$1" "$2" -o yaml | \
+        grep -v "kubectl.kubernetes.io/last-applied-configuration" | \
+        grep -v "creationTimestamp" | \
+        grep -v "resourceVersion" | \
+        grep -v "uid" > "$temp_file"
+        
+        if [ $? -ne 0 ]; then
+            echo_red "Failed to get ConfigMap $2"
+            return 1
+        fi
+
+        # Open the file in the default editor
+        ${EDITOR:-vi} "$temp_file"
+
+        # Replace the ConfigMap
+        echo_yellow "Updating ConfigMap..."
+        kubectl replace -f "$temp_file"
+        local replace_status=$?
+        
+        # Clean up
+        rm -f "$temp_file"
+        
+        if [ $replace_status -eq 0 ]; then
+            echo_green "Edit Configmap success"
+            return 0
+        else
+            echo_red "Failed to update ConfigMap"
+            return 1
+        fi
+    else
+        echo_red "Check configmap edit The first and second parameter is not present!"
+        info
+        exit 1
+    fi
+}
 
 IN=$1
 case $IN in
@@ -244,6 +287,9 @@ case $IN in
         ;;
     cm)
         k8s_cm "$2" "$3"
+        ;;
+    edit_cm)
+        k8s_cm_edit "$2" "$3"
         ;;
     exec)
         exec_pod "$2" "$3" "$4"
