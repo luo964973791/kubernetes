@@ -231,8 +231,12 @@ k8s_cm_edit()
         grep -v "kubectl.kubernetes.io/last-applied-configuration" | \
         grep -v "creationTimestamp" | \
         grep -v "resourceVersion" | \
-        grep -v "uid" > "$temp_file"
-        
+        grep -v "uid" | \
+        grep -v "selfLink" | \
+        grep -v "generation" | \
+        grep -v "managedFields" | \
+        grep -v "annotations" > "$temp_file" 
+       
         if [ $? -ne 0 ]; then
             echo_red "Failed to get ConfigMap $2"
             return 1
