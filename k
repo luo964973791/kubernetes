@@ -1,22 +1,18 @@
 #!/bin/bash
 
-echo_green()
-{
+echo_green() {
     echo -e "\e[01;32m$(date "+%Y-%m-%d %H:%M:%S") [INFO] $*\e[01;00m"
 }
 
-echo_red()
-{
+echo_red() {
     echo -e "\e[01;31m$(date "+%Y-%m-%d %H:%M:%S") [ERROR] $*\e[01;00m"
 }
 
-echo_yellow()
-{
+echo_yellow() {
     echo -e "\e[01;33m$(date "+%Y-%m-%d %H:%M:%S") [Warning] $*\e[01;00m"
 }
 
-info()
-{
+info() {
     echo_yellow "Please refer to the following examples for implementation!"
     echo_yellow "e                   Examples: source k e 192.168.100.135"
     echo_yellow "box                 Examples: k box"
@@ -32,8 +28,7 @@ info()
     echo_yellow "del                 Examples: k del"
 }
 
-check_binary()
-{
+check_binary() {
     if ! command -v "$1" &> /dev/null; then
         echo_red "ERROR" "$1 binary file not be found. Installing..."
         
@@ -59,8 +54,7 @@ pod_api()
     echo_green "Logouts to pod successful!"
 }
 
-exec_pod()
-{
+exec_pod() {
     check_binary kubectl
     if [[ -n $1 && -n $2 && -n $3 ]];then
         num=no
@@ -91,8 +85,7 @@ exec_pod()
     fi
 }
 
-use_http_proxy()
-{
+use_http_proxy() {
     if [[ -n $2 ]];then
         export https_proxy=http://$2:7890/
         local cmd_proxy=$?
@@ -109,8 +102,7 @@ use_http_proxy()
     fi
 }
 
-busybox()
-{
+busybox() {
     check_binary kubectl
     kubectl run dns-test -it --rm --image=busybox:1.28.3 -- sh
     local busybox_res=$?
@@ -122,8 +114,7 @@ busybox()
     return 1
 }
 
-k8s_cm()
-{
+k8s_cm() {
     check_binary kubectl
     if [[ -n $1 && -n $2 ]];then
         kubectl get cm -n "$1" "$2" --output="go-template={{ range \$k,\$v := .data}}{{ printf \"%s: \" \$k }}{{ if not \$v }}{{ \$v }}{{ else }}{{ \$v }}{{ end }}{{ "'"\n"'" }}{{ end }}" 
@@ -141,8 +132,7 @@ k8s_cm()
     fi
 }
 
-k8s_secret()
-{
+k8s_secret() {
     check_binary kubectl
     if [[ -n $1 && -n $2 ]];then
         kubectl get secret -n "$1" "$2" --output="go-template={{ range \$k,\$v := .data}}{{ printf \"%s: \" \$k }}{{ if not \$v }}{{ \$v }}{{ else }}{{ \$v | base64decode }}{{ end }}{{ "'"\n"'" }}{{ end }}"
@@ -160,8 +150,7 @@ k8s_secret()
     fi
 }
 
-k8s_scale()
-{
+k8s_scale() {
     check_binary kubectl
     if [[ -n $1 && -n $2 && -n $3 ]];then
         kubectl scale deployments -n "$1" "$2" --replicas="$3"
@@ -179,8 +168,7 @@ k8s_scale()
     fi
 }
 
-etcd_bak()
-{
+etcd_bak() {
     local leader
     local res
     leader=$(ETCDCTL_API=3 etcdctl --endpoints="$1" --cacert=/etc/ssl/etcd/ssl/ca.pem --cert=/etc/ssl/etcd/ssl/member-node1.pem --key=/etc/ssl/etcd/ssl/member-node1-key.pem endpoint status --write-out table | grep true | awk '{print $2}')
@@ -194,8 +182,7 @@ etcd_bak()
     echo_green "Backup of etcd data successful!"
 }
 
-nsenter_cmd()
-{
+nsenter_cmd() {
     if  [[ $(systemctl status kubelet | grep -q "dockerd.sock") -eq 0 ]]; then
         res=$(docker inspect -f "{{.State.Pid}}" "$1")
         nsenter -n --target "$res"
@@ -208,8 +195,7 @@ nsenter_cmd()
 }
 
 
-kubeadm_ssl()
-{
+kubeadm_ssl() {
     [[ $(kubeadm certs check-expiration >/dev/null 2>&1) -eq 0 ]] || {
         echo_red "Query certificate validity failure!"
     }
