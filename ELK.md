@@ -1,5 +1,5 @@
 ```shell
-[root@node1 tasks]# grep -vE '^\s*$|^\s*#' /etc/filebeat/filebeat.yml
+[root@node1 ~]# grep -vE '^\s*$|^\s*#' /etc/filebeat/filebeat.yml
 filebeat.inputs:
 - type: log
   enabled: true
