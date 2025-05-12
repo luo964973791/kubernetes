@@ -4,7 +4,7 @@
 
 ### 1.1 安装nodejs
 
-nodejs官方下载地址：https://nodejs.org/
+nodejs官方下载地址：https://nodejs.org
 
 下载linux64位：
 
