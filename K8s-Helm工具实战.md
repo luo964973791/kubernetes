@@ -38,15 +38,15 @@ https://github.com/helm/helm
 
 ```shell
 [root@k8s-master software]# pwd
-/root/software 
-[root@k8s-master software]# wget https://get.helm.sh/helm-v2.16.9-linux-amd64.tar.gz 
-[root@k8s-master software]# 
+/root/software
+[root@k8s-master software]# wget https://get.helm.sh/helm-v2.16.9-linux-amd64.tar.gz
+[root@k8s-master software]#
 [root@k8s-master software]# tar xf helm-v2.16.9-linux-amd64.tar.gz
 [root@k8s-master software]# ll
 total 12624
 -rw-r--r-- 1 root root 12926032 Jun 16 06:55 helm-v3.2.4-linux-amd64.tar.gz
 drwxr-xr-x 2 3434 3434       50 Jun 16 06:55 linux-amd64
-[root@k8s-master software]# 
+[root@k8s-master software]#
 [root@k8s-master software]# cp -a linux-amd64/helm /usr/bin/helm
 ```
 
@@ -55,7 +55,7 @@ drwxr-xr-x 2 3434 3434       50 Jun 16 06:55 linux-amd64
 ```shell
 [root@k8s-master helm]# pwd
 /root/k8s_practice/helm
-[root@k8s-master helm]# 
+[root@k8s-master helm]#
 [root@k8s-master helm]# cat rbac-helm.yaml
 apiVersion: v1
 kind: ServiceAccount
@@ -75,8 +75,8 @@ subjects:
 - kind: ServiceAccount
   name: tiller
   namespace: kube-system
-[root@k8s-master helm]# 
-[root@k8s-master helm]# kubectl apply -f rbac-helm.yaml 
+[root@k8s-master helm]#
+[root@k8s-master helm]# kubectl apply -f rbac-helm.yaml
 serviceaccount/tiller created
 clusterrolebinding.rbac.authorization.k8s.io/tiller created
 ```
@@ -97,7 +97,7 @@ tiller-deploy-8488d98b4c-j8txs       0/1     Pending   0          38m     <none>
 
 ```shell
 [root@k8s-master helm]# helm init --upgrade --tiller-image registry.cn-beijing.aliyuncs.com/google_registry/tiller:v2.16.9
-[root@k8s-master helm]# 
+[root@k8s-master helm]#
 ### 等待一会儿后
 [root@k8s-master helm]# kubectl get pod -o wide -A | grep 'till'
 kube-system    tiller-deploy-7b7787d77-zln6t    1/1     Running   0    8m43s   10.244.4.123   k8s-node01   <none>    <none>
@@ -140,8 +140,8 @@ helm默认使用的charts源地址
 
 ```shell
 [root@k8s-master templates]# helm repo list
-NAME  	URL                                            
-local 	http://127.0.0.1:8879/charts                   
+NAME  	URL
+local 	http://127.0.0.1:8879/charts
 stable	https://kubernetes-charts.storage.googleapis.com
 ```
 
@@ -221,7 +221,7 @@ Error: no repositories to show
 
 [root@k8s-master ~]# helm repo add stable https://kubernetes.oss-cn-hangzhou.aliyuncs.com/charts
 [root@k8s-master ~]# helm repo update     #更新源
-[root@k8s-master ~]# helm repo list       #列出源地址   
+[root@k8s-master ~]# helm repo list       #列出源地址
 ```
 
 #### helm常见应用操作
@@ -265,7 +265,7 @@ verify：验证位于给定路径的chart已被签名且有效
 ```shell
 [root@k8s-master my-test-app]# pwd
 /root/helm/my-test-app
-[root@k8s-master my-test-app]# cat Chart.yaml 
+[root@k8s-master my-test-app]# cat Chart.yaml
 apiVersion: v1
 appVersion: v2.2
 description: my test app
@@ -278,18 +278,18 @@ maintainers:
 name: my-test-app
 version: v1.0.0
 
-[root@k8s-master my-test-app]# cat values.yaml 
+[root@k8s-master my-test-app]# cat values.yaml
 deployname: my-test-app02
 replicaCount: 2
 images:
   repository: httpd
   tag: latest
-  
+
 [root@k8s-master my-test-app]# ll templates/
 总用量 8
 -rw-r--r--. 1 root root 543 9月  24 09:27 deployment.yaml
 
-[root@k8s-master my-test-app]# cat templates/deployment.yaml 
+[root@k8s-master my-test-app]# cat templates/deployment.yaml
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -315,8 +315,8 @@ spec:
         imagePullPolicy: IfNotPresent
         ports:
           - containerPort: 80
-          
-[root@k8s-master my-test-app]# cat templates/service.yaml 
+
+[root@k8s-master my-test-app]# cat templates/service.yaml
 apiVersion: v1
 kind: Service
 metadata:
@@ -468,7 +468,7 @@ docker pull registry.cn-beijing.aliyuncs.com/google_registry/${kibana_image}
 docker tag  registry.cn-beijing.aliyuncs.com/google_registry/${kibana_image} docker.elastic.co/kibana/${kibana_image}
 docker rmi  registry.cn-beijing.aliyuncs.com/google_registry/${kibana_image}
 
-[root@k8s-master ~]# chmod +x download_efk_image.sh 
+[root@k8s-master ~]# chmod +x download_efk_image.sh
 [root@k8s-master ~]# ./download_efk_image.sh
 ```
 
@@ -495,7 +495,7 @@ namespace/efk created
 
 #先看下这里使用的helm的源，后续的下载，我都使用的此源，暂时可用；
 [root@k8s-master efk]# helm repo list
-NAME    URL                                            
+NAME    URL
 stable  https://burdenbear.github.io/kube-charts-mirror
 
 [root@k8s-master efk]# helm search repo stable/elasticsearch
@@ -541,8 +541,8 @@ data:
     enabled: false # 没有多余的PVC，因此从true改为false
     accessMode: ReadWriteOnce
     name: data
-    
-# 修改配置文件2   
+
+# 修改配置文件2
 [root@k8s-master efk]# vim elasticsearch/templates/client-deployment.yaml
 apiVersion: apps/v1  # 从 apps/v1beta1 改为 apps/v1
 kind: Deployment
@@ -648,7 +648,7 @@ ES以statefulset的类型部署，主要是它会有1个唯一不变的域名标
 ```shell
 [root@k8s-master test]# pwd
 /root/k8s_practice/test
-[root@k8s-master test]# cat myapp_demo.yaml 
+[root@k8s-master test]# cat myapp_demo.yaml
 apiVersion: v1
 kind: Pod
 metadata:
@@ -775,7 +775,7 @@ chart下载与配置修改
 ![image-20210924170334469](assets/image-20210924170334469.png)
 
 ```shell
-[root@k8s-master efk]# tar xf kibana-3.2.7.tgz 
+[root@k8s-master efk]# tar xf kibana-3.2.7.tgz
 ```
 
 ![image-20210924170412901](assets/image-20210924170412901.png)
@@ -798,7 +798,7 @@ service:
 
 
 # 配置修改2
-[root@k8s-master efk]# vim kibana/templates/deployment.yaml 
+[root@k8s-master efk]# vim kibana/templates/deployment.yaml
 apiVersion: apps/v1   # 从 apps/v1beta1 改为 apps/v1
 kind: Deployment
 metadata:
@@ -882,4 +882,3 @@ http://192.168.153.147:30601
 ![image-20210924171301687](assets/image-20210924171301687.png)
 
 大功告成！！！！
-

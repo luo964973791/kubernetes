@@ -150,7 +150,7 @@ mkdir -p /data/disks
 DISK_UUID=$(blkid -s UUID -o value /dev/sdb)
 sudo mkdir /data/disks/$DISK_UUID
 sudo mount -t xfs /dev/sdb /data/disks/$DISK_UUID
-echo UUID=`sudo blkid -s UUID -o value /dev/sdb` /data/disks/$DISK_UUID xfs defaults 0 2 | sudo tee -a /etc/fstab   
+echo UUID=`sudo blkid -s UUID -o value /dev/sdb` /data/disks/$DISK_UUID xfs defaults 0 2 | sudo tee -a /etc/fstab
 #####
 
 local_volume_provisioner_enabled: true
@@ -181,8 +181,8 @@ spec:
   resources:
     requests:
       storage: 1Gi
-	  
-	  
+
+
 kind: Pod
 apiVersion: v1
 metadata:

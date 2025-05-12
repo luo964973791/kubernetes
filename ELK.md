@@ -20,8 +20,8 @@ cat <<EOF | tee -a /etc/logstash/conf.d/linux.conf
 input {
     kafka {
         bootstrap_servers => "172.27.0.7:9092"
-        auto_offset_reset => "latest" 
-        consumer_threads => 1 
+        auto_offset_reset => "latest"
+        consumer_threads => 1
         decorate_events => true
         topics => ["172-27-0-6-log"]
         codec => "json"
@@ -63,7 +63,7 @@ output {
         password => "elastic"
         index => "172-27-0-6-log"
         ssl => false
-    }  
+    }
 }
 EOF
 ```

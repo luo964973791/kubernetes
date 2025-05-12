@@ -6,13 +6,13 @@
 # @Author  : ukec
 # @File    : check.sh
 ################################################################
-red() 
+red()
 {
     currentTime=$(date "+%Y-%m-%d %H:%M:%S")
     echo -e "\033[31m$currentTime    $1    $2\033[0m" >&2
 }
 
-green() 
+green()
 {
     currentTime=$(date "+%Y-%m-%d %H:%M:%S")
     echo -e "\033[32m$currentTime    $1    $2\033[0m" >&2
@@ -62,7 +62,7 @@ check_selinux()
     fi
 }
 
-check_os() 
+check_os()
 {
     if [ -f /etc/redhat-release ]; then
         version=$(awk '{print $4}' < /etc/redhat-release |cut -d '.' -f1-2)

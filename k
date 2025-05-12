@@ -31,7 +31,7 @@ info() {
 check_binary() {
     if ! command -v "$1" &> /dev/null; then
         echo_red "ERROR" "$1 binary file not be found. Installing..."
-        
+
         # 使用 yum 安装
         sudo yum install -y "$1"
 
@@ -47,9 +47,9 @@ check_binary() {
 
 pod_api()
 {
-    [[ $? -eq 0 ]] || { 
+    [[ $? -eq 0 ]] || {
         echo_red "Failure to login in to pod!"
-        exit 1 
+        exit 1
     }
     echo_green "Logouts to pod successful!"
 }
@@ -117,7 +117,7 @@ busybox() {
 k8s_cm() {
     check_binary kubectl
     if [[ -n $1 && -n $2 ]];then
-        kubectl get cm -n "$1" "$2" --output="go-template={{ range \$k,\$v := .data}}{{ printf \"%s: \" \$k }}{{ if not \$v }}{{ \$v }}{{ else }}{{ \$v }}{{ end }}{{ "'"\n"'" }}{{ end }}" 
+        kubectl get cm -n "$1" "$2" --output="go-template={{ range \$k,\$v := .data}}{{ printf \"%s: \" \$k }}{{ if not \$v }}{{ \$v }}{{ else }}{{ \$v }}{{ end }}{{ "'"\n"'" }}{{ end }}"
         local cm_shell=$?
         if [[ $cm_shell -eq 0 ]];then
             echo_green "View Configmap success"
@@ -174,10 +174,10 @@ etcd_bak() {
     leader=$(ETCDCTL_API=3 etcdctl --endpoints="$1" --cacert=/etc/ssl/etcd/ssl/ca.pem --cert=/etc/ssl/etcd/ssl/member-node1.pem --key=/etc/ssl/etcd/ssl/member-node1-key.pem endpoint status --write-out table | grep true | awk '{print $2}')
     ETCDCTL_API=3 etcdctl --endpoints="$leader"  --cert="/etc/ssl/etcd/ssl/member-node1.pem"  --key="/etc/ssl/etcd/ssl/member-node1-key.pem"  --cacert="/etc/ssl/etcd/ssl/ca.pem"   snapshot save /tmp/snap-"$(date +%Y%m%d%H%M)".db >/dev/null 2>&1
     res=$?
-    [[ $res -eq 0 ]] || { 
+    [[ $res -eq 0 ]] || {
         echo_red "Backup of etcd data failed!"
-        #mail_api "$(date "+%Y-%m-%d %H:%M:%S")" [ERROR] crontab定时任务备份etcd数据失败"  #邮箱api接口  
-        exit 1 
+        #mail_api "$(date "+%Y-%m-%d %H:%M:%S")" [ERROR] crontab定时任务备份etcd数据失败"  #邮箱api接口
+        exit 1
     }
     echo_green "Backup of etcd data successful!"
 }
@@ -235,8 +235,8 @@ k8s_cm_edit()
         grep -v "selfLink" | \
         grep -v "generation" | \
         grep -v "managedFields" | \
-        grep -v "annotations" > "$temp_file" 
-       
+        grep -v "annotations" > "$temp_file"
+
         if [ $? -ne 0 ]; then
             echo_red "Failed to get ConfigMap $2"
             return 1
@@ -249,10 +249,10 @@ k8s_cm_edit()
         echo_yellow "Updating ConfigMap..."
         kubectl replace -f "$temp_file"
         local replace_status=$?
-        
+
         # Clean up
         rm -f "$temp_file"
-        
+
         if [ $replace_status -eq 0 ]; then
             echo_green "Edit Configmap success"
             return 0

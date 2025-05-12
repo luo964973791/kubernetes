@@ -79,7 +79,7 @@ Swap:             0           0           0
 这里我们拉去的虽然是aliyun的镜像，但是还是要将tag改为kobeadm能识别到的镜像名字；否则kobeadm初始化的时候，由于镜像名字不对，会识别不到；
 
 ```shell
-# cat dockerPull.sh 
+# cat dockerPull.sh
 docker pull registry.cn-hangzhou.aliyuncs.com/google_containers/kube-controller-manager:v1.22.2
 docker pull registry.cn-hangzhou.aliyuncs.com/google_containers/kube-proxy:v1.22.2
 docker pull registry.cn-hangzhou.aliyuncs.com/google_containers/kube-apiserver:v1.22.2
@@ -90,7 +90,7 @@ docker pull registry.cn-hangzhou.aliyuncs.com/google_containers/pause:3.5
 ```
 
 ```shell
-# cat dockerTag.sh 
+# cat dockerTag.sh
 docker tag registry.cn-hangzhou.aliyuncs.com/google_containers/kube-controller-manager:v1.22.2 k8s.gcr.io/kube-controller-manager:v1.22.2
 docker tag registry.cn-hangzhou.aliyuncs.com/google_containers/kube-proxy:v1.22.2 k8s.gcr.io/kube-proxy:v1.22.2
 docker tag registry.cn-hangzhou.aliyuncs.com/google_containers/kube-apiserver:v1.22.2 k8s.gcr.io/kube-apiserver:v1.22.2
@@ -124,7 +124,7 @@ EOF
 # yum install -y kubelet kubeadm kubectl ipvsadm  #注意，这样默认是下载最新版本v1.22.2
 ======================================================================
 #如果你想下载旧版本，后面要跟上指定的版本号。
-[root@k8s-master ~]# yum install -y kubelet-1.17.4-0.x86_64 kubeadm-1.17.4-0.x86_64 kubectl-1.17.4-0.x86_64 ipvsadm  
+[root@k8s-master ~]# yum install -y kubelet-1.17.4-0.x86_64 kubeadm-1.17.4-0.x86_64 kubectl-1.17.4-0.x86_64 ipvsadm
 
 2.加载ipvs相关内核模块
 如果重新开机，需要重新加载（可以写在 /etc/rc.local 中开机自动加载）
@@ -134,7 +134,7 @@ EOF
 # modprobe ip_vs_sh
 # modprobe nf_conntrack_ipv4
 3.编辑文件添加开机启动
-# vim /etc/rc.local 
+# vim /etc/rc.local
 # chmod +x /etc/rc.local
 
 4.配置：
@@ -154,9 +154,9 @@ EOF
 
 7.查看是否加载成功
 # lsmod | grep ip_vs
-ip_vs_sh               12688  0 
-ip_vs_wrr              12697  0 
-ip_vs_rr               12600  0 
+ip_vs_sh               12688  0
+ip_vs_wrr              12697  0
+ip_vs_rr               12600  0
 ip_vs                 141092  6 ip_vs_rr,ip_vs_sh,ip_vs_wrr
 nf_conntrack          133387  2 ip_vs,nf_conntrack_ipv4
 libcrc32c              12644  3 xfs,ip_vs,nf_conntrack
@@ -284,7 +284,7 @@ k8s-master   NotReady   master   2m41s   v1.22.2
         - --kube-subnet-mgr
         - --iface=ens33
         - --iface=eth0
-        
+
 ⚠️⚠️⚠️--iface=ens33 的值，是你当前的网卡,或者可以指定多网卡
 
 # 1.12版本的kubeadm额外给node1节点设置了一个污点(Taint)：node.kubernetes.io/not-ready:NoSchedule，
@@ -485,7 +485,7 @@ kubeadm token create $token --print-join-command --ttl=0
 所需镜像：
 
 ```
-[root@k8s-master ~]# cat dockpullImages1.18.1.sh 
+[root@k8s-master ~]# cat dockpullImages1.18.1.sh
 #!/bin/bash
 ##所需要的镜像名字
 #k8s.gcr.io/kube-apiserver:v1.18.1

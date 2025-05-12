@@ -1,4 +1,4 @@
-​	
+​
 
 # 容器编排之战
 
@@ -16,11 +16,11 @@ Borg是谷歌内部使用的大规模集群管理系统，基于容器技术，�
 容器编排引擎三足鼎立：
 
     Mesos
-    
+
     Docker Swarm+compose
-    
+
     Kubernetes
-早在 2015 年 5 月，Kubernetes 在 Google 上的搜索热度就已经超过了 Mesos 和 Docker Swarm，从那儿之后更是一路飙升，将对手甩开了十几条街,容器编排引擎领域的三足鼎立时代结束。 
+早在 2015 年 5 月，Kubernetes 在 Google 上的搜索热度就已经超过了 Mesos 和 Docker Swarm，从那儿之后更是一路飙升，将对手甩开了十几条街,容器编排引擎领域的三足鼎立时代结束。
 
 ![1584845556532](assets/1584845556532.png)
 
@@ -39,16 +39,16 @@ Google 的数据中心里运行着超过 20 亿个容器，而且 Google 十年�
 
 Borg 系统，一直以来都被誉为 Google 公司内部最强大的"秘密武器"。虽然略显夸张，但这个说法倒不算是吹牛。
 
- 
+
 因为，相比于 Spanner、BigTable 等相对上层的项目，Borg 要承担的责任，是承载 Google 公司整个基础设施的核心依赖。在 Google 公司已经公开发表的基础设施体系论文中，Borg 项目当仁不让地位居整个基础设施技术栈的最底层。
 
- 
+
 由于这样的定位，Borg 可以说是 Google 最不可能开源的一个项目。而幸运地是，得益于 Docker 项目和容器技术的风靡，它却终于得以以另一种方式与开源社区见面，这个方式就是 Kubernetes 项目。
 
- 
+
 所以，相比于"小打小闹"的 Docker 公司、"旧瓶装新酒"的 Mesos 社区，Kubernetes 项目从一开始就比较幸运地站上了一个他人难以企及的高度：在它的成长阶段，这个项目每一个核心特性的提出，几乎都脱胎于 Borg/Omega 系统的设计与经验。更重要的是，这些特性在开源社区落地的过程中，又在整个社区的合力之下得到了极大的改进，修复了很多当年遗留在 Borg 体系中的缺陷和问题。
 
- 
+
 所以，尽管在发布之初被批评是"曲高和寡"，但是在逐渐觉察到 Docker 技术栈的"稚嫩"和 Mesos 社区的"老迈"之后，这个社区很快就明白了：k8s 项目在 Borg 体系的指导下，体现出了一种独有的"先进性"与"完备性"，而这些特质才是一个基础设施领域开源项目赖以生存的核心价值。
 ```
 
@@ -64,25 +64,25 @@ Borg 系统，一直以来都被誉为 Google 公司内部最强大的"秘密武
 
 ​     一个由 Namespace+Cgroups 构成的隔离环境，这一部分称为"容器运行时"（Container Runtime）
 
- 
+
 
 作为一名开发者，其实并不关心容器运行时的差异。在整个"开发 - 测试 - 发布"的流程中，真正承载着容器信息进行传递的，是容器镜像，而不是容器运行时。
 
 这正是容器技术圈在 Docker 项目成功后不久，就迅速走向了"容器编排"这个"上层建筑"的主要原因：作为一家云服务商或者基础设施提供商，我只要能够将用户提交的 Docker 镜像以容器的方式运行起来，就能成为这个非常热闹的容器生态图上的一个承载点，从而将整个容器技术栈上的价值，沉淀在我的这个节点上。
 
- 
+
 
 更重要的是，只要从这个承载点向 Docker 镜像制作者和使用者方向回溯，整条路径上的各个服务节点，比如 CI/CD、监控、安全、网络、存储等等，都有可以发挥和盈利的余地。这个逻辑，正是所有云计算提供商如此热衷于容器技术的重要原因：通过容器镜像，它们可以和潜在用户（即，开发者）直接关联起来。
 
- 
+
 
 从一个开发者和单一的容器镜像，到无数开发者和庞大的容器集群，容器技术实现了从"容器"到"容器云"的飞跃，标志着它真正得到了市场和生态的认可。
 
- 
+
 
 这样，容器就从一个开发者手里的小工具，一跃成为了云计算领域的绝对主角；而能够定义容器组织和管理规范的"容器编排"技术，则当仁不让地坐上了容器技术领域的"头把交椅"。
 
-最具代表性的容器编排工具：	
+最具代表性的容器编排工具：
 
 ​    1. Docker 公司的 Compose+Swarm 组合
 
@@ -94,41 +94,41 @@ Docker 公司发布 Swarm 项目
 
 ​    Docker 公司在 2014 年发布 Swarm 项目. 一个有意思的事实：虽然通过"容器"这个概念完成了对经典 PaaS 项目的"降维打击"，但是 Docker 项目和 Docker 公司，兜兜转转了一年多，却还是回到了 PaaS 项目原本深耕多年的那个战场：如何让开发者把应用部署在我的项目上。
 
- 
+
 
 ​    Docker 项目从发布之初就全面发力，从技术、社区、商业、市场全方位争取到的开发者群体，实际上是为此后吸引整个生态到自家"PaaS"上的一个铺垫。只不过这时，"PaaS"的定义已经全然不是 Cloud Foundry 描述的那个样子，而是变成了一套以 Docker 容器为技术核心，以 Docker 镜像为打包标准的、全新的"容器化"思路。
 
- 
+
 
 ​    这正是 Docker 项目从一开始悉心运作"容器化"理念和经营整个 Docker 生态的主要目的。
 
- 
+
 
 Docker 公司在 Docker 项目已经取得巨大成功后，执意要重新走回 PaaS 之路的原因：
 
 ​    虽然 Docker 项目备受追捧，但用户们最终要部署的，还是他们的网站、服务、数据库，甚至是云计算业务。只有那些能够为用户提供平台层能力的工具，才会真正成为开发者们关心和愿意付费的产品。而 Docker 项目这样一个只能用来创建和启停容器的小工具，最终只能充当这些平台项目的"幕后英雄"。
 
- 
+
 
 Docker 公司的老朋友和老对手 CoreOS:
 
 ​    CoreOS 是一个基础设施领域创业公司。 核心产品是一个定制化的操作系统，用户可以按照分布式集群的方式，管理所有安装了这个操作系统的节点。从而，用户在集群里部署和管理应用就像使用单机一样方便了。
 
- 
+
 
 Docker 项目发布后，CoreOS 公司很快就认识到可以把"容器"的概念无缝集成到自己的这套方案中，从而为用户提供更高层次的 PaaS 能力。所以，CoreOS 很早就成了 Docker 项目的贡献者，并在短时间内成为了 Docker 项目中第二重要的力量。
 
- 
+
 
 2014 年底，CoreOS 公司与 Docker 公司停止合作，并推出自己研制的 Rocket（后来叫 rkt）容器。
 
 原因是 Docker 公司对 Docker 项目定位的不满足。Docker 公司的解决方法是让 Docker 项目提供更多的平台层能力，即向 PaaS 项目进化。这与 CoreOS 公司的核心产品和战略发生了严重冲突。
 
- 
+
 
 Docker 公司在 2014 年就已经定好了平台化的发展方向，并且绝对不会跟 CoreOS 在平台层面开展任何合作。这样看来，Docker 公司在 2014 年 12 月的 DockerCon 上发布 Swarm 的举动，也就一点都不突然了。
 
- 
+
 
 CoreOS 项目：
 
@@ -142,25 +142,25 @@ Swarm 项目：
 
 ​        # docker run " 我的容器
 
- 
+
 
 ​    多机 Docker 项目：
 
 ​        # docker run -H " 我的 Swarm 集群 API 地址 " " 我的容器 "
 
- 
+
 
 在部署了 Swarm 的多机环境下，用户只需使用原先的 Docker 指令创建一个容器，这个请求就会被 Swarm 拦截下来处理，然后通过具体的调度算法找到一个合适的 Docker Daemon 运行起来。
 
- 
+
 
 这个操作方式简洁明了，对于已经了解过 Docker 命令行的开发者们也很容易掌握。所以，这样一个"原生"的 Docker 容器集群管理项目一经发布，就受到了已有 Docker 用户群的热捧。相比之下，CoreOS 的解决方案就显得非常另类，更不用说用户还要去接受完全让人摸不着头脑、新造的容器项目 rkt 了。
 
- 
+
 
 Swarm 项目只是 Docker 公司重新定义"PaaS"的关键一环。2014 年到 2015 年这段时间里，Docker 项目的迅速走红催生出了一个非常繁荣的"Docker 生态"。在这个生态里，围绕着 Docker 在各个层次进行集成和创新的项目层出不穷。
 
- 
+
 
 cncfFig 项目
 
@@ -168,7 +168,7 @@ cncfFig 项目
 
 ​    Fig 项目基本上只是靠两个人全职开发和维护的，可它却是当时 GitHub 上热度堪比 Docker 项目的明星。
 
- 
+
 
 ​    Fig 项目受欢迎的原因：
 
@@ -176,7 +176,7 @@ cncfFig 项目
 
 ​        "编排"（Orchestration）在云计算行业里不算是新词汇，主要是指用户如何通过某些工具或者配置来完成一组虚拟机以及关联资源的定义、配置、创建、删除等工作，然后由云计算平台按照这些指定的逻辑来完成的过程。
 
- 
+
 
 ​        容器时代，"编排"就是对 Docker 容器的一系列定义、配置和创建动作的管理。而 Fig 的工作实际上非常简单：假如现在用户需要部署的是应用容器 A、数据库容器 B、负载均衡容器 C，那么 Fig 就允许用户把 A、B、C 三个容器定义在一个配置文件中，并且可以指定它们之间的关联关系，比如容器 A 需要访问数据库容器 B。
 
@@ -186,7 +186,7 @@ cncfFig 项目
 
 ​         它成了 Docker 公司到目前为止第二大受欢迎的项目，一直到今天也依然被很多人使用。
 
- 
+
 
 当时的这个容器生态里，还有很多开源项目或公司。比如：
 
@@ -204,9 +204,9 @@ Mesos 社区独特的竞争力：
 
 ​     超大规模集群的管理经验
 
-​    Mesos 早已通过了万台节点的验证，2014 年之后又被广泛使用在 eBay 等大型互联网公司的生产环境中。    
+​    Mesos 早已通过了万台节点的验证，2014 年之后又被广泛使用在 eBay 等大型互联网公司的生产环境中。
 
-​    
+​
 
 ​    Mesos 是 Berkeley 主导的大数据套件之一，是大数据火热时最受欢迎的资源管理项目，也是跟 Yarn 项目杀得难舍难分的实力派选手。
 
@@ -214,25 +214,25 @@ Mesos 社区独特的竞争力：
 
 ​    但对于 Mesos 来说，天生的两层调度机制让它非常容易从大数据领域抽身，转而去支持受众更加广泛的 PaaS 业务。
 
- 
+
 
 ​    在这种思路指导下，Mesosphere 公司发布了一个名为 Marathon 的项目，这个项目很快就成为 Docker Swarm 的一个有力竞争对手。
 
 通过 Marathon 实现了诸如应用托管和负载均衡的 PaaS 功能之后，Mesos+Marathon 的组合实际上进化成了一个高度成熟的 PaaS 项目，同时还能很好地支持大数据业务。
 
- 
+
 
 ​    Mesosphere 公司提出"DC/OS"（数据中心操作系统）的口号和产品：
 
 ​        旨在使用户能够像管理一台机器那样管理一个万级别的物理机集群，并且使用 Docker 容器在这个集群里自由地部署应用。这对很多大型企业来说具有着非同寻常的吸引力。
 
- 
+
 
 这时的容器技术生态， CoreOS 的 rkt 容器完全打不开局面，Fleet 集群管理项目更是少有人问津，CoreOS 完全被 Docker 公司压制了。
 
 RedHat 也是因为对 Docker 公司平台化战略不满而愤愤退出。但此时，它竟只剩下 OpenShift 这个跟 Cloud Foundry 同时代的经典 PaaS 一张牌可以打，跟 Docker Swarm 和转型后的 Mesos 完全不在同一个"竞技水平"之上。
 
- 
+
 
 \~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -240,91 +240,91 @@ RedHat 也是因为对 Docker 公司平台化战略不满而愤愤退出。但�
 
 事实并非如此 下回分解
 
- 
+
 
 2014 年 6 月，基础设施领域的翘楚 Google 公司突然发力，正式宣告了一个名叫 Kubernetes 项目的诞生。这个项目，不仅挽救了当时的 CoreOS 和 RedHat，还如同当年 Docker 项目的横空出世一样，再一次改变了整个容器市场的格局。
 
- 
+
 
 这段时间，也正是 Docker 生态创业公司们的春天，大量围绕着 Docker 项目的网络、存储、监控、CI/CD，甚至 UI 项目纷纷出台，也涌现出了很多 Rancher、Tutum 这样在开源与商业上均取得了巨大成功的创业公司。
 
- 
+
 
 在 2014~2015 年间，整个容器社区可谓热闹非凡。
 
- 
+
 
 这令人兴奋的繁荣背后，却浮现出了更多的担忧。这其中最主要的负面情绪，是对 Docker 公司商业化战略的种种顾虑。
 
- 
+
 
 事实上，很多从业者也都看得明白，Docker 项目此时已经成为 Docker 公司一个商业产品。而开源，只是 Docker 公司吸引开发者群体的一个重要手段。不过这么多年来，开源社区的商业化其实都是类似的思路，无非是高不高调、心不心急的问题罢了。
 
- 
+
 
 而真正令大多数人不满意的是，Docker 公司在 Docker 开源项目的发展上，始终保持着绝对的权威和发言权，并在多个场合用实际行动挑战到了其他玩家（比如，CoreOS、RedHat，甚至谷歌和微软）的切身利益。
 
- 
+
 
 那么，这个时候，大家的不满也就不再是在 GitHub 上发发牢骚这么简单了。
 
- 
+
 
 相信很多容器领域的老玩家们都听说过，Docker 项目刚刚兴起时，Google 也开源了一个在内部使用多年、经历过生产环境验证的 Linux 容器：lmctfy（Let Me Container That For You）。
 
- 
+
 
 然而，面对 Docker 项目的强势崛起，这个对用户没那么友好的 Google 容器项目根本没有招架之力。所以，知难而退的 Google 公司，向 Docker 公司表示了合作的愿望：关停这个项目，和 Docker 公司共同推进一个中立的容器运行时（container runtime）库作为 Docker 项目的核心依赖。
 
- 
+
 
 不过，Docker 公司并没有认同这个明显会削弱自己地位的提议，还在不久后，自己发布了一个容器运行时库 Libcontainer。这次匆忙的、由一家主导的、并带有战略性考量的重构，成了 Libcontainer 被社区长期诟病代码可读性差、可维护性不强的一个重要原因。
 
- 
+
 
 至此，Docker 公司在容器运行时层面上的强硬态度，以及 Docker 项目在高速迭代中表现出来的不稳定和频繁变更的问题，开始让社区叫苦不迭。
 
- 
+
 
 这种情绪在 2015 年达到了一个高潮，容器领域的其他几位玩家开始商议"切割"Docker 项目的话语权。而"切割"的手段也非常经典，那就是成立一个中立的基金会。
 
- 
+
 
 于是，2015 年 6 月 22 日，由 Docker 公司牵头，CoreOS、Google、RedHat 等公司共同宣布，Docker 公司将 Libcontainer 捐出，并改名为 RunC 项目，交由一个完全中立的基金会管理，然后以 RunC 为依据，大家共同制定一套容器和镜像的标准和规范。
 
- 
+
 
 这套标准和规范，就是 OCI（ Open Container Initiative ）。OCI 的提出，意在将容器运行时和镜像的实现从 Docker 项目中完全剥离出来。这样做，一方面可以改善 Docker 公司在容器技术上一家独大的现状，另一方面也为其他玩家不依赖于 Docker 项目构建各自的平台层能力提供了可能。
 
- 
+
 
 不过，OCI 的成立更多的是这些容器玩家出于自身利益进行干涉的一个妥协结果。尽管 Docker 是 OCI 的发起者和创始成员，它却很少在 OCI 的技术推进和标准制定等事务上扮演关键角色，也没有动力去积极地推进这些所谓的标准。
 
- 
+
 
 这也是迄今为止 OCI 组织效率持续低下的根本原因。
 
- 
+
 
 OCI 并没能改变 Docker 公司在容器领域一家独大的现状，Google 和 RedHat 等公司于是把第二把武器摆上了台面。
 
- 
+
 
 Docker 之所以不担心 OCI 的威胁，原因就在于它的 Docker 项目是容器生态的事实标准，而它所维护的 Docker 社区也足够庞大。可是，一旦这场斗争被转移到容器之上的平台层，或者说 PaaS 层，Docker 公司的竞争优势便立刻捉襟见肘了。
 
- 
+
 
 在这个领域里，像 Google 和 RedHat 这样的成熟公司，都拥有着深厚的技术积累；而像 CoreOS 这样的创业公司，也拥有像 Etcd 这样被广泛使用的开源基础设施项目。
 
- 
+
 
 可是 Docker 公司却只有一个 Swarm。
 
- 
+
 
 所以这次，Google、RedHat 等开源基础设施领域玩家们，共同牵头发起了一个名为 CNCF（Cloud Native Computing Foundation）的基金会。这个基金会的目的其实很容易理解：它希望，以 Kubernetes 项目为基础，建立一个由开源基础设施领域厂商主导的、按照独立基金会方式运营的平台级社区，来对抗以 Docker 公司为核心的容器商业生态。
 
- 
+
 
 为了打造出一个围绕 Kubernetes 项目的"护城河"，CNCF 社区就需要至少确保两件事情：
 
@@ -332,41 +332,41 @@ Docker 之所以不担心 OCI 的威胁，原因就在于它的 Docker 项目是
 
 ​    CNCF 社区必须以 Kubernetes 项目为核心，覆盖足够多的场景。
 
- 
+
 
 CNCF 社区如何解决 Kubernetes 项目在编排领域的竞争力的问题：
 
 ​    在容器编排领域，Kubernetes 项目需要面对来自 Docker 公司和 Mesos 社区两个方向的压力。Swarm 和 Mesos 实际上分别从两个不同的方向讲出了自己最擅长的故事：Swarm 擅长的是跟 Docker 生态的无缝集成，而 Mesos 擅长的则是大规模集群的调度与管理。
 
- 
+
 
 这两个方向，也是大多数人做容器集群管理项目时最容易想到的两个出发点。也正因为如此，Kubernetes 项目如果继续在这两个方向上做文章恐怕就不太明智了。
 
- 
+
 
 Kubernetes 选择的应对方式是：Borg
 
 k8s 项目大多来自于 Borg 和 Omega 系统的内部特性，这些特性落到 k8s 项目上，就是 Pod、Sidecar 等功能和设计模式。
 
- 
+
 
 这就解释了，为什么 Kubernetes 发布后，很多人"抱怨"其设计思想过于"超前"的原因：Kubernetes 项目的基础特性，并不是几个工程师突然"拍脑袋"想出来的东西，而是 Google 公司在容器化基础设施领域多年来实践经验的沉淀与升华。这正是 Kubernetes 项目能够从一开始就避免同 Swarm 和 Mesos 社区同质化的重要手段。
 
- 
+
 
 CNCF 接下来的任务是如何把这些先进的思想通过技术手段在开源社区落地，并培育出一个认同这些理念的生态？
 
 ​    RedHat 发挥了重要作用。当时，Kubernetes 团队规模很小，能够投入的工程能力十分紧张，这恰恰是 RedHat 的长处。RedHat 更是世界上为数不多、能真正理解开源社区运作和项目研发真谛的合作伙伴。
 
- 
+
 
 RedHat 与 Google 联盟的成立，不仅保证了 RedHat 在 Kubernetes 项目上的影响力，也正式开启了容器编排领域"三国鼎立"的局面。
 
- 
+
 
 Mesos 社区与容器技术的关系，更像是"借势"，而不是这个领域真正的参与者和领导者。这个事实，加上它所属的 Apache 社区固有的封闭性，导致了 Mesos 社区虽然技术最为成熟，却在容器编排领域鲜有创新。
 
- 
+
 
 一开始，Docker 公司就把应对 Kubernetes 项目的竞争摆在首要位置：
 
@@ -374,11 +374,11 @@ Mesos 社区与容器技术的关系，更像是"借势"，而不是这个领域
 
 ​    一方面，与 k8s 项目在多个场合进行了直接的碰撞。
 
- 
+
 
 这次竞争的发展态势，很快就超过了 Docker 公司的预期。
 
- 
+
 
 Kubernetes 项目并没有跟 Swarm 项目展开同质化的竞争
 
@@ -386,41 +386,41 @@ Kubernetes 项目并没有跟 Swarm 项目展开同质化的竞争
 
 ​     相反 k8s 项目让人耳目一新的设计理念和号召力，很快就构建出了一个与众不同的容器编排与管理的生态。
 
- 
+
 
 Kubernetes 项目在 GitHub 上的各项指标开始一骑绝尘，将 Swarm 项目远远地甩在了身后。
 
- 
+
 
 CNCF 社区如何解决第二个问题：
 
 在已经囊括了容器监控事实标准的 Prometheus 项目后，CNCF 社区迅速在成员项目中添加了 Fluentd、OpenTracing、CNI 等一系列容器生态的知名工具和项目。
 
- 
+
 
 而在看到了 CNCF 社区对用户表现出来的巨大吸引力之后，大量的公司和创业团队也开始专门针对 CNCF 社区而非 Docker 公司制定推广策略。
 
- 
+
 
 2016 年，Docker 公司宣布了一个震惊所有人的计划：放弃现有的 Swarm 项目，将容器编排和集群管理功能全部内置到 Docker 项目当中。
 
 Docker 公司意识到了 Swarm 项目目前唯一的竞争优势，就是跟 Docker 项目的无缝集成。那么，如何让这种优势最大化呢？那就是把 Swarm 内置到 Docker 项目当中。
 
- 
+
 
 从工程角度来看，这种做法的风险很大。内置容器编排、集群管理和负载均衡能力，固然可以使得 Docker 项目的边界直接扩大到一个完整的 PaaS 项目的范畴，但这种变更带来的技术复杂度和维护难度，长远来看对 Docker 项目是不利的。
 
- 
+
 
 不过，在当时的大环境下，Docker 公司的选择恐怕也带有一丝孤注一掷的意味。
 
- 
+
 
 k8s 的应对策略：
 
 ​    是反其道而行之，开始在整个社区推进"民主化"架构，即：从 API 到容器运行时的每一层，Kubernetes 项目都为开发者暴露出了可以扩展的插件机制，鼓励用户通过代码的方式介入到 Kubernetes 项目的每一个阶段。
 
- 
+
 
 Kubernetes 项目的这个变革的效果立竿见影，很快在整个容器社区中催生出了大量的、基于 Kubernetes API 和扩展接口的二次创新工作，比如：
 
@@ -430,55 +430,55 @@ Kubernetes 项目的这个变革的效果立竿见影，很快在整个容器社
 
 ​    还有像 Rook 这样的开源创业项目，它通过 Kubernetes 的可扩展接口，把 Ceph 这样的重量级产品封装成了简单易用的容器存储插件。
 
- 
+
 
 在鼓励二次创新的整体氛围当中，k8s 社区在 2016 年后得到了空前的发展。更重要的是，不同于之前局限于"打包、发布"这样的 PaaS 化路线，这一次容器社区的繁荣，是一次完全以 Kubernetes 项目为核心的"百花争鸣"。
 
- 
+
 
 面对 Kubernetes 社区的崛起和壮大，Docker 公司也不得不面对自己豪赌失败的现实。但在早前拒绝了微软的天价收购之后，Docker 公司实际上已经没有什么回旋余地，只能选择逐步放弃开源社区而专注于自己的商业化转型。
 
- 
+
 
 所以，从 2017 年开始，Docker 公司先是将 Docker 项目的容器运行时部分 Containerd 捐赠给 CNCF 社区，标志着 Docker 项目已经全面升级成为一个 PaaS 平台；紧接着，Docker 公司宣布将 Docker 项目改名为 Moby，然后交给社区自行维护，而 Docker 公司的商业产品将占有 Docker 这个注册商标。
 
- 
+
 
 Docker 公司这些举措背后的含义非常明确：它将全面放弃在开源社区同 Kubernetes 生态的竞争，转而专注于自己的商业业务，并且通过将 Docker 项目改名为 Moby 的举动，将原本属于 Docker 社区的用户转化成了自己的客户。
 
- 
+
 
 2017 年 10 月，Docker 公司出人意料地宣布，将在自己的主打产品 Docker 企业版中内置 Kubernetes 项目，这标志着持续了近两年之久的"编排之争"至此落下帷幕。
 
- 
+
 
 2018 年 1 月 30 日，RedHat 宣布斥资 2.5 亿美元收购 CoreOS。
 
- 
+
 
 2018 年 3 月 28 日，这一切纷争的始作俑者，Docker 公司的 CTO Solomon Hykes 宣布辞职，曾经纷纷扰扰的容器技术圈子，到此尘埃落定。
 
- 
+
 
 容器技术圈子在短短几年里发生了很多变数，但很多事情其实也都在情理之中。就像 Docker 这样一家创业公司，在通过开源社区的运作取得了巨大的成功之后，就不得不面对来自整个云计算产业的竞争和围剿。而这个产业的垄断特性，对于 Docker 这样的技术型创业公司其实天生就不友好。
 
- 
+
 
 在这种局势下，接受微软的天价收购，在大多数人看来都是一个非常明智和实际的选择。可是 Solomon Hykes 却多少带有一些理想主义的影子，既然不甘于"寄人篱下"，那他就必须带领 Docker 公司去对抗来自整个云计算产业的压力。
 
- 
+
 
 只不过，Docker 公司最后选择的对抗方式，是将开源项目与商业产品紧密绑定，打造了一个极端封闭的技术生态。而这，其实违背了 Docker 项目与开发者保持亲密关系的初衷。相比之下，Kubernetes 社区，正是以一种更加温和的方式，承接了 Docker 项目的未尽事业，即：以开发者为核心，构建一个相对民主和开放的容器生态。
 
- 
+
 
 这也是为何，Kubernetes 项目的成功其实是必然的。
 
- 
+
 
 很难想象如果 Docker 公司最初选择了跟 Kubernetes 社区合作，如今的容器生态又将会是怎样的一番景象。不过我们可以肯定的是，Docker 公司在过去五年里的风云变幻，以及 Solomon Hykes 本人的传奇经历，都已经在云计算的长河中留下了浓墨重彩的一笔。
 
- 
+
 
 总结：
 
@@ -488,11 +488,11 @@ Docker 公司发布的 Docker 项目具有里程碑式的意义；
 
 Docker 项目通过"容器镜像"，解决了应用打包这个根本性难题。
 
- 
+
 
 容器本身没有价值，有价值的是"容器编排"。
 
- 
+
 
 也正因为如此，容器技术生态才爆发了一场关于"容器编排"的"战争"。而这次战争，最终以 Kubernetes 项目和 CNCF 社区的胜利而告终。
 
@@ -510,13 +510,13 @@ node2
 Node
 
 ```shell
-Node是Kubernetes集群架构中运行Pod的服务节点。Node是Kubernetes集群操作的单元，用来承载被分配Pod的运行，是Pod运行的宿主机，由Master管理，并汇报容器状态给Master，同时根据Master要求管理容器生命周期。 
+Node是Kubernetes集群架构中运行Pod的服务节点。Node是Kubernetes集群操作的单元，用来承载被分配Pod的运行，是Pod运行的宿主机，由Master管理，并汇报容器状态给Master，同时根据Master要求管理容器生命周期。
 ```
 
 Node IP
 
 ```shell
-   Node节点的IP地址，是Kubernetes集群中每个节点的物理网卡的IP地址，是真是存在的物理网络，所有属于这个网络的服务器之间都能通过这个网络直接通信； 
+   Node节点的IP地址，是Kubernetes集群中每个节点的物理网卡的IP地址，是真是存在的物理网络，所有属于这个网络的服务器之间都能通过这个网络直接通信；
 ```
 
 Pod
@@ -534,9 +534,9 @@ Pod直译是豆荚，可以把容器想像成豆荚里的豆子，把一个或�
 pause容器
 
     每个Pod中都有一个pause容器，pause容器做为Pod的网络接入点，Pod中其他的容器会使用容器映射模式启动并接入到这个pause容器。
-    
+
     ​    属于同一个Pod的所有容器共享网络的namespace。
-    
+
     ​    如果Pod所在的Node宕机，会将这个Node上的所有Pod重新调度到其他节点上
 
 Pod Volume:
@@ -547,9 +547,9 @@ Pod Volume:
 数据卷，挂载宿主机文件、目录或者外部存储到Pod中，为应用服务提供存储，也可以解决Pod中容器之间共享数据。
   ```
 
-资源限制：  
+资源限制：
 
-​    每个Pod可以设置限额的计算机资源有CPU和Memory； 
+​    每个Pod可以设置限额的计算机资源有CPU和Memory；
 
  ![1584847199864](assets/1584847199864.png)
 
@@ -576,7 +576,7 @@ Namespace
 Replica Set
 
 ```shell
-确保任何给定时间指定的Pod副本数量，并提供声明式更新等功能。 
+确保任何给定时间指定的Pod副本数量，并提供声明式更新等功能。
 ```
 
 Deployment
@@ -593,7 +593,7 @@ RC-Replication Controller
 Replication  Controller用来管理Pod的副本，保证集群中存在指定数量的Pod副本。集群中副本的数量大于指定数量，则会停止指定数量之外的多余pod数量，反之，则会启动少于指定数量个数的容器，保证数量不变。Replication  Controller是实现弹性伸缩、动态扩容和滚动升级的核心。
 ```
 
- 部署和升级Pod，声明某种Pod的副本数量在任意时刻都符合某个预期值； 
+ 部署和升级Pod，声明某种Pod的副本数量在任意时刻都符合某个预期值；
 
 ​      • Pod期待的副本数；
 
@@ -609,16 +609,16 @@ Service定义了Pod的逻辑集合和访问该集合的策略，是真实服务�
 ​    一个service定义了访问pod的方式，就像单个固定的IP地址和与其相对应的DNS名之间的关系。
 ```
 
-​    Service其实就是我们经常提起的微服务架构中的一个"微服务"，通过分析、识别并建模系统中的所有服务为微服务——Kubernetes Service，最终我们的系统由多个提供不同业务能力而又彼此独立的微服务单元所组成，服务之间通过TCP/IP进行通信，从而形成了我们强大而又灵活的弹性网络，拥有了强大的分布式能力、弹性扩展能力、容错能力；   
+​    Service其实就是我们经常提起的微服务架构中的一个"微服务"，通过分析、识别并建模系统中的所有服务为微服务——Kubernetes Service，最终我们的系统由多个提供不同业务能力而又彼此独立的微服务单元所组成，服务之间通过TCP/IP进行通信，从而形成了我们强大而又灵活的弹性网络，拥有了强大的分布式能力、弹性扩展能力、容错能力；
 
 ![1584847713520](assets/1584847713520.png)
 
 如图示，每个Pod都提供了一个独立的Endpoint（Pod IP+ContainerPort）以被客户端访问，多个Pod副本组成了一个集群来提供服务，一般的做法是部署一个负载均衡器来访问它们，为这组Pod开启一个对外的服务端口如8000，并且将这些Pod的Endpoint列表加入8000端口的转发列表中，客户端可以通过负载均衡器的对外IP地址+服务端口来访问此服务。运行在Node上的kube-proxy其实就是一个智能的软件负载均衡器，它负责把对Service的请求转发到后端的某个Pod实例上，并且在内部实现服务的负载均衡与会话保持机制。Service不是共用一个负载均衡器的IP地址，而是每个Servcie分配一个全局唯一的虚拟IP地址，这个虚拟IP被称为Cluster IP。
 
-Cluster IP 
+Cluster IP
 
 ```shell
-Service的IP地址,特性： 
+Service的IP地址,特性：
 
 ​仅仅作用于Kubernetes Servcie这个对象，并由Kubernetes管理和分配IP地址；
 
@@ -635,9 +635,9 @@ Label
 
 ​    一个label是一个被附加到资源上的键/值对，譬如附加到一个Pod上，为它传递一个用户自定的并且可识别的属性.Label还可以被应用来组织和选择子网中的资源
 
-  
 
-Endpoint（IP+Port） 
+
+Endpoint（IP+Port）
 
   标识服务进程的访问点；
 
@@ -647,7 +647,7 @@ Endpoint（IP+Port）
 
 架构:
 
-![1584847855067](assets/1584847855067.png) 
+![1584847855067](assets/1584847855067.png)
 
 主从分布式架构，Master/Node
 
@@ -700,7 +700,7 @@ Kubernetes Master：
    - Pod Autoscaler Controller
       实现Pod的自动伸缩，定时获取监控数据，进行策略匹配，当满足条件时执行Pod的伸缩动作。
 
- 
+
 
 Kubernetes Node：
 除了Master，Kubernetes集群中的其他机器被称为Node节点，Node节点才是Kubernetes集群中的工作负载节点，每个Node都会被Master分配一些工作负载（Docker容器），当某个Node宕机，其上的工作负载会被Master自动转移到其他节点上去；
@@ -715,8 +715,8 @@ Kubernetes Node：
 
 　　　　负责为Pod创建代理服务，Kubernetes Proxy会从Kubernetes API  Server获取所有的Service信息，并根据Service的信息创建代理服务，实现Service到Pod的请求路由和转发，从而实现Kubernetes层级的虚拟转发网络。
 
-　　3.Docker Engine（docker），Docker引擎，负责本机的容器创建和管理工作；  
-      
+　　3.Docker Engine（docker），Docker引擎，负责本机的容器创建和管理工作；
+
 
 数据库
 
@@ -726,7 +726,7 @@ etcd数据库，可以部署到master上，也可以独立部署
 
 \~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-docker只是k8s支持的底层容器的一种，k8s还支持另外一种容器技术，名为rocket。      
+docker只是k8s支持的底层容器的一种，k8s还支持另外一种容器技术，名为rocket。
 
 # **常用镜像仓库**
 
@@ -734,13 +734,13 @@ daocloud的docker镜像库:
 
 ​    daocloud.io/library
 
-​    
+​
 
 docker-hub的k8s镜像库：
 
 ​    mirrorgooglecontainers
 
- 
+
 
 aliyun的k8s镜像库：
 
@@ -752,7 +752,7 @@ aliyun的docker镜像库web页面：
 
 ​    https://cr.console.aliyun.com/cn-hangzhou/images
 
- 
+
 
 google的镜像库web页面：
 
@@ -765,7 +765,7 @@ google的镜像库web页面：
 ```shell
 Minikube是一个工具，可以在本地快速运行一个单点的Kubernetes，尝试Kubernetes或日常开发的用户使用。不能用于生产环境。
 
-官方地址：https://kubernetes.io/docs/setup/minikube/ 
+官方地址：https://kubernetes.io/docs/setup/minikube/
 ```
 
 方式2. kubeadm
@@ -773,7 +773,7 @@ Minikube是一个工具，可以在本地快速运行一个单点的Kubernetes�
 ```shell
 Kubeadm也是一个工具，提供kubeadm init和kubeadm join，用于快速部署Kubernetes集群。
 
-官方地址：https://kubernetes.io/docs/reference/setup-tools/kubeadm/kubeadm/ 
+官方地址：https://kubernetes.io/docs/reference/setup-tools/kubeadm/kubeadm/
 ```
 
 方式3. 直接使用epel-release yum源，缺点就是版本较低 1.5
@@ -811,25 +811,25 @@ CentOS7.4_x64
 
 软件版本：
  Docker	19.09.0-ce
- Kubernetes	1.1 
+ Kubernetes	1.1
 ```
 
 ```shell
 服务器角色、IP、组件：
-k8s-master1	     
+k8s-master1
 192.168.246.162	kube-apiserver，kube-controller-manager，kube-scheduler，etcd
-k8s-master2	     
+k8s-master2
 192.168.246.163	kube-apiserver，kube-controller-manager，kube-scheduler，etcd
-k8s-node1	        
+k8s-node1
 192.168.246.164	kubelet，kube-proxy，docker，flannel，etcd
-k8s-node2	        
+k8s-node2
 192.168.246.165	kubelet，kube-proxy，docker，flannel
-Master负载均衡	  
+Master负载均衡
 192.168.246.166	    LVS
-镜像仓库	             
+镜像仓库
 10.206.240.188	Harbor
 机器配置要求：
-2G  
+2G
 主机名称 必须改  必须相互解析
 [root@k8s-master1 ~]# vim /etc/hosts
 192.168.246.162 k8s-master1
@@ -837,7 +837,7 @@ Master负载均衡
 192.168.246.164 k8s-node1
 192.168.246.165 k8s-node2
 192.168.246.166 lvs-server
-关闭防火墙和selinux 
+关闭防火墙和selinux
 ```
 
  负载均衡器：
@@ -847,12 +847,12 @@ Master负载均衡
 可以采用slb
 
 非云环境：
-主流的软件负载均衡器，例如LVS、HAProxy、Nginx      
+主流的软件负载均衡器，例如LVS、HAProxy、Nginx
 ```
 
 这里采用Nginx作为apiserver负载均衡器，架构图如下： 
 
-![img](assets/wps8.jpg) 
+![img](assets/wps8.jpg)
 
  ```shell
 2.安装nginx使用stream模块作4层反向代理配置如下：
@@ -994,7 +994,7 @@ ca-key.pem  ca.pem  server-key.pem  server.pem
 创建etcd配置文件：
 # cd /opt/etcd/cfg/
 # vim etcd
-# cat /opt/etcd/cfg/etcd   
+# cat /opt/etcd/cfg/etcd
 #[Member]
 ETCD_NAME="etcd01"   #节点名称，各个节点不能相同
 ETCD_DATA_DIR="/var/lib/etcd/default.etcd"
@@ -1022,7 +1022,7 @@ ETCD_INITIAL_CLUSTER_STATE="new"
 
 systemd管理etcd：
 # vim /usr/lib/systemd/system/etcd.service
-# cat /usr/lib/systemd/system/etcd.service 
+# cat /usr/lib/systemd/system/etcd.service
 [Unit]
 Description=Etcd Server
 After=network.target
@@ -1108,7 +1108,7 @@ docker-engine
 # curl -sSL https://get.daocloud.io/daotools/set_mirror.sh | sh -s http://bc437cce.m.daocloud.io   #配置加速器
 ```
 
-**部署Flannel网络** 
+**部署Flannel网络**
 
 ```shell
 Flannel要用etcd存储自身一个子网信息，所以要保证能成功连接Etcd，写入预定义子网段：
@@ -1199,17 +1199,17 @@ WantedBy=multi-user.target
 [root@k8s-node1 ~]# ps -ef | grep docker
 root       3632      1  1 22:19 ?        00:00:00 /usr/bin/dockerd --bip=172.17.77.1/24 --ip-masq=false --mtu=1450
 # ip addr
-3: docker0: <NO-CARRIER,BROADCAST,MULTICAST,UP> mtu 1500 qdisc noqueue state DOWN 
+3: docker0: <NO-CARRIER,BROADCAST,MULTICAST,UP> mtu 1500 qdisc noqueue state DOWN
     link/ether 02:42:cd:f6:c9:cc brd ff:ff:ff:ff:ff:ff
     inet 172.17.77.1/24 brd 172.17.77.255 scope global docker0
        valid_lft forever preferred_lft forever
-4: flannel.1: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1450 qdisc noqueue state UNKNOWN 
+4: flannel.1: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1450 qdisc noqueue state UNKNOWN
     link/ether ba:96:dc:cc:25:e0 brd ff:ff:ff:ff:ff:ff
     inet 172.17.77.0/32 scope global flannel.1
        valid_lft forever preferred_lft forever
-    inet6 fe80::b896:dcff:fecc:25e0/64 scope link 
+    inet6 fe80::b896:dcff:fecc:25e0/64 scope link
        valid_lft forever preferred_lft forever
-       
+
 注：
 1.	确保docker0与flannel.1在同一网段。
 2.	测试不同节点互通，在当前节点访问另一个Node节点docker0 IP：案例：node1机器pingnode2机器的docker0上面的ip地址
@@ -1366,7 +1366,7 @@ ca-key.pem  ca.pem  kube-proxy-key.pem  kube-proxy.pem  server-key.pem  server.p
 [root@k8s-master1 cfg]# pwd
 /opt/kubernetes/cfg
 [root@k8s-master1 cfg]# vim kube-apiserver
-[root@k8s-master1 cfg]# cat kube-apiserver 
+[root@k8s-master1 cfg]# cat kube-apiserver
 KUBE_APISERVER_OPTS="--logtostderr=true \
 --v=4 \
 --etcd-servers=https://192.168.246.162:2379,https://192.168.246.164:2379,https://192.168.246.165:2379 \
@@ -1408,7 +1408,7 @@ KUBE_APISERVER_OPTS="--logtostderr=true \
 systemd管理apiserver：
 [root@k8s-master1 cfg]# cd /usr/lib/systemd/system
 # vim kube-apiserver.service
-# cat /usr/lib/systemd/system/kube-apiserver.service 
+# cat /usr/lib/systemd/system/kube-apiserver.service
 [Unit]
 Description=Kubernetes API Server
 Documentation=https://github.com/kubernetes/kubernetes
@@ -1434,7 +1434,7 @@ WantedBy=multi-user.target
 ```shell
 创建schduler配置文件：
 [root@k8s-master1 cfg]# vim  /opt/kubernetes/cfg/kube-scheduler
-# cat /opt/kubernetes/cfg/kube-scheduler 
+# cat /opt/kubernetes/cfg/kube-scheduler
 KUBE_SCHEDULER_OPTS="--logtostderr=true \
 --v=4 \
 --master=127.0.0.1:8080 \
@@ -1446,7 +1446,7 @@ KUBE_SCHEDULER_OPTS="--logtostderr=true \
 systemd管理schduler组件：
 [root@k8s-master1 cfg]# cd /usr/lib/systemd/system/
 # vim kube-scheduler.service
-# cat /usr/lib/systemd/system/kube-scheduler.service 
+# cat /usr/lib/systemd/system/kube-scheduler.service
 [Unit]
 Description=Kubernetes Scheduler
 Documentation=https://github.com/kubernetes/kubernetes
@@ -1461,8 +1461,8 @@ WantedBy=multi-user.target
 
 启动：
 # systemctl daemon-reload
-# systemctl enable kube-scheduler 
-# systemctl start kube-scheduler 
+# systemctl enable kube-scheduler
+# systemctl start kube-scheduler
 ```
 
 ##### 部署controller-manager组件--控制管理组件
@@ -1471,7 +1471,7 @@ WantedBy=multi-user.target
 master节点操作：创建controller-manager配置文件：
 [root@k8s-master1 ~]# cd /opt/kubernetes/cfg/
 [root@k8s-master1 cfg]# vim kube-controller-manager
-# cat /opt/kubernetes/cfg/kube-controller-manager 
+# cat /opt/kubernetes/cfg/kube-controller-manager
 KUBE_CONTROLLER_MANAGER_OPTS="--logtostderr=true \
 --v=4 \
 --master=127.0.0.1:8080 \
@@ -1487,7 +1487,7 @@ KUBE_CONTROLLER_MANAGER_OPTS="--logtostderr=true \
 systemd管理controller-manager组件：
 [root@k8s-master1 cfg]# cd /usr/lib/systemd/system/
 [root@k8s-master1 system]# vim kube-controller-manager.service
-# cat /usr/lib/systemd/system/kube-controller-manager.service 
+# cat /usr/lib/systemd/system/kube-controller-manager.service
 [Unit]
 Description=Kubernetes Controller Manager
 Documentation=https://github.com/kubernetes/kubernetes
@@ -1508,10 +1508,10 @@ WantedBy=multi-user.target
 所有组件都已经启动成功，通过kubectl工具查看当前集群组件状态：
 [root@k8s-master1 ~]# /opt/kubernetes/bin/kubectl get cs
 NAME                 STATUS    MESSAGE              ERROR
-scheduler            Healthy   ok                   
-controller-manager   Healthy   ok                   
-etcd-2               Healthy   {"health": "true"}   
-etcd-0               Healthy   {"health": "true"}   
+scheduler            Healthy   ok
+controller-manager   Healthy   ok
+etcd-2               Healthy   {"health": "true"}
+etcd-0               Healthy   {"health": "true"}
 etcd-1               Healthy   {"health": "true"}
 如上输出说明组件都正常。
 
@@ -1646,9 +1646,9 @@ authentication:
     enabled: true
   webhook:
     enabled: false
-    
+
 systemd管理kubelet组件：
-# vim /usr/lib/systemd/system/kubelet.service 
+# vim /usr/lib/systemd/system/kubelet.service
 [Unit]
 Description=Kubernetes Kubelet
 After=docker.service
@@ -1703,7 +1703,7 @@ KUBE_PROXY_OPTS="--logtostderr=true \
 
 systemd管理kube-proxy组件：
 [root@k8s-node1 ~]# cd /usr/lib/systemd/system
-# cat /usr/lib/systemd/system/kube-proxy.service 
+# cat /usr/lib/systemd/system/kube-proxy.service
 [Unit]
 Description=Kubernetes Proxy
 After=network.target
@@ -1731,10 +1731,10 @@ NAME              STATUS    ROLES     AGE       VERSION
 查看集群状态
 [root@k8s-master1 ~]# /opt/kubernetes/bin/kubectl get cs
 NAME                 STATUS    MESSAGE              ERROR
-scheduler            Healthy   ok                   
-controller-manager   Healthy   ok                   
-etcd-0               Healthy   {"health": "true"}   
-etcd-1               Healthy   {"health": "true"}   
+scheduler            Healthy   ok
+controller-manager   Healthy   ok
+etcd-0               Healthy   {"health": "true"}
+etcd-1               Healthy   {"health": "true"}
 etcd-2               Healthy   {"health": "true"}
 =====================================================================================
 ````
@@ -1749,7 +1749,7 @@ etcd-2               Healthy   {"health": "true"}
 创建一个目录
 [root@k8s-master ~]# mkdir webui
 [root@k8s-master ~]# cd webui/
-[root@k8s-master webui]# cat dashboard-deployment.yaml 
+[root@k8s-master webui]# cat dashboard-deployment.yaml
 apiVersion: apps/v1beta2
 kind: Deployment
 metadata:
@@ -1773,7 +1773,7 @@ spec:
       serviceAccountName: kubernetes-dashboard
       containers:
       - name: kubernetes-dashboard
-        image: registry.cn-hangzhou.aliyuncs.com/kube_containers/kubernetes-dashboard-amd64:v1.8.1 
+        image: registry.cn-hangzhou.aliyuncs.com/kube_containers/kubernetes-dashboard-amd64:v1.8.1
         resources:
           limits:
             cpu: 100m
@@ -1794,7 +1794,7 @@ spec:
       tolerations:
       - key: "CriticalAddonsOnly"
         operator: "Exists"
-        
+
 [root@k8s-master webui]# cat dashboard-rbac.yaml
 apiVersion: v1
 kind: ServiceAccount
@@ -1880,7 +1880,7 @@ kubernetes-dashboard   NodePort   10.0.0.143   <none>        80:47520/TCP   22m
 # /opt/kubernetes/bin/kubectl run nginx --image=daocloud.io/nginx --replicas=3
 # /opt/kubernetes/bin/kubectl expose deployment nginx --port=88 --target-port=80 --type=NodePort
 
-# /opt/kub.../bin/kubectl delete -f  deployment  --all 
+# /opt/kub.../bin/kubectl delete -f  deployment  --all
 
 在master上面查看：
 查看Pod，Service：
@@ -1891,7 +1891,7 @@ nginx-64f497f8fd-gmstq       1/1      Running   3          28d
 nginx-64f497f8fd-q6wk9       1/1      Running   3          28d
 
 查看pod详细信息：
-# /opt/kubernetes/bin/kubectl describe pod nginx-64f497f8fd-fjgt2 
+# /opt/kubernetes/bin/kubectl describe pod nginx-64f497f8fd-fjgt2
 
 # /opt/kubernetes/bin/kubectl get svc
 NAME         TYPE        CLUSTER-IP   EXTERNAL-IP   PORT(S)                        AGE
@@ -1940,7 +1940,7 @@ docker tag coredns/coredns:1.3.1 k8s.gcr.io/coredns:1.3.1
 
 每次部署都会有版本更新下图是1.15版本的具体镜像：
 
-![img](assets/wps1-1571147708778.jpg) 
+![img](assets/wps1-1571147708778.jpg)
 
 从docker hub拉取google的镜像也非常慢，慢的不行，没有拉取下来
 
@@ -1982,7 +1982,7 @@ docker pull quay-mirror.qiniu.com/coreos/flannel:v0.12.0-amd64 --下载网络插
 版本号不用变
 ```
 
-所有机器都必须有镜像 
+所有机器都必须有镜像
 
 **安装docker--三台机器都操作**
 
@@ -2004,7 +2004,7 @@ docker-engine
 启动并设置开机启动
 ```
 
-## 完整安装过程 
+## 完整安装过程
 
 准备三台机器，
 
@@ -2078,7 +2078,7 @@ EOF
 # modprobe ip_vs_sh
 # modprobe nf_conntrack_ipv4
 3.编辑文件添加开机启动
-# vim /etc/rc.local 
+# vim /etc/rc.local
 # chmod +x /etc/rc.local
 
 
@@ -2102,9 +2102,9 @@ EOF
 
 7.查看是否加载成功
 # lsmod | grep ip_vs
-ip_vs_sh               12688  0 
-ip_vs_wrr              12697  0 
-ip_vs_rr               12600  0 
+ip_vs_sh               12688  0
+ip_vs_wrr              12697  0
+ip_vs_rr               12600  0
 ip_vs                 141092  6 ip_vs_rr,ip_vs_sh,ip_vs_wrr
 nf_conntrack          133387  2 ip_vs,nf_conntrack_ipv4
 libcrc32c              12644  3 xfs,ip_vs,nf_conntrack
@@ -2239,7 +2239,7 @@ kubeadm join 192.168.246.166:6443 --token 93erio.hbn2ti6z50he0lqs \
     --discovery-token-ca-cert-hash sha256:3bc60f06a19bd09f38f3e05e5cff4299011b7110ca3281796668f4edb29a56d9  #需要记住
 
 =======================================================================================
-  
+
 上面记录了完成的初始化输出的内容，根据输出的内容基本上可以看出手动初始化安装一个Kubernetes集群所需要的关键步骤。
 其中有以下关键内容：
     [kubelet] 生成kubelet的配置文件”/var/lib/kubelet/config.yaml”
@@ -2296,7 +2296,7 @@ k8s-master   NotReady   master   2m41s   v1.17.4
         - --kube-subnet-mgr
         - --iface=ens33
         - --iface=eth0
-        
+
 ⚠️⚠️⚠️--iface=ens33 的值，是你当前的网卡,或者可以指定多网卡
 
 # 1.12版本的kubeadm额外给node1节点设置了一个污点(Taint)：node.kubernetes.io/not-ready:NoSchedule，
@@ -2590,7 +2590,7 @@ e is 65537 (0x10001)
 
 ```shell
 重启
-[root@kub-k8s-master harbor]# ./prepare 
+[root@kub-k8s-master harbor]# ./prepare
 prepare base dir is set to /root/harbor
 Clearing the configuration file: /config/log/logrotate.conf
 Clearing the configuration file: /config/nginx/nginx.conf
@@ -2616,7 +2616,7 @@ loaded secret from file: /secret/keys/secretkey
 Generated configuration file: /compose_location/docker-compose.yml
 Clean up the input dir
 
-如果出错，重启Docker服务，再次执行./prepare 
+如果出错，重启Docker服务，再次执行./prepare
 [root@kub-k8s-master harbor]# docker-compose down
 Stopping nginx             ... done
 Stopping harbor-portal     ... done
@@ -2689,7 +2689,7 @@ Removing network harbor_harbor
 1.登录
 [root@kub-k8s-node1 ~]# docker login 192.168.246.166
 Username: soso
-Password: 
+Password:
 Login Succeeded
 2.下载一个测试的镜像
 [root@kub-k8s-node1 ~]# docker pull daocloud.io/library/nginx
@@ -2702,9 +2702,9 @@ daocloud.io/library/nginx     latest   98ebf73aba75        3 months ago    109MB
 5.上传到仓库
 [root@kub-k8s-node1 ~]# docker push 192.168.246.166/jenkins/nginx:latest
 The push refers to repository [192.168.246.166/jenkins/nginx]
-589561a3ffb4: Pushed 
-ef7dbb0cfc81: Pushed 
-d56055da3352: Pushed 
+589561a3ffb4: Pushed
+ef7dbb0cfc81: Pushed
+d56055da3352: Pushed
 latest: digest: sha256:f83b2ffd963ac911f9e638184c8d580cc1f3139d5c8c33c87c3fb90aebdebf76 size: 948
 ```
 
@@ -3005,11 +3005,11 @@ CreateContainerConfigError： 不能创建kubelet使用的容器配置
 CreateContainerError： 创建容器失败
 m.internalLifecycle.PreStartContainer  执行hook报错
 RunContainerError： 启动容器失败
-PostStartHookError： 执行hook报错 
+PostStartHookError： 执行hook报错
 ContainersNotInitialized： 容器没有初始化完毕
-ContainersNotReady： 容器没有准备完毕 
+ContainersNotReady： 容器没有准备完毕
 ContainerCreating：容器创建中
-PodInitializing：pod 初始化中 
+PodInitializing：pod 初始化中
 DockerDaemonNotReady：docker还没有完全启动
 NetworkPluginNotReady： 网络插件还没有完全启动
 ```
@@ -3030,7 +3030,7 @@ root@website:/#
 举例：
 [root@kub-k8s-master prome]# kubectl delete pod website
 pod "website" deleted
-[root@kub-k8s-master prome]# kubectl delete -f pod.yaml 
+[root@kub-k8s-master prome]# kubectl delete -f pod.yaml
 pod "website" deleted
 ```
 
@@ -3041,7 +3041,7 @@ pod "website" deleted
 [root@k8s-master prome]# kubectl apply -f pod.yaml  --validate 想看报错信息，加上--validate参数
 ```
 
-**重新启动基于yaml文件的应用**(这里并不是重新启动服务)  
+**重新启动基于yaml文件的应用**(这里并不是重新启动服务)
 
 ```shell
 # kubectl delete -f XXX.yaml   #删除
@@ -3058,9 +3058,9 @@ create创建的应用如果需要修改yml文件，必须先指定yml文件删�
 
 # **Yaml文件语法解析**
 
-![img](assets/wps1-1571362049928.jpg) 
+![img](assets/wps1-1571362049928.jpg)
 
- 
+
 
 除了某些强制性的命令，如：kubectl run或者expose等，k8s还允许通过配置文件的方式来创建这些操作对象。
 
@@ -3070,7 +3070,7 @@ create创建的应用如果需要修改yml文件，必须先指定yml文件删�
 
 YAML是专门用来写配置文件的语言，非常简洁和强大，使用比json更方便。它实质上是一种通用的数据串行化格式。
 
- 
+
 
 kubernetes中用来定义YAML文件创建Pod和创建Deployment等资源。
 
@@ -3130,9 +3130,9 @@ kind: Pod
 metadata:
   name: kube100-site
   labels:
-    app: web    
- 
-{apiVersion:v1,kind:Pod,Metadata:{name:kube100-site,labels:{app:web}}}  
+    app: web
+
+{apiVersion:v1,kind:Pod,Metadata:{name:kube100-site,labels:{app:web}}}
 注：上述的YAML文件中，metadata这个KEY对应的值为一个Maps，而嵌套的labels这个KEY的值又是一个Map。实际使用中可视情况进行多层嵌套。
 
 YAML处理器根据行缩进来知道内容之间的关联。上述例子中，使用两个空格作为缩进，但空格的数据量并不重要，只是至少要求一个空格并且所有缩进保持一致的空格数 。例如，name和labels是相同缩进级别，因此YAML处理器知道他们属于同一map；它知道app是lables的值因为app的缩进更大。
@@ -3233,7 +3233,7 @@ nodeName
 
    ```shell
 将node1上面的pod删除掉
-[root@kub-k8s-master prome]# kubectl delete -f pod.yml 
+[root@kub-k8s-master prome]# kubectl delete -f pod.yml
 pod "website" deleted
 ===========================================
 nodeName：是一个供用户将 Pod 与 Node 进行绑定的字段，用法：
@@ -3254,7 +3254,7 @@ spec:
         - containerPort: 80
   nodeName: kub-k8s-node2     #指定node节点的名称
 创建
-[root@kub-k8s-master prome]# kubectl apply -f pod.yml 
+[root@kub-k8s-master prome]# kubectl apply -f pod.yml
 pod/website created
    ```
 
@@ -3296,8 +3296,8 @@ spec:
         - containerPort: 8080
   nodeSelector:      #指定标签
     kubernetes.io/hostname: kub-k8s-node2
-2.创建pod   
-[root@kub-k8s-master prome]# kubectl apply -f tomcat.yml 
+2.创建pod
+[root@kub-k8s-master prome]# kubectl apply -f tomcat.yml
 pod/tomcat created
 ```
 
@@ -3319,7 +3319,7 @@ HostAliases：定义 Pod 的 hosts 文件（比如 /etc/hosts）里的内容，�
 
 ```shell
 1.首先先将刚创建的pod删除掉
-[root@kub-k8s-master prome]# kubectl delete -f tomcat.yml 
+[root@kub-k8s-master prome]# kubectl delete -f tomcat.yml
 pod "tomcat" deleted
 [root@kub-k8s-master prome]# vim tomcat.yml
 ---
@@ -3341,22 +3341,22 @@ spec:
       ports:
         - containerPort: 8080
 2.创建pod
-[root@kub-k8s-master prome]# kubectl apply -f tomcat.yml 
+[root@kub-k8s-master prome]# kubectl apply -f tomcat.yml
 pod/tomcat created
 3.连接pod
-[root@kub-k8s-master prome]# kubectl exec -it tomcat /bin/bash 
+[root@kub-k8s-master prome]# kubectl exec -it tomcat /bin/bash
 root@tomcat:/usr/local/tomcat# cat /etc/hosts   #查看hosts文件
 ```
 
 ​    ![1571581748313](assets/1571581748313.png)
 
 ```shell
-注意：在 k8s 中，如果要设置 hosts 文件里的内容，一定要通过这种方法。否则，如果直接修改了 hosts 文件，在 Pod 被删除重建之后，kubelet 会自动覆盖掉被修改的内容。 
+注意：在 k8s 中，如果要设置 hosts 文件里的内容，一定要通过这种方法。否则，如果直接修改了 hosts 文件，在 Pod 被删除重建之后，kubelet 会自动覆盖掉被修改的内容。
 ```
 
 **凡是跟容器的 Linux Namespace 相关的属性，也一定是 Pod 级别的**
 
-原因：Pod 的设计，就是要让它里面的容器尽可能多地共享 Linux Namespace，仅保留必要的隔离和限制能力。这样，Pod 模拟出的效果，就跟虚拟机里程序间的关系非常类似了。 
+原因：Pod 的设计，就是要让它里面的容器尽可能多地共享 Linux Namespace，仅保留必要的隔离和限制能力。这样，Pod 模拟出的效果，就跟虚拟机里程序间的关系非常类似了。
 
 举例，一个 Pod 定义 yaml 文件如下：
 
@@ -3382,9 +3382,9 @@ spec:
       image: daocloud.io/library/busybox
       stdin: true
       tty: true
-      
+
 2.创建
-[root@kub-k8s-master prome]# kubectl apply -f pod.yml 
+[root@kub-k8s-master prome]# kubectl apply -f pod.yml
 pod/website created
 ```
 
@@ -3421,7 +3421,7 @@ pod/website created
 [root@kub-k8s-master prome]# kubectl delete -f pod.yml
 [root@kub-k8s-master prome]# vim pod.yml
 将shareProcessNamespace=true修改为false
-[root@kub-k8s-master prome]# kubectl apply -f pod.yml 
+[root@kub-k8s-master prome]# kubectl apply -f pod.yml
 pod/website created
 ```
 
@@ -3436,7 +3436,7 @@ pod/website created
 ```shell
 刚才的都是pod里面容器的Namespace，并没有和本机的Namespace做共享，接下来我们可以做与本机的Namespace共享，可以在容器里面看到本机的进程。
 
-[root@kub-k8s-master prome]# kubectl delete -f pod.yml 
+[root@kub-k8s-master prome]# kubectl delete -f pod.yml
 pod "website" deleted
 [root@kub-k8s-master prome]# vim pod.yml #修改如下
 ---
@@ -3470,7 +3470,7 @@ pod/website created
 
 ![1571586551112](assets/1571586551112.png)
 
-定义了共享宿主机的 Network、IPC 和 PID Namespace。这样，此 Pod 里的所有容器，会直接使用宿主机的网络、直接与宿主机进行 IPC 通信、看到宿主机里正在运行的所有进程。 
+定义了共享宿主机的 Network、IPC 和 PID Namespace。这样，此 Pod 里的所有容器，会直接使用宿主机的网络、直接与宿主机进行 IPC 通信、看到宿主机里正在运行的所有进程。
 
 ##### **容器属性：**
 
@@ -3491,7 +3491,7 @@ Docker中Image（镜像）、Command（启动命令）、workingDir（容器的�
 ```shell
 ImagePullPolicy 字段:定义镜像的拉取策略。之所以是一个 Container 级别的属性，是因为容器镜像本来就是 Container 定义中的一部分。
 
-默认值： Always:表示每次创建 Pod 都重新拉取一次镜像。 
+默认值： Always:表示每次创建 Pod 都重新拉取一次镜像。
 1.镜像存在而且已经是最新版本就不在拉取镜像
 2.如果不存在下载镜像
 3.如果镜像存在但是版本不是新版本也会下载镜像
@@ -3505,7 +3505,7 @@ IfNotPresent:表示只在宿主机上不存在这个镜像时才拉取。
 Lifecycle 字段：定义 Container Lifecycle Hooks。作用是在容器状态发生变化时触发一系列"钩子"。
 
 注：
-lifecycle  /laɪf ˈsaɪkl/ n   生命周期 
+lifecycle  /laɪf ˈsaɪkl/ n   生命周期
 ```
 
 案例：这是 k8s 官方文档的一个 Pod YAML 文件
@@ -3513,7 +3513,7 @@ lifecycle  /laɪf ˈsaɪkl/ n   生命周期
 在这个例子中，容器成功启动之后，在 /usr/share/message 里写入了一句"欢迎信息"（即 postStart 定义的操作）。而在这个容器被删除之前，我们则先调用了 nginx 的退出指令（即 preStop 定义的操作），从而实现了容器的"优雅退出"。
 
  ```shell
-[root@kub-k8s-master prome]# kubectl delete -f pod.yml 
+[root@kub-k8s-master prome]# kubectl delete -f pod.yml
 pod "website" deleted
 [root@kub-k8s-master prome]# cp pod.yml pod.yml.bak
 [root@kub-k8s-master prome]# vim pod.yml
@@ -3528,10 +3528,10 @@ spec:
     image: daocloud.io/library/nginx
     lifecycle:
       postStart:  #容器启动之后
-        exec: 
+        exec:
           command: ["/bin/sh", "-c", "echo Hello from the postStart handler > /usr/share/message"]
       preStop:  #容器关闭之前
-        exec: 
+        exec:
           command: ["/usr/sbin/nginx","-s","quit"]
  ```
 
@@ -3541,7 +3541,7 @@ spec:
 
 ```shell
 [root@kub-k8s-node1 ~]# docker exec -it 3d404e658 /bin/bash
-root@lifecycle-demo:~# cat /usr/share/message 
+root@lifecycle-demo:~# cat /usr/share/message
 Hello from the postStart handler
 ```
 
@@ -3572,7 +3572,7 @@ Succeeded：此状态表示 Pod 里的所有容器都正常运行完毕，并且
 Failed：此状态表示 Pod 里至少有一个容器以不正常的状态（非 0 的返回码）退出。这个状态的出现，意味着你得想办法 Debug 这个容器的应用，比如查看 Pod 的 Events 和日志。
 
 Unknown：这是一个异常状态(未知状态)，表示 Pod 的状态不能持续地被 kubelet 汇报给 kube-apiserver
-这很有可能是主从节点（Master 和 Kubelet）间的通信出现了问题 
+这很有可能是主从节点（Master 和 Kubelet）间的通信出现了问题
 ```
 
 扩展：
@@ -3604,7 +3604,7 @@ Pod 的这些状态信息，是判断应用运行情况的重要标准，尤其�
 在 k8s 中，有几种特殊的 Volume，它们的意义不是为了存放容器里的数据，也不是用来进行容器和宿主机之间的数据交换。
 "而是为容器提供预先定义好的数据。"
 
-从容器的角度来看，这些 Volume 里的信息仿佛是被 k8s "投射"（Project）进入容器当中的。 
+从容器的角度来看，这些 Volume 里的信息仿佛是被 k8s "投射"（Project）进入容器当中的。
 ```
 
 **k8s 支持的 Projected Volume 一共有四种：**
@@ -3620,7 +3620,7 @@ ServiceAccountToken
 
 ```shell
 secret用来保存小片敏感数据的k8s资源，例如密码，token，或者秘钥。这类数据当然也可以存放在Pod或者镜像中，但是放在Secret中是为了更方便的控制如何使用数据，并减少暴露的风险。
- 
+
  用户可以创建自己的secret，系统也会有自己的secret。
  Pod需要先引用才能使用某个secret
 ```
@@ -3688,7 +3688,7 @@ Type:  Opaque
 Data
 ====
 password.txt:  12 bytes
-username.txt:  5 bytes 
+username.txt:  5 bytes
  ```
 
 get或describe指令都不会展示secret的实际内容，这是出于对数据的保护的考虑，如果想查看实际内容使用命令：
@@ -3732,7 +3732,7 @@ data:
 创建：
 
 ```shell
-[root@kub-k8s-master prome]# kubectl apply -f secret.yml 
+[root@kub-k8s-master prome]# kubectl apply -f secret.yml
 secret/mysecret created
 ```
 
@@ -3784,19 +3784,19 @@ spec:
       secretName: mysecret   #调用刚才定义的secret
 
 创建：
-[root@kub-k8s-master prome]# kubectl apply -f pod_use_secret.yaml 
+[root@kub-k8s-master prome]# kubectl apply -f pod_use_secret.yaml
 pod/mypod created
 [root@kub-k8s-master prome]# kubectl exec -it mypod /bin/bash
 root@mypod:/data# cd /etc/foo/
 root@mypod:/etc/foo# ls
 password  username
-root@mypod:/etc/foo# cat password 
+root@mypod:/etc/foo# cat password
 1f2d1e2e67df
 ```
 
 ```shell
 每一个被引用的Secret都要在spec.volumes中定义
- 如果Pod中的多个容器都要引用这个Secret那么每一个容器定义中都要指定自己的volumeMounts，但是Pod定义中声明一次spec.volumes就好了。 
+ 如果Pod中的多个容器都要引用这个Secret那么每一个容器定义中都要指定自己的volumeMounts，但是Pod定义中声明一次spec.volumes就好了。
 ```
 
 **映射secret key到指定的路径**
@@ -3825,16 +3825,16 @@ spec:
       items:   #定义一个items
        - key: username   #将那个key重新定义到那个目录下
          path: my-group/my-username  #相对路径，相对于/etc/foo的路径
-        
+
 2.创建
-[root@kub-k8s-master prome]# kubectl apply -f pod_use_secret.yaml 
+[root@kub-k8s-master prome]# kubectl apply -f pod_use_secret.yaml
 pod/mypod created
 3.从volume中读取secret的值
-[root@kub-k8s-master prome]# kubectl exec -it mypod /bin/bash                         
+[root@kub-k8s-master prome]# kubectl exec -it mypod /bin/bash
 root@mypod:/data# cd /etc/foo/my-group
 root@mypod:/etc/foo/my-group# ls
 my-username
-root@mypod:/etc/foo/my-group# cat my-username 
+root@mypod:/etc/foo/my-group# cat my-username
 admin
 root@mypod:/etc/foo/my-group#
  ```
@@ -3862,7 +3862,7 @@ data:
   password: MWYyZDFlMmU2N2Rm
 
 1.创建
-[root@kub-k8s-master prome]# kubectl apply -f secret.yml 
+[root@kub-k8s-master prome]# kubectl apply -f secret.yml
 Warning: kubectl apply should be used on resource created by either kubectl create --save-config or kubectl apply
 secret/mysecret configured
 2.连接pod容器
@@ -3870,7 +3870,7 @@ secret/mysecret configured
 root@mypod:/data# cd /etc/foo/my-group
 root@mypod:/etc/foo/my-group# ls
 my-username
-root@mypod:/etc/foo/my-group# cat my-username 
+root@mypod:/etc/foo/my-group# cat my-username
 qianfeng
 ```
 
@@ -3897,12 +3897,12 @@ spec:
          key: username       #username里面的值
 
 2.创建使用secret的pod容器
-[root@kub-k8s-master prome]# kubectl apply -f pod_use_secret.yaml 
+[root@kub-k8s-master prome]# kubectl apply -f pod_use_secret.yaml
 pod/mypod created
 3.连接
-[root@kub-k8s-master prome]# kubectl exec -it mypod /bin/bash 
+[root@kub-k8s-master prome]# kubectl exec -it mypod /bin/bash
 root@mypod:/data# echo $SECRET_USERNAME   #打印一下定义的变量
-qianfeng 
+qianfeng
 ```
 
 ## **实验**
@@ -3934,7 +3934,7 @@ data:
   user: YWRtaW4=
   pass: MWYyZDFlMmU2N2Rm
 
-[root@kub-k8s-master prome]# kubectl apply -f create_secret.yml 
+[root@kub-k8s-master prome]# kubectl apply -f create_secret.yml
 secret/mysecret-01 created
 
 [root@kub-k8s-master prome]# kubectl get secret
@@ -3966,7 +3966,7 @@ spec:
 创建这个 Pod：
 
 ````shell
-[root@kub-k8s-master prome]# kubectl apply -f test-projected-volume.yaml 
+[root@kub-k8s-master prome]# kubectl apply -f test-projected-volume.yaml
 pod/test-projected-volume1 created
 ````
 
@@ -3979,9 +3979,9 @@ bin   dev  home  lib64	mnt  proc	       root  sbin  sys	usr
 boot  etc  lib	 media	opt  projected-volume  run   srv   tmp	var
 root@test-projected-volume:/# ls projected-volume/
 pass  user
-root@test-projected-volume:/# cat projected-volume/pass 
+root@test-projected-volume:/# cat projected-volume/pass
 1f2d1e2e67df
-root@test-projected-volume:/# cat projected-volume/user 
+root@test-projected-volume:/# cat projected-volume/user
 admin
 root@test-projected-volume:/#
 ```
@@ -3993,14 +3993,14 @@ root@test-projected-volume:/#
 # kubectl exec -it test-projected-volume /bin/sh
 error: unable to upgrade connection: Forbidden (user=system:anonymous, verb=create, resource=nodes, subresource=proxy)
 
- 
+
 
 解决：绑定一个cluster-admin的权限
 # kubectl create clusterrolebinding system:anonymous   --clusterrole=cluster-admin   --user=system:anonymous
 clusterrolebinding.rbac.authorization.k8s.io/system:anonymous created
 ```
 
-结果中看到，保存在 Etcd 里的用户名和密码信息，已经以文件的形式出现在了容器的 Volume 目录里。而这个文件的名字，就是 kubectl create secret 指定的 Key，或者说是 Secret 对象的 data 字段指定的 Key。 
+结果中看到，保存在 Etcd 里的用户名和密码信息，已经以文件的形式出现在了容器的 Volume 目录里。而这个文件的名字，就是 kubectl create secret 指定的 Key，或者说是 Secret 对象的 data 字段指定的 Key。
 
 # **ConfigMap详解**
 
@@ -4034,7 +4034,7 @@ ConfigMap 的用法几乎与 Secret 完全相同：可以使用 kubectl create c
 
 ```shell
 [root@kub-k8s-master prome]# kubectl create configmap test-configmap --from-literal=user=admin --from-literal=pass=1122334
-configmap/test-configmap created 
+configmap/test-configmap created
 ```
 
 结果如下面的data内容所示：
@@ -4077,11 +4077,11 @@ datadir = /wing/mysql/mysql/var
 创建（可以有多个--from-file）：
 
 ```shell
-[root@kub-k8s-master prome]# kubectl create configmap test-config2 --from-file=app.properties 
+[root@kub-k8s-master prome]# kubectl create configmap test-config2 --from-file=app.properties
 configmap/test-config2 created
 ```
 
-结果如下面data内容所示： 
+结果如下面data内容所示：
 
 ```shell
 [root@kub-k8s-master prome]# kubectl get configmap test-config2 -o yaml
@@ -4188,8 +4188,8 @@ data:
 创建：
 
 ````shell
-[root@kub-k8s-master prome]# kubectl apply -f configmap.yaml 
-configmap/test-config4 created 
+[root@kub-k8s-master prome]# kubectl apply -f configmap.yaml
+configmap/test-config4 created
 ````
 
 结果如下面data内容所示：
@@ -4242,10 +4242,10 @@ metadata:
   namespace: default
 data:
   special.how: very
-  special.type: charm  
+  special.type: charm
 
-创建  
-[root@kub-k8s-master prome]# kubectl apply -f config-map.yml 
+创建
+[root@kub-k8s-master prome]# kubectl apply -f config-map.yml
 configmap/config-map created
 ````
 
@@ -4278,7 +4278,7 @@ spec:
   restartPolicy: Never
 
 创建pod
-[root@kub-k8s-master prome]# kubectl apply -f testpod.yml 
+[root@kub-k8s-master prome]# kubectl apply -f testpod.yml
 pod/dapi-test-pod created
 ```
 
@@ -4293,7 +4293,7 @@ charm
 **(2) 通过envFrom、configMapRef、name使得configmap中的所有key/value对儿  都自动变成环境变量：**
 
  ```shell
-[root@kub-k8s-master prome]# kubectl delete -f testpod.yml 
+[root@kub-k8s-master prome]# kubectl delete -f testpod.yml
 pod "dapi-test-pod" deleted
 [root@kub-k8s-master prome]# cp testpod.yml testpod.yml.bak
 [root@kub-k8s-master prome]# vim testpod.yml
@@ -4365,9 +4365,9 @@ spec:
   - name: config-volume4
     configMap:
       name: test-config4
-          
+
 创建pod
-[root@kub-k8s-master prome]# kubectl apply -f volupod.yml 
+[root@kub-k8s-master prome]# kubectl apply -f volupod.yml
 pod/nginx-configmap created
 ```
 
@@ -4377,7 +4377,7 @@ pod/nginx-configmap created
 [root@kub-k8s-master prome]#  kubectl  exec -it nginx-configmap /bin/bash
 root@nginx-configmap:/# ls /tmp/config4/
 cache_host  cache_port	cache_prefix  my.cnf
-root@nginx-configmap:/# cat /tmp/config4/cache_host 
+root@nginx-configmap:/# cat /tmp/config4/cache_host
 memcached-gcxt
 root@nginx-configmap:/#
 ```
@@ -4485,14 +4485,14 @@ spec:
 将元数据 labels 和 annotaions 以文件的形式挂载到了/etc/podinfo目录下，创建上面的 POD ：
 
 ```shell
-[root@kub-k8s-master prome]# kubectl apply -f test-volume-pod.yaml 
+[root@kub-k8s-master prome]# kubectl apply -f test-volume-pod.yaml
 pod/test-volume-pod created
 [root@kub-k8s-master prome]# kubectl get pod -n kube-system
 [root@k8s-master prome]# kubectl exec -it test-volume-pod /bin/bash -n kube-system
 root@test-volume-pod:/# cd /etc/podinfo/
 root@test-volume-pod:/etc/podinfo# ls
 labels
-root@test-volume-pod:/etc/podinfo# cat labels 
+root@test-volume-pod:/etc/podinfo# cat labels
 k8s-app="test-volume"
 node-env="test"
 ```
@@ -4535,7 +4535,7 @@ k8s中提供了良好的多租户认证管理机制，如RBAC、ServiceAccount�
  ```shell
 当用户访问集群（例如使用kubectl命令）时，apiserver 会将用户认证为一个特定的 User Account（目前通常是admin，除非系统管理员自定义了集群配置）。
 
-Pod 容器中的进程也可以与 apiserver 联系。 当它们在联系 apiserver 的时候，它们会被认证为一个特定的Service Account（例如default）。  
+Pod 容器中的进程也可以与 apiserver 联系。 当它们在联系 apiserver 的时候，它们会被认证为一个特定的Service Account（例如default）。
  ```
 
 使用场景：
@@ -4551,16 +4551,16 @@ Service account与User account区别:
 
 2. User account是跨namespace的，而service account则是仅局限它所在的namespace；
 
-3. 每个namespace都会自动创建一个default service account    
+3. 每个namespace都会自动创建一个default service account
 
-4. Token controller检测service account的创建，并为它们创建secret    
+4. Token controller检测service account的创建，并为它们创建secret
 
 5. 开启ServiceAccount Admission Controller后:
  5.1 每个Pod在创建后都会自动设置spec.serviceAccount为default（除非指定了其他ServiceAccout）
  5.2 验证Pod引用的service account已经存在，否则拒绝创建
  5.3 如果Pod没有指定ImagePullSecrets，则把service account的ImagePullSecrets加到Pod中
- 5.4 每个container启动后都会挂载该service account的token和ca.crt到/run/secrets/kubernetes.io/serviceaccount/   
- 
+ 5.4 每个container启动后都会挂载该service account的token和ca.crt到/run/secrets/kubernetes.io/serviceaccount/
+
  每一个pod启动之后都会有一个和认证相关的东西存在pod里面，，存在到哪里呢？
 ```
 
@@ -4619,7 +4619,7 @@ spec:
     - name: http
       containerPort: 80
   serviceAccountName: mysa   #指定serviceaccount的名称
-  
+
 5、导入
 [root@kub-k8s-master prome]# kubectl apply -f  mysa-pod.yaml
 pod/nginx-pod created
@@ -4643,7 +4643,7 @@ Service Account为服务提供了一种方便的认证机制，但它不关心�
 在Kubernetes中，授权有ABAC（基于属性的访问控制）、RBAC（基于角色的访问控制）、Webhook、Node、AlwaysDeny（一直拒绝）和AlwaysAllow（一直允许）这6种模式。
 
 在RBAC API中，通过如下的步骤进行授权：
-1）定义角色：在定义角色时会指定此角色对于资源的访问控制的规则； 
+1）定义角色：在定义角色时会指定此角色对于资源的访问控制的规则；
 2）绑定角色：将主体与角色进行绑定，对用户进行访问授权。
 ```
 
@@ -4755,7 +4755,7 @@ Switched to context "kubernetes-admin@kubernetes".
 实验二
 
 6.删除soso账号之前绑定的rolebinding
-[root@kub-k8s-master ~]# kubectl  delete rolebinding myrole-binding 
+[root@kub-k8s-master ~]# kubectl  delete rolebinding myrole-binding
 rolebinding.rbac.authorization.k8s.io "myrole-binding" deleted
 7.创建clusterrole #可以访问全部的namespace
 [root@kub-k8s-master ~]# kubectl create clusterrole myclusterrole --verb=get,list,watch --resource=pod,svc
@@ -4775,7 +4775,7 @@ NAME                                     READY   STATUS    RESTARTS   AGE
 coredns-5644d7b6d9-sm8hs                 1/1     Running   0          5d
 coredns-5644d7b6d9-vddll                 1/1     Running   0          5d
 etcd-kub-k8s-master                      1/1     Running   0          5d
-... 
+...
 
 注意：10.切换为管理员用户
 [root@kub-k8s-master ~]# kubectl  config use-context kubernetes-admin@kubernetes
@@ -4842,12 +4842,12 @@ spec:
     image: daocloud.io/library/nginx
     args:
     - /bin/sh
-    - -c  
+    - -c
     - touch /tmp/healthy; sleep 30; rm -rf /tmp/healthy; sleep 50
     livenessProbe:    #探针，健康检查
       exec:    #类型
         command:  #命令
-        - cat 
+        - cat
         - /tmp/healthy
       initialDelaySeconds: 5   #健康检查，在容器启动 5 s 后开始执行
       periodSeconds: 5   #每 5 s 执行一次
@@ -4864,14 +4864,14 @@ spec:
 创建Pod：
 
 ```shell
-[root@kub-k8s-master prome]# kubectl apply -f test-liveness-exec.yaml 
+[root@kub-k8s-master prome]# kubectl apply -f test-liveness-exec.yaml
 pod/test-liveness-exec created
 ```
 
 查看 Pod 的状态：
 
 ```shell
-[root@kub-k8s-master prome]# kubectl get pod 
+[root@kub-k8s-master prome]# kubectl get pod
 NAME                    READY   STATUS    RESTARTS   AGE
 nginx-configmap         1/1     Running   0          16h
 nginx-pod               1/1     Running   0          12h
@@ -4883,7 +4883,7 @@ test-liveness-exec      1/1     Running   0          75s
  然后30 s 之后，再查看一下 Pod 的 Events：
 
 ```shell
-[root@kub-k8s-master prome]# kubectl describe pod test-liveness-exec 
+[root@kub-k8s-master prome]# kubectl describe pod test-liveness-exec
 ```
 
 发现，这个 Pod 在 Events 报告了一个异常：
@@ -4920,7 +4920,7 @@ RESTARTS 字段从 0 到 1 的变化，就明白原因了：这个异常的容�
 小提示：
 
 ```shell
-    Pod 的恢复过程，永远都是发生在当前节点上，而不会跑到别的节点上去。事实上，一旦一个 Pod 与一个节点（Node）绑定，除非这个绑定发生了变化（pod.spec.node 字段被修改），否则它永远都不会离开这个节点。这也就意味着，如果这个宿主机宕机了，这个 Pod 也不会主动迁移到其他节点上去。  
+    Pod 的恢复过程，永远都是发生在当前节点上，而不会跑到别的节点上去。事实上，一旦一个 Pod 与一个节点（Node）绑定，除非这个绑定发生了变化（pod.spec.node 字段被修改），否则它永远都不会离开这个节点。这也就意味着，如果这个宿主机宕机了，这个 Pod 也不会主动迁移到其他节点上去。
 ```
 
 **http get方式探针**
@@ -4952,7 +4952,7 @@ spec:
  创建该pod
 
 ```shell
-[root@kub-k8s-master prome]# kubectl create -f liveness-httpget.yaml 
+[root@kub-k8s-master prome]# kubectl create -f liveness-httpget.yaml
 pod/liveness-httpget-pod created
 ```
 
@@ -5123,7 +5123,7 @@ deployment "nginx-deployment" deleted
 ```
 
 ```shell
-apiVersion:注意这里apiVersion对应的值是extensions/v1beta1或者apps/v1.这个版本号需要根据安装的Kubernetes版本和资源类型进行变化，记住不是写死的。此值必须在kubectl apiversion中 
+apiVersion:注意这里apiVersion对应的值是extensions/v1beta1或者apps/v1.这个版本号需要根据安装的Kubernetes版本和资源类型进行变化，记住不是写死的。此值必须在kubectl apiversion中
 [root@kub-k8s-master prome]# kubectl api-versions
     apps/v1beta1
     authentication.k8s.io/v1beta1
@@ -5144,7 +5144,7 @@ metadata：指定一些meta信息，包括名字或标签之类的。每一个 A
 labels:Labels是最主要的字段,是一组 key-value 格式的标签,k8s中的所有资源都支持携带label,默认情况下，pod的label会复制rc的label
     k8s使用用户自定义的key-value键值对来区分和标识资源集合（就像rc、pod等资源），这种键值对称为label。
      像 Deployment 这样的控制器对象，就可以通过这个 Labels 字段从 Kubernetes 中过滤出它所关心的被控制对象。
-    
+
     关于Annotations：在 Metadata 中，还有一个与 Labels 格式、层级完全相同的字段叫 Annotations，它专门用来携带 key-value 格式的内部信息。所谓内部信息，指的是对这些信息感兴趣的，是 Kubernetes 组件本身，而不是用户。所以大多数 Annotations，都是在 Kubernetes 运行过程中，被自动加在这个 API 对象上。
 
 selector:过滤规则的定义，是在 Deployment 的"spec.selector.matchLabels"字段。一般称之为：Label Selector。
@@ -5152,9 +5152,9 @@ selector:过滤规则的定义，是在 Deployment 的"spec.selector.matchLabels
 
 使用labels定位pods
 [root@kub-k8s-master prome]# kubectl get pods -l app=nginx -o wide
-NAME                                READY   STATUS    RESTARTS   AGE   IP            NODE       
-nginx-deployment-59c4b86474-2llrt   1/1     Running   0          16m   10.244.2.15   kub-k8s-node2   
-nginx-deployment-59c4b86474-n2r2m   1/1     Running   0          16m   10.244.1.39   kub-k8s-node1   
+NAME                                READY   STATUS    RESTARTS   AGE   IP            NODE
+nginx-deployment-59c4b86474-2llrt   1/1     Running   0          16m   10.244.2.15   kub-k8s-node2
+nginx-deployment-59c4b86474-n2r2m   1/1     Running   0          16m   10.244.1.39   kub-k8s-node1
 
 检查你的Pod的IPs：
 [root@kub-k8s-master prome]# kubectl get pods -l app=nginx -o json | grep podIP
@@ -5172,17 +5172,17 @@ template：定义了一个 Pod 模版（spec.template），这个模版描述了
 
 volumes：是属于 Pod 对象的一部分。需要修改 template.spec 字段
     例2中，在 Deployment 的 Pod 模板部分添加了一个 volumes 字段，定义了这个 Pod 声明的所有 Volume。它的名字叫作 nginx-vol，类型是 emptyDir。
-    
+
 关于emptyDir 类型：等同于 Docker 的隐式 Volume 参数，即：不显式声明宿主机目录的 Volume。所以，Kubernetes 也会在宿主机上创建一个临时目录，这个目录将来就会被绑定挂载到容器所声明的 Volume 目录上。
 k8s 的 emptyDir 类型，只是把 k8s 创建的临时目录作为 Volume 的宿主机目录，交给了 Docker。这么做的原因，是 k8s 不想依赖 Docker 自己创建的那个 _data 目录。
 
 volumeMounts:Pod 中的容器，使用的是 volumeMounts 字段来声明自己要挂载哪个 Volume，并通过 mountPath 字段来定义容器内的 Volume 目录，比如：/usr/share/nginx/html。
 
 hostPath:k8s 也提供了显式的 Volume 定义，它叫做 hostPath。比如下面的这个 YAML 文件：
-    ...   
+    ...
         volumes:
           - name: nginx-vol
-            hostPath: 
+            hostPath:
               path: /var/data
     这样，容器 Volume 挂载的宿主机目录，就变成了 /var/data
 ```
@@ -5215,7 +5215,7 @@ spec:
             image: daocloud.io/library/nginx
             ports:
               - containerPort: 80
-[root@kub-k8s-master prome]# kubectl apply -f nginx-depl.yml 
+[root@kub-k8s-master prome]# kubectl apply -f nginx-depl.yml
 deployment.apps/nginx-deployment created
 2. 创建service并且以nodePort的方式暴露端口给外网：
 [root@kub-k8s-master prome]# vim nginx_svc.yaml
@@ -5232,7 +5232,7 @@ spec:
   selector:   #选择器
     app: web
 
-[root@kub-k8s-master prome]# kubectl apply -f nginx_svc.yaml 
+[root@kub-k8s-master prome]# kubectl apply -f nginx_svc.yaml
 service/mysvc created
 
 3.测试
@@ -5285,15 +5285,15 @@ port、nodePort总结
 
 **kube-proxy反向代理**
 
-kube-proxy与iptables 
+kube-proxy与iptables
 
 当service有了port和nodePort之后，就可以对内/外提供服务。那么其具体是通过什么原理来实现的呢？原因就在kube-proxy在本地node上创建的iptables规则。
 
 Kube-Proxy 通过配置 DNAT  规则（从容器出来的访问，从本地主机出来的访问两方面），将到这个服务地址的访问映射到本地的kube-proxy端口（随机端口）。然后  Kube-Proxy 会监听在本地的对应端口，将到这个端口的访问给代理到远端真实的 pod 地址上去。
 
- 
 
-不管是通过集群内部服务入口<cluster ip>:port还是通过集群外部服务入口<node  ip>:nodePort的请求都将重定向到本地kube-proxy端口（随机端口）的映射，然后将到这个kube-proxy端口的访问给代理到远端真实的  pod 地址上去。 
+
+不管是通过集群内部服务入口<cluster ip>:port还是通过集群外部服务入口<node  ip>:nodePort的请求都将重定向到本地kube-proxy端口（随机端口）的映射，然后将到这个kube-proxy端口的访问给代理到远端真实的  pod 地址上去。
 
 # RC资源(了解)
 
@@ -5343,7 +5343,7 @@ spec:
 **创建rc:**
 
 ```shell
-[root@kub-k8s-master prome]# kubectl apply -f nginx-rc.yml 
+[root@kub-k8s-master prome]# kubectl apply -f nginx-rc.yml
 replicationcontroller/my-nginx created
 ```
 
@@ -5387,7 +5387,7 @@ replicationcontroller "my-nginx" deleted
 **转发K8S后端服务的四种方式**
 
 ```shell
-方式1：ClusterIP 
+方式1：ClusterIP
 
 此类型会提供一个集群内部的虚拟IP（与Pod不在同一网段)，以供集群内部的pod之间通信使用。ClusterIP也是Kubernetes service的默认类型。
 ```
@@ -5397,7 +5397,7 @@ replicationcontroller "my-nginx" deleted
 外网client--->nodeIP+nodePort--->podIP+PodPort
 ```
 
- 为每个节点暴露一个端口，通过nodeip + nodeport可以访问这个服务，同时服务依然会有cluster类型的ip+port。内部通过clusterip方式访问，外部通过nodeport方式访问。  
+ 为每个节点暴露一个端口，通过nodeip + nodeport可以访问这个服务，同时服务依然会有cluster类型的ip+port。内部通过clusterip方式访问，外部通过nodeport方式访问。
 
 ```shell
 方式3：loadbalance
@@ -5417,16 +5417,16 @@ LoadBalancer在NodePort基础上，K8S可以请求底层云平台创建一个负
 
 #### 完整TOMCAT实例
 
-注意：本文中和上文中的NodePort没有完全解决外部访问Service的所有问题，比如负载均衡，假如我们又10个Node，则此时最好有一个负载均衡器，外部的请求只需访问此负载均衡器的IP地址，由负载局衡器负责转发流量到后面某个Node的NodePort上。这个负载均衡器可以是硬件，也可以是软件方式，例如HAProxy或者Nginx； 
+注意：本文中和上文中的NodePort没有完全解决外部访问Service的所有问题，比如负载均衡，假如我们又10个Node，则此时最好有一个负载均衡器，外部的请求只需访问此负载均衡器的IP地址，由负载局衡器负责转发流量到后面某个Node的NodePort上。这个负载均衡器可以是硬件，也可以是软件方式，例如HAProxy或者Nginx；
 
-Java Web应用 
+Java Web应用
 
 注：Tomcat有可能无法正常启动，原因是虚机的内存和CPU设置过小，请酌情调大！
 
 **下载镜像**
 
  ```shell
-[root@kub-k8s-node1 ~]#  docker pull daocloud.io/library/tomcat 
+[root@kub-k8s-node1 ~]#  docker pull daocloud.io/library/tomcat
  ```
 
 **构建Tomcat RC定义文件**
@@ -5459,8 +5459,8 @@ spec:
 **创建RC**
 
 ```shell
-[root@kub-k8s-master prome]# kubectl apply -f myweb.rc.yml 
-replicationcontroller/myweb created 
+[root@kub-k8s-master prome]# kubectl apply -f myweb.rc.yml
+replicationcontroller/myweb created
 ```
 
 **查看RC**
@@ -5485,7 +5485,7 @@ myweb-shjfn                         1/1     Running            0          52s
 [root@kub-k8s-master prome]# vim myweb-svc.yaml
 apiVersion: v1
 kind: Service
-metadata: 
+metadata:
   name: myweb
 spec:
   type: NodePort
@@ -5500,7 +5500,7 @@ spec:
 **创建**
 
 ```shell
-[root@kub-k8s-master prome]# kubectl apply -f myweb-svc.yaml 
+[root@kub-k8s-master prome]# kubectl apply -f myweb-svc.yaml
 service/myweb created
 ```
 
@@ -5532,7 +5532,7 @@ myweb        NodePort    10.96.19.61      <none>        8081:30009/TCP   33s
 
 ```shell
 创建rc
-[root@k8s-master prome]# cat nginx-rc.yml 
+[root@k8s-master prome]# cat nginx-rc.yml
 ---
 apiVersion: v1
 kind: ReplicationController
@@ -5552,10 +5552,10 @@ spec:
         - containerPort: 80
 [root@k8s-master prome]# kubectl apply -f nginx-rc.yml
 通过创建service暴露端口
-[root@k8s-master prome]# cat nginx-svc.yml 
+[root@k8s-master prome]# cat nginx-svc.yml
 apiVersion: v1
 kind: Service
-metadata: 
+metadata:
   name: mynginx
 spec:
   type: NodePort
@@ -5565,7 +5565,7 @@ spec:
       targetPort: 80
   selector:
     app: nginx
-[root@k8s-master prome]# kubectl apply -f nginx-svc.yml       
+[root@k8s-master prome]# kubectl apply -f nginx-svc.yml
 ```
 
 访问测试：
@@ -5578,7 +5578,7 @@ spec:
 
 ```shell
 创建关于tomcat的rc
-[root@k8s-master prome]# cat myweb.rc.yml 
+[root@k8s-master prome]# cat myweb.rc.yml
 ---
 apiVersion: v1
 kind: ReplicationController
@@ -5598,13 +5598,13 @@ spec:
           image: hub.c.163.com/public/tomcat:7.0.28
           ports:
           - containerPort: 8080
-[root@k8s-master prome]# kubectl apply -f myweb.rc.yml  
+[root@k8s-master prome]# kubectl apply -f myweb.rc.yml
 
 创建service通过NodePort的方式暴露tomcat容器的端口到外网
-[root@k8s-master prome]# cat myweb-svc.yaml 
+[root@k8s-master prome]# cat myweb-svc.yaml
 apiVersion: v1
 kind: Service
-metadata: 
+metadata:
   name: myweb
 spec:
   type: NodePort
@@ -5623,7 +5623,7 @@ spec:
 
 ![image-20200820090251132](assets/image-20200820090251132.png)
 
-# **控制器模式解析** 
+# **控制器模式解析**
 
 ```shell
  k8s 项目通过一个称作"控制器模式"（controller pattern）的设计方法，来统一地实现对各种不同的对象或者资源进行的编排操作。#k8s核心就是用一个东西去控制另一个东西，所有的内容都是被控制的，
@@ -5667,13 +5667,13 @@ spec:
 
 究竟是 Kubernetes 项目中的哪个组件，在执行这些操作呢？
 
-**kube-controller-manager 组件：这个组件，就是一系列控制器的集合**   
+**kube-controller-manager 组件：这个组件，就是一系列控制器的集合**
 
 所有控制器：
 
 ```shell
-deployment             job                   podautoscaler          
-cloud                  disruption             namespace              
+deployment             job                   podautoscaler
+cloud                  disruption             namespace
 replicaset             serviceaccount         volume
 cronjob                garbagecollector       nodelifecycle          replication            statefulset            daemon
 ```
@@ -5683,12 +5683,12 @@ cronjob                garbagecollector       nodelifecycle          replication
 ```shell
 而被控制对象的定义，则来自于一个"模板"。比如，Deployment 里的 template 字段。
 
-Deployment 这个 template 字段里的内容，跟一个标准的 Pod 对象的 API 定义，丝毫不差。而所有被这个 Deployment 管理的 Pod 实例，都是根据这个 template 字段的内容创建出来的。 
+Deployment 这个 template 字段里的内容，跟一个标准的 Pod 对象的 API 定义，丝毫不差。而所有被这个 Deployment 管理的 Pod 实例，都是根据这个 template 字段的内容创建出来的。
 ```
 
 对 Deployment 以及其他类似的控制器，做一个总结：
 
-![img](assets/wps7-1571751538647.jpg) 
+![img](assets/wps7-1571751538647.jpg)
 
 如图，类似 Deployment 的一个控制器，都是由两部分组成：
 
@@ -5747,7 +5747,7 @@ nginx-deployment   4/4     4            4           5h25m
 返回结果中四个状态字段含义：
 
 ```shell
-DESIRED： 
+DESIRED：
 如果有就表示用户期望的 Pod 副本个数（spec.replicas 的值）；
 
 CURRENT：
@@ -5820,7 +5820,7 @@ spec:
             image: daocloud.io/library/nginx:1.14 #注意修改
             ports:
               - containerPort: 80
-[root@kub-k8s-master prome]# kubectl apply -f nginx-depl02.yml 
+[root@kub-k8s-master prome]# kubectl apply -f nginx-depl02.yml
 deployment.apps/dep02 created
 [root@kub-k8s-master prome]# kubectl get pods
 NAME                                READY   STATUS    RESTARTS   AGE
@@ -5877,8 +5877,8 @@ Events:
 NAME                                READY   STATUS    RESTARTS   AGE
 dep02-78dbd944fc-69t8x              1/1     Running   0          11h
 dep02-78dbd944fc-7cn86              1/1     Running   0          11h
-[root@kub-k8s-master prome]# kubectl exec -it dep02-78dbd944fc-69t8x /bin/bash 
-root@dep02-78dbd944fc-69t8x:/# nginx -v 
+[root@kub-k8s-master prome]# kubectl exec -it dep02-78dbd944fc-69t8x /bin/bash
+root@dep02-78dbd944fc-69t8x:/# nginx -v
 nginx version: nginx/1.16.1
 root@dep02-78dbd944fc-69t8x:/# exit
 ```
@@ -5893,7 +5893,7 @@ root@dep02-78dbd944fc-69t8x:/# exit
 
 ```shell
 [root@kub-k8s-master prome]# kubectl rollout history deployment/dep02
-deployment.apps/dep02 
+deployment.apps/dep02
 REVISION  CHANGE-CAUSE
 1         <none>
 2         <none>
@@ -5922,8 +5922,8 @@ deployment "dep02" successfully rolled out
 NAME                                READY   STATUS             RESTARTS   AGE
 dep02-8594cd6447-pqtxk              1/1     Running            0          55s
 dep02-8594cd6447-tt4h4              1/1     Running            0          51s
-[root@kub-k8s-master prome]# kubectl exec -it dep02-8594cd6447-tt4h4 /bin/bash 
-root@dep02-8594cd6447-tt4h4:/# nginx -v 
+[root@kub-k8s-master prome]# kubectl exec -it dep02-8594cd6447-tt4h4 /bin/bash
+root@dep02-8594cd6447-tt4h4:/# nginx -v
 nginx version: nginx/1.14.2
 ```
 
@@ -5956,7 +5956,7 @@ Pod Template:
     Host Port:	0/TCP
     Environment:	<none>
     Mounts:	<none>
-  Volumes:	<none> 
+  Volumes:	<none>
 ```
 
 **2.在 kubectl rollout undo 命令行最后，加上要回滚到的指定版本的版本号，就可以回滚到指定版本了。**
@@ -5973,7 +5973,7 @@ deployment.apps/dep02 rolled back
 NAME                                READY   STATUS             RESTARTS   AGE
 dep02-78dbd944fc-8nvxl              1/1     Running            0          86s
 dep02-78dbd944fc-sb9sj              1/1     Running            0          88s
-[root@kub-k8s-master prome]# kubectl exec -it dep02-78dbd944fc-8nvxl /bin/bash 
+[root@kub-k8s-master prome]# kubectl exec -it dep02-78dbd944fc-8nvxl /bin/bash
 root@dep02-78dbd944fc-8nvxl:/# nginx -v
 nginx version: nginx/1.16.1
 ```
@@ -6019,7 +6019,7 @@ NodePort方式：为了便于本地访问，修改yaml文件，将service改为N
 [root@kub-k8s-master ~]# vim recommended.yaml
 ...
 30 ---
- 31 
+ 31
  32 kind: Service
  33 apiVersion: v1
  34 metadata:
@@ -6035,7 +6035,7 @@ NodePort方式：为了便于本地访问，修改yaml文件，将service改为N
  44       nodePort: 31260  #增加nodePort: 31260
  45   selector:
  46     k8s-app: kubernetes-dashboard
- 47 
+ 47
  48 ---
 
 ```
@@ -6111,11 +6111,11 @@ kubernetes-dashboard   NodePort    10.108.97.179   <none>        443:31260/TCP  
 
 ![image-20200820000833450](assets/image-20200820000833450.png)
 
-![1571817527152](assets/1571817527152.png) 
+![1571817527152](assets/1571817527152.png)
 
  **Dashboard 支持 Kubeconfig 和 Token 两种认证方式，这里选择Token认证方式登录：**
 
-上面的Token先空着，不要往下点，接下来制作token 
+上面的Token先空着，不要往下点，接下来制作token
 
 **创建登录用户**
 
@@ -6179,11 +6179,11 @@ token:      eyJhbGciOiJSUzI1NiIsImtpZCI6IjBUc19ucm9qbW1zOHJzajhJd2M2bndpWENQSDRr
 
 **把获取到的Token复制到登录界面的Token输入框中:**
 
-![1571817874537](assets/1571817874537.png) 
+![1571817874537](assets/1571817874537.png)
 
  **成功登陆dashboard:**
 
-![image-20200820001108378](assets/image-20200820001108378.png) 
+![image-20200820001108378](assets/image-20200820001108378.png)
 
 使用Dashboard
 
@@ -6228,7 +6228,7 @@ k8s-node1 k8s-node2 nfs-client
 所有节点安装nfs
 
 ```shell
-yum install -y nfs-common nfs-utils 
+yum install -y nfs-common nfs-utils
 ```
 
 在master节点创建共享目录
@@ -6266,7 +6266,7 @@ yum install -y nfs-common nfs-utils
 下面创建一个 PV `mypv1`，配置文件 `nfs-pv1.yml` 如下：
 
 ```shell
-[root@k8s-master ~]# vim nfs-pv1.yml 
+[root@k8s-master ~]# vim nfs-pv1.yml
 apiVersion: v1
 kind: PersistentVolume
 metadata:
@@ -6314,7 +6314,7 @@ Delete – 删除 Storage Provider 上的对应存储资源，例如 AWS EBS、G
 接下来创建 PVC `mypvc1`，配置文件 `nfs-pvc1.yml` 如下：
 
 ```shell
-[root@k8s-master ~]# cat nfs-pvc1.yml 
+[root@k8s-master ~]# cat nfs-pvc1.yml
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
@@ -6347,7 +6347,7 @@ PVC 就很简单了，只需要指定 PV 的容量，访问模式和 class。
 上面已经创建好了pv和pvc，pod中直接使用这个pvc即可
 
 ```shell
-[root@k8s-master ~]# cat pod1.yml 
+[root@k8s-master ~]# cat pod1.yml
 apiVersion: v1
 kind: Pod
 metadata:
@@ -6390,7 +6390,7 @@ hello.txt
 / # exit
 [root@k8s-master ~]# ls /nfsdata/    #也可在nfs的共享目录中查看到，说明卷共享成功
 hello.txt
-[root@k8s-master ~]# cat /nfsdata/hello.txt 
+[root@k8s-master ~]# cat /nfsdata/hello.txt
 youngfit
 可见，在 Pod 中创建的文件 /mydata/hello.txt 确实已经保存到了 NFS 服务器目录 /nfsdata中。
 如果不再需要使用 PV，可用删除 PVC 回收 PV。
@@ -6463,11 +6463,11 @@ hello.txt
 在nfs目录下检验
 [root@k8s-master pvc]# ls /nfsdata/
 hello.txt
-[root@k8s-master pvc]# cat /nfsdata/hello.txt 
+[root@k8s-master pvc]# cat /nfsdata/hello.txt
 youngfit
 
 删除pod
-[root@k8s-master pvc]# kubectl delete -f pod1.yml 
+[root@k8s-master pvc]# kubectl delete -f pod1.yml
 pod "mypod1" deleted
 [root@k8s-master pvc]# ls /nfsdata/
 hello.txt
@@ -6476,7 +6476,7 @@ hello.txt
 persistentvolumeclaim "mypvc1" deleted
 [root@k8s-master pvc]# ls /nfsdata/
 hello.txt
-[root@k8s-master pvc]# cat /nfsdata/hello.txt 
+[root@k8s-master pvc]# cat /nfsdata/hello.txt
 youngfit
 发现数据仍然保留
 ```
@@ -6490,7 +6490,7 @@ hello.txt
 persistentvolume "mypv1" deleted
 [root@k8s-master pvc]# ls /nfsdata/
 hello.txt
-[root@k8s-master pvc]# kubectl apply -f nfs-pv1.yml 
+[root@k8s-master pvc]# kubectl apply -f nfs-pv1.yml
 persistentvolume/mypv1 created
 [root@k8s-master pvc]# kubectl get pod
 No resources found in default namespace.
@@ -6507,7 +6507,7 @@ PV 还支持 `Delete` 的回收策略，会删除 PV 在 Storage Provider 上对
 
 ```shell
 所有节点下载nfs
-yum install -y nfs-common nfs-utils 
+yum install -y nfs-common nfs-utils
 
 master节点作为nfs服务端
 [root@k8s-master k8s]# cat /etc/exports
@@ -6516,7 +6516,7 @@ master节点作为nfs服务端
 
 master节点操作
 #1.定义pv
-[root@k8s-master pvc2]# cat pv-pod.yaml 
+[root@k8s-master pvc2]# cat pv-pod.yaml
 apiVersion: v1
 kind: PersistentVolume
 metadata:
@@ -6532,7 +6532,7 @@ spec:
 [root@k8s-master pvc2]# kubectl apply -f pv-pod.yaml
 
 #2.定义pvc和deployment
-[root@k8s-master pvc2]# cat pvc-pod.yaml 
+[root@k8s-master pvc2]# cat pvc-pod.yaml
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -6579,7 +6579,7 @@ spec:
 [root@k8s-master pvc2]# kubectl apply -f pvc-pod.yaml
 
 #3，暴露一下端口
-[root@k8s-master pvc2]# cat pv-service.yaml 
+[root@k8s-master pvc2]# cat pv-service.yaml
 apiVersion: v1
 kind: Service
 metadata:
@@ -6594,7 +6594,7 @@ spec:
     app: nginx
 
 #4.nfs服务器操作
-[root@k8s-master pvc2]# echo youngfit >> /data/opv/index.html 
+[root@k8s-master pvc2]# echo youngfit >> /data/opv/index.html
 #5.访问，看效果
 ```
 
@@ -6636,7 +6636,7 @@ StorageClass 支持 `Delete` 和 `Retain` 两种 `reclaimPolicy`，默认是 `De
 
 ```
 [root@k8s-master pv]# kubectl delete -f pod1.yml
-[root@k8s-master pv]# cat pod1.yml 
+[root@k8s-master pv]# cat pod1.yml
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -6665,8 +6665,8 @@ spec:
         - name: mydata
           persistentVolumeClaim:
             claimName: mypvc1
-            
-[root@k8s-master pv]# kubectl apply -f pod1.yml 
+
+[root@k8s-master pv]# kubectl apply -f pod1.yml
 [root@k8s-master pv]# kubectl exec -it mydep-6b4f9c68b9-mqtcl /bin/sh
 / # echo youngfit > mydata/qf.txt
 / # exit
@@ -6693,7 +6693,7 @@ spec:
 mysql-pv.yml
 
 ```
-[root@k8s-master mysqlpv]# cat mysql-pv.yml 
+[root@k8s-master mysqlpv]# cat mysql-pv.yml
 apiVersion: v1
 kind: PersistentVolume
 metadata:
@@ -6714,7 +6714,7 @@ spec:
 mysql-pvc.yml
 
 ```
-[root@k8s-master mysqlpv]# cat mysql-pvc.yml 
+[root@k8s-master mysqlpv]# cat mysql-pvc.yml
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
@@ -6726,7 +6726,7 @@ spec:
     requests:
       storage: 1Gi
   storageClassName: nfs
-  
+
 [root@k8s-master mysqlpv]# kubectl apply -f mysql-pvc.yml
 ```
 
@@ -6735,7 +6735,7 @@ spec:
 接下来部署 MySQL，配置文件如下：
 
 ```yaml
-[root@k8s-master mysqlpv]# cat mysqlpod.yml 
+[root@k8s-master mysqlpv]# cat mysqlpod.yml
 apiVersion: v1
 kind: Service
 metadata:
@@ -6775,7 +6775,7 @@ spec:
       - name: mysql-persistent-storage
         persistentVolumeClaim:
           claimName: mysql-pvc
-          
+
 [root@k8s-master mysqlpv]# kubectl apply -f mysqlpod.yml
 ```
 
@@ -6866,7 +6866,7 @@ https://github.com/kubernetes-incubator/external-storage/tree/master/nfs-client/
 ### 8.1定义一个storage
 
 ```shell
-[root@master pvc-test]# cat storageclass-nfs.yaml 
+[root@master pvc-test]# cat storageclass-nfs.yaml
 apiVersion: storage.k8s.io/v1
 kind: StorageClass
 metadata:
@@ -6887,7 +6887,7 @@ provisioner: fuseim.pri/ifs
 然后pod中再使用这个sa，那么pod再创建的时候，会用到sa，sa具有创建pv的权限，便可以自动创建pv；
 
 ```shell
-[root@master pvc-test]# cat rbac.yaml 
+[root@master pvc-test]# cat rbac.yaml
 apiVersion: v1
 kind: ServiceAccount
 metadata:
@@ -6933,7 +6933,7 @@ roleRef:
 这里自动创建pv的服务由nfs-client-provisioner 完成
 
 ```
-[root@master pvc-test]# cat deployment-nfs.yaml 
+[root@master pvc-test]# cat deployment-nfs.yaml
 kind: Deployment
 apiVersion: apps/v1
 metadata:
@@ -7005,7 +7005,7 @@ nfs-client-provisioner-855887f688-hrdwj   1/1     Running   0          77s
 我们部署一个nginx服务，让其html下面自动挂载数据卷，
 
 ```shell
-[root@master pvc-test]# cat nginx.yaml 
+[root@master pvc-test]# cat nginx.yaml
 apiVersion: v1
 kind: Service
 metadata:
@@ -7053,7 +7053,7 @@ spec:
       resources:
         requests:
           storage: 1Gi
-          
+
 [root@master pvc-test]# kubectl apply -f nginx.yaml
 ```
 
@@ -7094,4 +7094,3 @@ emptyDir 和 hostPath 类型的 Volume 很方便，但可持久性不强，Kuber
 PV 和 PVC 分离了管理员和普通用户的职责，更适合生产环境。我们还学习了如何通过 StorageClass 实现更高效的动态供给。
 
 最后，我们演示了如何在 MySQL 中使用 PersistentVolume 实现数据持久性。
-

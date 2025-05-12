@@ -84,7 +84,7 @@ get_container_pid() {
         log_error "Neither Docker nor containerd is running."
         exit 1
     fi
-    
+
     echo "$pid"
 }
 

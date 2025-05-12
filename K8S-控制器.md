@@ -46,7 +46,7 @@ DaemonSet的描述文件和Deployment非常相似，只需要修改Kind，并去
 当然，我们这里的pod运行的是nginx，作为案例；
 
 ```
-[root@k8s-master daemonset]# cat nginx-daemonset.yml 
+[root@k8s-master daemonset]# cat nginx-daemonset.yml
 apiVersion: apps/v1
 kind: DaemonSet
 metadata:
@@ -188,7 +188,7 @@ https://github.com/kubernetes-incubator/external-storage/tree/master/nfs-client/
 #### 5.2定义一个storage
 
 ```shell
-[root@master pvc-test]# cat storageclass-nfs.yaml 
+[root@master pvc-test]# cat storageclass-nfs.yaml
 apiVersion: storage.k8s.io/v1
 kind: StorageClass
 metadata:
@@ -209,7 +209,7 @@ provisioner: fuseim.pri/ifs
 然后pod中再使用这个sa，那么pod再创建的时候，会用到sa，sa具有创建pv的权限，便可以自动创建pv；
 
 ```shell
-[root@master pvc-test]# cat rbac.yaml 
+[root@master pvc-test]# cat rbac.yaml
 apiVersion: v1
 kind: ServiceAccount
 metadata:
@@ -255,7 +255,7 @@ roleRef:
 这里自动创建pv的服务由nfs-client-provisioner 完成
 
 ```
-[root@master pvc-test]# cat deployment-nfs.yaml 
+[root@master pvc-test]# cat deployment-nfs.yaml
 kind: Deployment
 apiVersion: apps/v1
 metadata:
@@ -327,7 +327,7 @@ nfs-client-provisioner-855887f688-hrdwj   1/1     Running   0          77s
 我们部署一个nginx服务，让其html下面自动挂载数据卷，
 
 ```shell
-[root@master pvc-test]# cat nginx.yaml 
+[root@master pvc-test]# cat nginx.yaml
 apiVersion: v1
 kind: Service
 metadata:
@@ -375,7 +375,7 @@ spec:
       resources:
         requests:
           storage: 1Gi
-          
+
 [root@master pvc-test]# kubectl apply -f nginx.yaml
 ```
 
@@ -446,7 +446,7 @@ youngfit-2
 使用 kubectl run 运行一个提供 nslookup 命令的容器，该命令来自于 dnsutils 包。通过对 Pod 的主机名执行 nslookup，你可以检查他们在集群内部的 DNS 地址
 
 ```shell
-[root@master pvc-test]# cat pod.yaml 
+[root@master pvc-test]# cat pod.yaml
 apiVersion: v1
 kind: Pod
 metadata:
@@ -491,7 +491,7 @@ pod "web-1" deleted
 
 [root@k8s-master sts]# kubectl exec -it web-1 /bin/sh
 #  cd /usr/share/nginx/html
-# echo youngfit-2 > index.html                
+# echo youngfit-2 > index.html
 
 [root@k8s-master sts]# ls /opt/container_data/default-www-web-0-pvc-ae99bd8d-a337-458d-a178-928cf4602713/
 index.html
@@ -543,4 +543,3 @@ web-1                                    1/1     Running   0          6s
 ![image-20211004224108793](assets/image-20211004224108793.png)
 
 ![image-20211004224204314](assets/image-20211004224204314.png)
-
