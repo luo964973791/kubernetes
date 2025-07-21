@@ -22,18 +22,20 @@ if [ "$EUID" -ne 0 ]; then
     print_red "此脚本需要root权限运行，请使用 sudo $0"
 fi
 
+# 用法: ./tcp_udp_check.sh 80tcp 或 ./tcp_udp_check.sh 53udp
+if [ $# -ne 1 ]; then
+  print_red "Usage: $0 <port><tcp|udp> (e.g. 80tcp or 53udp)"
+fi
+
 port_proto=$1
 port=$(echo "$port_proto" | grep -oE '^[0-9]+')
 proto=$(echo "$port_proto" | grep -oE '(tcp|udp)$')
 TIMEOUT=60
 
-# 用法: ./tcp_udp_check.sh 80tcp 或 ./tcp_udp_check.sh 53udp
-if [ $# -ne 1 ]; then
-  print_yellow "
+# 使用说明
+print_yellow "\n脚本说明：\n\
 1. 默认测试时长为 $TIMEOUT 秒，如果需要更改需要更改脚本中的TIMEOUT变量\n\
 2. 使用说明：./tcpdump_demo.sh <port><tcp|udp> (e.g. 80tcp or 53udp)\n"
-  print_red "Usage: $0 <port><tcp|udp> (e.g. 80tcp or 53udp)"
-fi
 
 # 创建临时文件存储tcpdump输出
 TMPFILE=$(mktemp)
@@ -42,20 +44,12 @@ if [[ "$proto" == "tcp" ]]; then
   print_green "[INFO] 检测TCP端口 $port 的三次握手..."
   
   # 在后台启动tcpdump
-  print_green "[INFO] 启动tcpdump监听..."
   timeout "$TIMEOUT" tcpdump -i any port "$port" -s0 -A > "$TMPFILE" 2>/dev/null &
   TCPDUMP_PID=$!
   
   # 等待一秒让tcpdump启动
   sleep 1
   
-  # 触发流量（尝试HTTP请求或TCP连接）
-  print_green "[INFO] 触发HTTP请求到端口 $port..."
-  curl -s --connect-timeout 3 "http://127.0.0.1:$port" >/dev/null 2>&1 &
-  
-  # 同时尝试TCP连接作为备用
-  print_green "[INFO] 同时触发TCP连接到端口 $port..."
-  timeout 3 bash -c "echo 'test' | nc -w 2 127.0.0.1 \"$port\"" >/dev/null 2>&1 &
   
   # 等待tcpdump完成
   wait "$TCPDUMP_PID"
