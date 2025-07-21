@@ -22,15 +22,18 @@ if [ "$EUID" -ne 0 ]; then
     print_red "此脚本需要root权限运行，请使用 sudo $0"
 fi
 
-# 用法: ./tcp_udp_check.sh 80tcp 或 ./tcp_udp_check.sh 53udp
-if [ $# -ne 1 ]; then
-  print_red "Usage: $0 <port><tcp|udp> (e.g. 80tcp or 53udp)"
-fi
-
 port_proto=$1
 port=$(echo "$port_proto" | grep -oE '^[0-9]+')
 proto=$(echo "$port_proto" | grep -oE '(tcp|udp)$')
 TIMEOUT=60
+
+# 用法: ./tcp_udp_check.sh 80tcp 或 ./tcp_udp_check.sh 53udp
+if [ $# -ne 1 ]; then
+  print_yellow "
+1. 默认测试时长为 $TIMEOUT 秒，如果需要更改需要更改脚本中的TIMEOUT变量\n\
+2. 使用说明：./tcpdump_demo.sh <port><tcp|udp> (e.g. 80tcp or 53udp)\n"
+  print_red "Usage: $0 <port><tcp|udp> (e.g. 80tcp or 53udp)"
+fi
 
 # 创建临时文件存储tcpdump输出
 TMPFILE=$(mktemp)
