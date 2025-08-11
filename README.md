@@ -93,6 +93,7 @@ shell run 'sed -i "/swap/s/^/#/" /etc/fstab' #批量关闭
 
 https://github.com/kubernetes-sigs/kubespray/blob/master/docs/mirror.md #KubeSpray 也支持 国内镜像加速了。
 tcpdump -i any -nnll -s0 -A port 80
+alias pcap_tool='bash -c "nsenter --target \$(docker inspect --format '\''{{.State.Pid}}'\'' \$0) --net tcpdump -i any -nnll -s0 -A port \$(docker inspect --format '\''{{range \$p, \$conf := .NetworkSettings.Ports}}{{\$p}} {{end}}'\'' \$0 | awk '\''{print \$1}'\'' | cut -d '\''/'\'' -f1)"'
 if [[ $(kubectl get pod -A | grep 0/1 | awk '{print $1,$2}' | wc -l) -gt 0 ]]; then kubectl get pod -A | grep 0/1 | awk '{print $1,$2}' | while read -r pod namespace; do kubectl delete pod "$namespace" -n "$pod"; done; fi  #删除异常的pod.
 kubectl create job --from=cronjob/etcd etcd-$(date '+%Y%m%d%H%M') -n etcd   #定时执行job任务
 tcpdump -i eth0 dst port 6443 -c 10000 | awk '{print $3}' | awk -F. -v OFS="." '{print $1,$2,$3,$4}' | sort | uniq -c | sort -nr #抓包
@@ -295,3 +296,4 @@ cp _output/local/bin/linux/amd64/kubeadm /usr/local/bin/kubeadm
 ```javascript
 kubeadm certs check-expiration
 ```
+
