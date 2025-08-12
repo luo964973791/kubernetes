@@ -93,7 +93,7 @@ shell run 'sed -i "/swap/s/^/#/" /etc/fstab' #批量关闭
 
 https://github.com/kubernetes-sigs/kubespray/blob/master/docs/mirror.md #KubeSpray 也支持 国内镜像加速了。
 tcpdump -i any -nnll -s0 -A port 80
-alias pcap_tool='bash -c "command -v nsenter >/dev/null 2>&1 || { (command -v yum >/dev/null 2>&1 && yum install -y util-linux) || (command -v apt-get >/dev/null 2>&1 && apt-get update && apt-get install -y util-linux); }; pid=\$(docker inspect --format '\''{{.State.Pid}}'\'' \$0 2>/dev/null); if [ -z \"\$pid\" ] || [ \"\$pid\" = \"0\" ]; then echo -e \"\e[01;31m\$(date \"+%Y-%m-%d %H:%M:%S\") [ERROR] Container \$0 not running or not found!\e[01;00m\"; else port=\$(docker inspect \$0 | grep ExposedPorts -A 3 | grep -o '\''[0-9]\+/tcp'\'' | head -n1 | cut -d '\''/'\'' -f1); nsenter --target \$pid --net tcpdump -i any -nnll -s0 -A port \$port; fi"'
+alias pcap_tool='bash -c "command -v nsenter >/dev/null 2>&1 || { (command -v yum >/dev/null 2>&1 && yum install -y util-linux) || (command -v apt-get >/dev/null 2>&1 && apt-get update && apt-get install -y util-linux); }; command -v tcpdump >/dev/null 2>&1 || { (command -v yum >/dev/null 2>&1 && yum install -y tcpdump) || (command -v apt-get >/dev/null 2>&1 && apt-get update && apt-get install -y tcpdump); }; command -v tree >/dev/null 2>&1 || { (command -v yum >/dev/null 2>&1 && yum install -y tree) || (command -v apt-get >/dev/null 2>&1 && apt-get update && apt-get install -y tree); }; pid=\$(docker inspect --format '\''{{.State.Pid}}'\'' \$0 2>/dev/null); if [ -z \"\$pid\" ] || [ \"\$pid\" = \"0\" ]; then echo -e \"\e[01;31m\$(date \"+%Y-%m-%d %H:%M:%S\") [ERROR] Container \$0 not running or not found!\e[01;00m\"; else port=\$(docker inspect \$0 | grep ExposedPorts -A 3 | grep -o '\''[0-9]\+/tcp'\'' | head -n1 | cut -d '\''/'\'' -f1); date=\$(date +\%Y-\%m-\%d_\%H-\%M-\%S); nsenter --target \$pid --net tcpdump -i any -nnll -s0 -A port \$port | tee /tmp/\$date.pcap; fi"'
 
 
 if [[ $(kubectl get pod -A | grep 0/1 | awk '{print $1,$2}' | wc -l) -gt 0 ]]; then kubectl get pod -A | grep 0/1 | awk '{print $1,$2}' | while read -r pod namespace; do kubectl delete pod "$namespace" -n "$pod"; done; fi  #删除异常的pod.
@@ -298,6 +298,7 @@ cp _output/local/bin/linux/amd64/kubeadm /usr/local/bin/kubeadm
 ```javascript
 kubeadm certs check-expiration
 ```
+
 
 
 
