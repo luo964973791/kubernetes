@@ -81,6 +81,8 @@ ssmctl check -c mysql -i mysql mysql-pod  #检查pod所有状态
 awk '/grafana:/ {f=1} f && /namespaceOverride:/ {print NR, $0; f=0}' values.yaml   #过滤出helm value.yaml某一个值
 /^grafana:\_.\{-}namespaceOverride\zs                                               #vi模式下快速定位到grafana.namespaceOverride.
 
+
+lshw -C display #查看gpu信息
 kubectl edit ss -n kube-system        mysql-pod -o yaml    #edit 扩容pv
 cat demo.txt |awk '{print $1":2181"}' |tr '\n' ',' | sed 's/,$//'  #列转换行命令.
 kubectl  get podcidr -A  #查看网络地址
@@ -303,6 +305,7 @@ cp _output/local/bin/linux/amd64/kubeadm /usr/local/bin/kubeadm
 ```javascript
 kubeadm certs check-expiration
 ```
+
 
 
 
