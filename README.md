@@ -102,8 +102,8 @@ https://github.com/kubernetes-sigs/kubespray/blob/master/docs/mirror.md #KubeSpr
 tcpdump -i any -nnll -s0 -A port 80
 #kubernetes容器里没有tcpdump命令可以通过这种方法来实现.
 kubectl get pod -n kube-system nginx-deployment-96b9d695-tlb8c -o jsonpath='{.spec.containers[*].name}'; echo
-kubectl debug -it -n kube-system nginx-deployment-96b9d695-tlb8c --image=964973791/tcpdump:v1 --target=nginx
-kubectl debug -it node/node --image=964973791/tcpdump:v1
+kubectl debug -it -n kube-system nginx-deployment-96b9d695-tlb8c --image=nicolaka/netshoot --target=nginx
+kubectl debug -it node/node --image=nicolaka/netshoot
 
 alias pcap_tool='bash -c "command -v nsenter >/dev/null 2>&1 || { (command -v yum >/dev/null 2>&1 && yum install -y util-linux) || (command -v apt-get >/dev/null 2>&1 && apt-get update && apt-get install -y util-linux); }; command -v tcpdump >/dev/null 2>&1 || { (command -v yum >/dev/null 2>&1 && yum install -y tcpdump) || (command -v apt-get >/dev/null 2>&1 && apt-get update && apt-get install -y tcpdump); }; command -v tree >/dev/null 2>&1 || { (command -v yum >/dev/null 2>&1 && yum install -y tree) || (command -v apt-get >/dev/null 2>&1 && apt-get update && apt-get install -y tree); }; pid=\$(docker inspect --format '\''{{.State.Pid}}'\'' \$0 2>/dev/null); if [ -z \"\$pid\" ] || [ \"\$pid\" = \"0\" ]; then echo -e \"\e[01;31m\$(date \"+%Y-%m-%d %H:%M:%S\") [ERROR] Container \$0 not running or not found!\e[01;00m\"; else port=\$(docker inspect \$0 | grep ExposedPorts -A 3 | grep -o '\''[0-9]\+/tcp'\'' | head -n1 | cut -d '\''/'\'' -f1); date=\$(date +\%Y-\%m-\%d_\%H-\%M-\%S); nsenter --target \$pid --net tcpdump -i any -nnll -s0 -A port \$port | tee /tmp/\$date.pcap; fi"'
 
@@ -310,6 +310,7 @@ cp _output/local/bin/linux/amd64/kubeadm /usr/local/bin/kubeadm
 ```javascript
 kubeadm certs check-expiration
 ```
+
 
 
 
