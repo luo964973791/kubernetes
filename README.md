@@ -81,6 +81,8 @@ ssmctl check -c mysql -i mysql mysql-pod  #检查pod所有状态
 awk '/grafana:/ {f=1} f && /namespaceOverride:/ {print NR, $0; f=0}' values.yaml   #过滤出helm value.yaml某一个值
 /^grafana:\_.\{-}namespaceOverride\zs                                               #vi模式下快速定位到grafana.namespaceOverride.
 
+run 'sed -i "\$a usedns=no" /etc/sysconfig/network-scripts/ifcfg-ens33' #最后一行添加
+run 'sed -i "/^usedns=no/d" /etc/sysconfig/network-scripts/ifcfg-ens33' #删除
 
 lshw -C display #查看gpu信息
 kubectl edit ss -n kube-system        mysql-pod -o yaml    #edit 扩容pv
@@ -310,6 +312,7 @@ cp _output/local/bin/linux/amd64/kubeadm /usr/local/bin/kubeadm
 ```javascript
 kubeadm certs check-expiration
 ```
+
 
 
 
