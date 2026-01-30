@@ -106,11 +106,33 @@ tcpdump -i any -nnll -s0 -A port 80
 kubectl get pod -n kube-system nginx-deployment-96b9d695-tlb8c -o jsonpath='{.spec.containers[*].name}'; echo
 kubectl debug -it -n kube-system nginx-deployment-96b9d695-tlb8c --image=nicolaka/netshoot --target=nginx
 kubectl debug -it node/node --image=nicolaka/netshoot
+# kubectl 过滤工具
+alias kg="kubectl get pod -o wide --all-namespaces |grep "
 
-alias pcap_tool='bash -c "command -v nsenter >/dev/null 2>&1 || { (command -v yum >/dev/null 2>&1 && yum install -y util-linux) || (command -v apt-get >/dev/null 2>&1 && apt-get update && apt-get install -y util-linux); }; command -v tcpdump >/dev/null 2>&1 || { (command -v yum >/dev/null 2>&1 && yum install -y tcpdump) || (command -v apt-get >/dev/null 2>&1 && apt-get update && apt-get install -y tcpdump); }; command -v tree >/dev/null 2>&1 || { (command -v yum >/dev/null 2>&1 && yum install -y tree) || (command -v apt-get >/dev/null 2>&1 && apt-get update && apt-get install -y tree); }; pid=\$(docker inspect --format '\''{{.State.Pid}}'\'' \$0 2>/dev/null); if [ -z \"\$pid\" ] || [ \"\$pid\" = \"0\" ]; then echo -e \"\e[01;31m\$(date \"+%Y-%m-%d %H:%M:%S\") [ERROR] Container \$0 not running or not found!\e[01;00m\"; else port=\$(docker inspect \$0 | grep ExposedPorts -A 3 | grep -o '\''[0-9]\+/tcp'\'' | head -n1 | cut -d '\''/'\'' -f1); date=\$(date +\%Y-\%m-\%d_\%H-\%M-\%S); nsenter --target \$pid --net tcpdump -i any -nnll -s0 -A port \$port | tee /tmp/\$date.pcap; fi"'
+# kubectl configmap 过滤工具
+alias kcm="kubectl get configmap -o wide --all-namespaces |grep "
 
+# kubectl secret 过滤工具
+alias ksc="kubectl get secret -o wide --all-namespaces |grep "
 
-if [[ $(kubectl get pod -A | grep 0/1 | awk '{print $1,$2}' | wc -l) -gt 0 ]]; then kubectl get pod -A | grep 0/1 | awk '{print $1,$2}' | while read -r pod namespace; do kubectl delete pod "$namespace" -n "$pod"; done; fi  #删除异常的pod.
+# kubectl exec 工具
+alias kexec='bash -c "pod_name=\$1; ns=\$(kubectl get pod -A | awk -v n=\"\$pod_name\" '\''\$2==n{print \$1; exit}'\''); [ -z \"\$ns\" ] && { echo \"pod \$pod_name not found\"; exit 1; }; kubectl exec -it \$pod_name -n \$ns -- bash || kubectl exec -it \$pod_name -n \$ns -- sh" _'
+
+# kubectl configmap 查看工具
+alias kconfigmap='bash -c "ns=\$(kubectl get configmap -A | awk -v n=\"\$1\" '\''\$2==n{print \$1;exit}'\''); [ -z \"\$ns\" ] && { echo \"configmap \$1 not found\"; exit 1; }; kubectl get configmap \"\$1\" -n \"\$ns\" -o go-template=\"{{range \\\$k,\\\$v:=.data}}{{printf \\\"%s=%s\\n\\\" \\\$k \\\$v}}{{end}}\"" _'
+
+# kubectl secret 查看工具
+alias ksecret='bash -c "ns=\$(kubectl get secret -A | awk -v n=\"\$1\" '\''\$2==n{print \$1;exit}'\''); [ -z \"\$ns\" ] && { echo \"secret \$1 not found\"; exit 1; }; kubectl get secret \"\$1\" -n \"\$ns\" -o go-template=\"{{range \\\$k,\\\$v:=.data}}{{printf \\\"%s=%s\\n\\\" \\\$k (\\\$v|base64decode)}}{{end}}\"" _'
+
+# 代理工具
+alias clear='export https_proxy=http://172.27.0.88:22; export http_proxy=http://172.27.0.88:22; export all_proxy=socks5://172.27.0.88:22; /usr/bin/clear'
+
+# 查看指定端口的连接工具
+alias listen_port='function _listen_port(){ netstat -ant | grep "$1" | awk "/^tcp/ {++state[\$NF]} END {for(key in state) print (key,state[key])}"; }; _listen_port'
+
+# tcpdump 工具
+alias tcpdump_tool='bash -c "command -v nsenter >/dev/null 2>&1 || { (command -v yum >/dev/null 2>&1 && yum install -y util-linux) || (command -v apt-get >/dev/null 2>&1 && apt-get update && apt-get install -y util-linux); }; command -v tcpdump >/dev/null 2>&1 || { (command -v yum >/dev/null 2>&1 && yum install -y tcpdump) || (command -v apt-get >/dev/null 2>&1 && apt-get update && apt-get install -y tcpdump); }; command -v tree >/dev/null 2>&1 || { (command -v yum >/dev/null 2>&1 && yum install -y tree) || (command -v apt-get >/dev/null 2>&1 && apt-get update && apt-get install -y tree); }; pid=\$(docker inspect --format '\''{{.State.Pid}}'\'' \$0 2>/dev/null); if [ -z \"\$pid\" ] || [ \"\$pid\" = \"0\" ]; then echo -e \"\e[01;31m\$(date \"+%Y-%m-%d %H:%M:%S\") [ERROR] Container \$0 not running or not found!\e[01;00m\"; else port=\$(docker inspect \$0 | grep ExposedPorts -A 3 | grep -o '\''[0-9]\+/tcp'\'' | head -n1 | cut -d '\''/'\'' -f1); date=\$(date +\%Y-\%m-\%d_\%H-\%M-\%S); nsenter --target \$pid --net tcpdump -i any -nnll -s0 -A port \$port | tee /tmp/\$date.pcap; fi"'
+
 kubectl create job --from=cronjob/etcd etcd-$(date '+%Y%m%d%H%M') -n etcd   #定时执行job任务
 tcpdump -i eth0 dst port 6443 -c 10000 | awk '{print $3}' | awk -F. -v OFS="." '{print $1,$2,$3,$4}' | sort | uniq -c | sort -nr #抓包
 git clone  -c http.proxy="http://172.27.0.3:7890/" https://github.com/kubernetes-sigs/kubespray.git  #git使用代理
@@ -312,6 +334,7 @@ cp _output/local/bin/linux/amd64/kubeadm /usr/local/bin/kubeadm
 ```javascript
 kubeadm certs check-expiration
 ```
+
 
 
 
