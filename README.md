@@ -100,6 +100,7 @@ wipe -rfi /dev/sdb #快速清空SATA磁盘数据至裸盘.
 jmap -heap $pid    #查看应用占用的cpu mem信息
 shell run 'hostnamectl set-hostname $(hostname -I | awk "{print \"node-\"\$1}" | sed "s/\./-/g")'    #批量更改主机名
 shell run 'sed -i "/swap/s/^/#/" /etc/fstab' #批量关闭
+shell run 'echo "root:123456" | chpasswd'
 
 https://github.com/kubernetes-sigs/kubespray/blob/master/docs/mirror.md #KubeSpray 也支持 国内镜像加速了。
 tcpdump -i any -nnll -s0 -A port 80
