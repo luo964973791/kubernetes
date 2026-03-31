@@ -158,7 +158,7 @@ etcdctl --endpoints=https://192.168.100.111:2379,https://192.168.100.112:2379,ht
 
 vi /root/kubespray/roles/kubespray_defaults/defaults/main/download.yml
 docker_containerd_version: 'latest'
-vi /root/extra_playbooks/roles/container-engine/docker/defaults/main.yml
+vi /root/kubespray/extra_playbooks/roles/container-engine/docker/defaults/main.yml
 docker_version: 'latest'
 
 cat /root/kubespray/inventory/mycluster/group_vars/all/all.yml | grep http_proxy
