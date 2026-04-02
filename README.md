@@ -79,6 +79,9 @@ ssmctl check -c mysql -i mysql mysql-pod  #检查pod所有状态
 
 
 awk '/grafana:/ {f=1} f && /namespaceOverride:/ {print NR, $0; f=0}' values.yaml   #过滤出helm value.yaml某一个值
+pip3 install yq
+yq '.alertmanager.service.type' values.yaml  #查看value是什么
+yq -i -y '.alertmanager.service.type = "NodePort"' values.yaml   #更改为NodePort
 /^grafana:\_.\{-}namespaceOverride\zs      #vi模式下快速定位到二层grafana.namespaceOverride.
 /^\s*alertmanager:\(\n\s*$\|\n\s\+.*\)\{-}\n\s\+service:\(\n\s*$\|\n\s\+.*\)\{-}\n\s\+type:\zs    #vi模式下快速定位到三层prometheus.prometheusSpec.replicas.
 
