@@ -77,6 +77,8 @@ kubectl describe svc -n kube-system                        mysql   #查看svc关
 kubectl get pods -A --selector=kubernetes.io/name=node1   #查看pod标签是否匹配svc
 ssmctl check -c mysql -i mysql mysql-pod  #检查pod所有状态
 
+ssh-keygen -f /root/.ssh/id_rsa -t rsa -N ''  #密钥
+
 
 awk '/grafana:/ {f=1} f && /namespaceOverride:/ {print NR, $0; f=0}' values.yaml   #过滤出helm value.yaml某一个值
 wget https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64 -O /usr/local/bin/yq
