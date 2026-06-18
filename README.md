@@ -70,7 +70,7 @@ spec:
   type: NodePort
 
 
-
+kubectl get configmap coredns -n kube-system -o go-template="{{range \$k,\$v:=.data}}{{printf \"%s=%s\n\" \$k \$v}}{{end}}"
 cat /proc/cmdline | grep -q nokmem || (sed -i '/^GRUB_CMDLINE_LINUX=/ s/"$/ cgroup.memory=nokmem"/' /etc/default/grub && grub2-mkconfig --output=$(find /boot/ -name grub.cfg))
 sed -i '/ swap /s/^/#/' /etc/fstab
 kubectl describe svc -n kube-system                        mysql   #查看svc关注Endpoints:是后端的pod地址   Selector:匹配
