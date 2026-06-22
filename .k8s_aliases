@@ -1,0 +1,135 @@
+green() {
+    echo -e "\e[01;32m$(date "+%Y-%m-%d %H:%M:%S") [INFO] $*\e[01;00m"
+}
+
+red() {
+    echo -e "\e[01;31m$(date "+%Y-%m-%d %H:%M:%S") [ERROR] $*\e[01;00m"
+}
+
+yellow() {
+    echo -e "\e[01;33m$(date "+%Y-%m-%d %H:%M:%S") [WARNNING] $*\e[01;00m"
+}
+
+upcm() {
+    local cm_name=$1
+    local file_path=$2
+    
+    # 自动获取命名空间，如果找不到则默认使用 kube-system
+    local ns=$(kubectl get cm -A | grep -w "$cm_name" | awk '{print $1}' | head -n 1)
+    ns=${ns:-kube-system}
+
+    green "正在更新命名空间 [ $ns ] 下的 ConfigMap: $cm_name ..."
+    kubectl create configmap "$cm_name" --from-file="$file_path" -n "$ns" --dry-run=client -o yaml | kubectl apply -f -
+}
+
+
+kdel() {
+    local keyword=$1
+    if [ -z "$keyword" ]; then
+        echo "使用方法: kdel <pod-或-控制器名称关键字>"
+        return 1
+    fi
+    
+    export -f green
+
+    # 1. 获取所有匹配的 Pod 列表
+    # 2. 用 awk 提取出: 命名空间(1) 和 Pod名(2)
+    # 3. 用 xargs -L 1 确保每条结果独立执行一次删除
+    kubectl get pod -A | grep "$keyword" | awk '{print $1, $2}' | xargs -L 1 sh -c '
+        if [ -n "$1" ] && [ -n "$2" ]; then
+            green "正在删除命名空间 [ $1 ] 下的 Pod: $2 ..."
+            kubectl delete pod "$2" -n "$1" --grace-period=0 
+        fi
+    ' _
+}
+
+
+kg() {
+    local keyword=$1
+    if [ -z "$keyword" ]; then
+        echo "使用方法: kg <关键字>"
+        return 1
+    fi
+
+    # 获取表头，并匹配包含关键字的 Pod，同时对关键字进行颜色高亮
+    kubectl get pod -A | head -n 1
+    kubectl get pod -A | tail -n +2 | grep --color=always "$keyword"
+}
+
+pod_status() {
+    # 提取表头
+    local header=$(kubectl get pod -A | head -n 1)
+    
+    # 过滤异常 Pod：排除 1/1, 2/2 等 Ready 状态，排除 Completed 状态，排除表头
+    local errors=$(kubectl get pod -A | grep -vE "([1-9])/\1|Completed|NAME")
+
+    if [ -z "$errors" ]; then
+        green "🎉 所有 Pod 状态正常，没有发现异常 Pod！"
+    else
+        red "$header"
+        red "$errors"
+    fi
+}
+
+kports() {
+    if [ -z "$1" ]; then
+        red "使用方法: kports <pod名称关键字>"
+        return 1
+    fi
+
+    local keyword="$1"
+    green "正在全集群检索包含 [$keyword] 的 Pod..."
+    
+    # 1. 自动检索 Namespace 和完整的 Pod 名字
+    local pod_info=$(kubectl get pod -A -o jsonpath='{range .items[*]}{.metadata.namespace}{" "}{.metadata.name}{"\n"}{end}' | grep "$keyword" | head -n 1)
+
+    if [ -z "$pod_info" ]; then
+        red "全集群未找到包含关键字 [$keyword] 的 Pod。"
+        return 1
+    fi
+
+    local ns=$(echo "$pod_info" | awk '{print $1}')
+    local pod_name=$(echo "$pod_info" | awk '{print $2}')
+
+    # 2. 启动调试容器并查看端口（退出后自动销毁）
+    kubectl debug "$pod_name" -n "$ns" \
+        -it \
+        --image=nicolaka/netshoot \
+        --image-pull-policy=IfNotPresent
+}
+
+kgcm() {
+    local cm_name=$1
+    local ns=$2
+
+    if [ -z "$cm_name" ]; then
+        yellow "使用方法: kgcm <configmap-name> [namespace]"
+        return 1
+    fi
+
+    # 自动获取命名空间，如果找不到则默认使用 kube-system
+    if [ -z "$ns" ]; then
+        ns=$(kubectl get cm -A | awk -v cm="$cm_name" '$0 ~ cm {print $1; exit}')
+        ns=${ns:-kube-system}
+    fi
+
+    green "正在获取命名空间 [ $ns ] 下的 ConfigMap: $cm_name ..."
+
+    # 尝试以 key=value 格式输出 data，失败时回退到打印完整 yaml
+    local tpl='{{range $k,$v := .data}}{{printf "%s=%s\n" $k $v}}{{end}}'
+    local out
+    if ! out=$(kubectl get configmap "$cm_name" -n "$ns" -o go-template="$tpl" 2>/dev/null); then
+        red "无法以模板读取 ConfigMap（可能不存在或 data 不是文本）。显示完整 YAML："
+        kubectl get configmap "$cm_name" -n "$ns" -o yaml
+        return 0
+    fi
+
+    if [ -z "$out" ]; then
+        yellow "ConfigMap 存在但没有 data 字段或 data 为空，显示完整 YAML："
+        kubectl get configmap "$cm_name" -n "$ns" -o yaml
+        return 0
+    fi
+
+    # 美化输出缩进
+    echo "$out" | sed 's/^/  /'
+}
