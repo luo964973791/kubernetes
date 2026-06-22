@@ -120,3 +120,45 @@ kgcm() {
     # 美化输出缩进
     echo "$out" | sed 's/^/  /'
 }
+
+kexec() {
+    local keyword=$1
+    local cmd=${2:-/bin/bash}
+    
+    if [ -z "$keyword" ]; then
+        red "使用方法: kexec <pod名称关键字> [命令，默认/bin/bash]"
+        return 1
+    fi
+
+    green "正在全集群检索包含 [$keyword] 的 Pod..."
+    
+    # 自动检索 Namespace 和完整的 Pod 名字
+    local pod_info=$(kubectl get pod -A -o jsonpath='{range .items[*]}{.metadata.namespace}{" "}{.metadata.name}{"\n"}{end}' | grep "$keyword" | head -n 1)
+
+    if [ -z "$pod_info" ]; then
+        red "全集群未找到包含关键字 [$keyword] 的 Pod。"
+        return 1
+    fi
+
+    local ns=$(echo "$pod_info" | awk '{print $1}')
+    local pod_name=$(echo "$pod_info" | awk '{print $2}')
+
+    green "找到 Pod: $pod_name (命名空间: $ns)"
+
+    # 自动检测 shell 类型
+    local detected_shell
+    if kubectl exec "$pod_name" -n "$ns" -- test -f /bin/bash &>/dev/null; then
+        detected_shell="/bin/bash"
+        green "检测到 shell: /bin/bash"
+    elif kubectl exec "$pod_name" -n "$ns" -- test -f /bin/sh &>/dev/null; then
+        detected_shell="/bin/sh"
+        green "检测到 shell: /bin/sh"
+    else
+        red "无法检测到可用的 shell (/bin/bash 或 /bin/sh)"
+        return 1
+    fi
+
+    # 使用检测到的 shell 进入容器
+    green "正在进入容器..."
+    kubectl exec -it "$pod_name" -n "$ns" -- "$detected_shell"
+}
