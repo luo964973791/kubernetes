@@ -1,3 +1,4 @@
+# ============ 日志函数 ============
 green() {
     echo -e "\e[01;32m$(date "+%Y-%m-%d %H:%M:%S") [INFO] $*\e[01;00m"
 }
@@ -10,19 +11,72 @@ yellow() {
     echo -e "\e[01;33m$(date "+%Y-%m-%d %H:%M:%S") [WARNNING] $*\e[01;00m"
 }
 
+# ============ 核心通用抽象 ============
+
+# 通用函数：获取资源的 namespace 和名称
+# 参数: _find_resource <resource_type> <keyword>
+# 输出全局变量: ns, resource_name
+_find_resource() {
+    local resource_type=$1
+    local keyword=$2
+    
+    if [ -z "$resource_type" ] || [ -z "$keyword" ]; then
+        red "错误: 缺少参数"
+        return 1
+    fi
+    
+    local info=$(kubectl get "$resource_type" -A 2>/dev/null | grep "$keyword" | head -n 1)
+    
+    if [ -z "$info" ]; then
+        red "未找到包含 [$keyword] 的 $resource_type"
+        return 1
+    fi
+    
+    ns=$(echo "$info" | awk '{print $1}')
+    resource_name=$(echo "$info" | awk '{print $2}')
+}
+
+# 通用函数：获取资源数据并显示
+# 参数: _show_resource <resource_type> <name> <namespace> [decode]
+# decode=true 时进行 base64 解码（用于 secret）
+_show_resource() {
+    local resource_type=$1
+    local name=$2
+    local namespace=$3
+    local decode=${4:-false}
+    
+    local tpl
+    if [ "$decode" = "true" ]; then
+        tpl='{{range $k,$v := .data}}{{printf "%s=%s\n" $k ($v|base64decode)}}{{end}}'
+    else
+        tpl='{{range $k,$v := .data}}{{printf "%s=%s\n" $k $v}}{{end}}'
+    fi
+    
+    local out=$(kubectl get "$resource_type" "$name" -n "$namespace" -o go-template="$tpl" 2>/dev/null)
+    
+    if [ -z "$out" ]; then
+        yellow "$resource_type 为空或无 data 字段，显示完整 YAML:"
+        kubectl get "$resource_type" "$name" -n "$namespace" -o yaml
+    fi
+    #echo "$out" | sed 's/^/  /'
+    echo "$out"
+}
+
+# 检测 shell
+_shell() {
+    kubectl exec "$1" -n "$2" -- test -f /bin/bash &>/dev/null && echo "/bin/bash" || echo "/bin/sh"
+}
+
+# ============ 业务函数 ============
+
 kdel() {
-    local keyword=$1
-    if [ -z "$keyword" ]; then
-        echo "使用方法: kdel <pod-或-控制器名称关键字>"
+    if [ -z "$1" ]; then
+        echo "使用方法: kdel <pod关键字>"
         return 1
     fi
     
     export -f green
-
-    # 1. 获取所有匹配的 Pod 列表
-    # 2. 用 awk 提取出: 命名空间(1) 和 Pod名(2)
-    # 3. 用 xargs -L 1 确保每条结果独立执行一次删除
-    kubectl get pod -A | grep "$keyword" | awk '{print $1, $2}' | xargs -L 1 sh -c '
+    kubectl get pod -A | grep "$1" | awk '{print $1, $2}' | xargs -L 1 sh -c '
         if [ -n "$1" ] && [ -n "$2" ]; then
             green "正在删除命名空间 [ $1 ] 下的 Pod: $2 ..."
             kubectl delete pod "$2" -n "$1" --grace-period=0 
@@ -30,28 +84,22 @@ kdel() {
     ' _
 }
 
-
 kg() {
-    local keyword=$1
-    if [ -z "$keyword" ]; then
+    if [ -z "$1" ]; then
         echo "使用方法: kg <关键字>"
         return 1
     fi
-
-    # 获取表头，并匹配包含关键字的 Pod，同时对关键字进行颜色高亮
+    
     kubectl get pod -A | head -n 1
-    kubectl get pod -A | tail -n +2 | grep --color=always "$keyword"
+    kubectl get pod -A | tail -n +2 | grep --color=always "$1"
 }
 
 pod_status() {
-    # 提取表头
     local header=$(kubectl get pod -A | head -n 1)
-    
-    # 过滤异常 Pod：排除 1/1, 2/2 等 Ready 状态，排除 Completed 状态，排除表头
     local errors=$(kubectl get pod -A | grep -vE "([1-9])/\1|Completed|NAME")
-
+    
     if [ -z "$errors" ]; then
-        green "🎉 所有 Pod 状态正常，没有发现异常 Pod！"
+        green "🎉 所有 Pod 状态正常！"
     else
         red "$header"
         red "$errors"
@@ -63,102 +111,42 @@ kports() {
         red "使用方法: kports <pod名称关键字>"
         return 1
     fi
-
-    local keyword="$1"
-    green "正在全集群检索包含 [$keyword] 的 Pod..."
     
-    # 1. 自动检索 Namespace 和完整的 Pod 名字
-    local pod_info=$(kubectl get pod -A -o jsonpath='{range .items[*]}{.metadata.namespace}{" "}{.metadata.name}{"\n"}{end}' | grep "$keyword" | head -n 1)
-
-    if [ -z "$pod_info" ]; then
-        red "全集群未找到包含关键字 [$keyword] 的 Pod。"
-        return 1
-    fi
-
-    local ns=$(echo "$pod_info" | awk '{print $1}')
-    local pod_name=$(echo "$pod_info" | awk '{print $2}')
-
-    # 2. 启动调试容器并查看端口（退出后自动销毁）
-    kubectl debug "$pod_name" -n "$ns" \
-        -it \
-        --image=nicolaka/netshoot \
-        --image-pull-policy=IfNotPresent
+    _find_resource "pod" "$1" || return 1
+    kubectl debug "$resource_name" -n "$ns" -it --image=nicolaka/netshoot --image-pull-policy=IfNotPresent
 }
 
 kgcm() {
-    local cm_name=$1
-    local ns=$2
-
-    if [ -z "$cm_name" ]; then
-        yellow "使用方法: kgcm <configmap-name> [namespace]"
+    if [ -z "$1" ]; then
+        yellow "使用方法: kgcm <configmap-name>"
         return 1
     fi
+    
+    _find_resource "configmap" "$1" || return 1
+    green "找到 ConfigMap: $resource_name (命名空间: $ns)"
+    _show_resource "configmap" "$resource_name" "$ns" false
+}
 
-    # 自动获取命名空间，如果找不到则默认使用 kube-system
-    if [ -z "$ns" ]; then
-        ns=$(kubectl get cm -A | awk -v cm="$cm_name" '$0 ~ cm {print $1; exit}')
-        ns=${ns:-kube-system}
+ksct() {
+    if [ -z "$1" ]; then
+        yellow "使用方法: ksct <secret-name-keyword>"
+        return 1
     fi
-
-    green "正在获取命名空间 [ $ns ] 下的 ConfigMap: $cm_name ..."
-
-    # 尝试以 key=value 格式输出 data，失败时回退到打印完整 yaml
-    local tpl='{{range $k,$v := .data}}{{printf "%s=%s\n" $k $v}}{{end}}'
-    local out
-    if ! out=$(kubectl get configmap "$cm_name" -n "$ns" -o go-template="$tpl" 2>/dev/null); then
-        red "无法以模板读取 ConfigMap（可能不存在或 data 不是文本）。显示完整 YAML："
-        kubectl get configmap "$cm_name" -n "$ns" -o yaml
-        return 0
-    fi
-
-    if [ -z "$out" ]; then
-        yellow "ConfigMap 存在但没有 data 字段或 data 为空，显示完整 YAML："
-        kubectl get configmap "$cm_name" -n "$ns" -o yaml
-        return 0
-    fi
-
-    # 美化输出缩进
-    echo "$out" | sed 's/^/  /'
+    
+    _find_resource "secret" "$1" || return 1
+    green "找到 Secret: $resource_name (命名空间: $ns)"
+    _show_resource "secret" "$resource_name" "$ns" true
 }
 
 kexec() {
-    local keyword=$1
-    local cmd=${2:-/bin/bash}
+    if [ -z "$1" ]; then
+        red "使用方法: kexec <pod名称关键字>"
+        return 1
+    fi
     
-    if [ -z "$keyword" ]; then
-        red "使用方法: kexec <pod名称关键字> [命令，默认/bin/bash]"
-        return 1
-    fi
-
-    green "正在全集群检索包含 [$keyword] 的 Pod..."
+    _find_resource "pod" "$1" || return 1
     
-    # 自动检索 Namespace 和完整的 Pod 名字
-    local pod_info=$(kubectl get pod -A -o jsonpath='{range .items[*]}{.metadata.namespace}{" "}{.metadata.name}{"\n"}{end}' | grep "$keyword" | head -n 1)
-
-    if [ -z "$pod_info" ]; then
-        red "全集群未找到包含关键字 [$keyword] 的 Pod。"
-        return 1
-    fi
-
-    local ns=$(echo "$pod_info" | awk '{print $1}')
-    local pod_name=$(echo "$pod_info" | awk '{print $2}')
-
-    green "找到 Pod: $pod_name (命名空间: $ns)"
-
-    # 自动检测 shell 类型
-    local detected_shell
-    if kubectl exec "$pod_name" -n "$ns" -- test -f /bin/bash &>/dev/null; then
-        detected_shell="/bin/bash"
-        green "检测到 shell: /bin/bash"
-    elif kubectl exec "$pod_name" -n "$ns" -- test -f /bin/sh &>/dev/null; then
-        detected_shell="/bin/sh"
-        green "检测到 shell: /bin/sh"
-    else
-        red "无法检测到可用的 shell (/bin/bash 或 /bin/sh)"
-        return 1
-    fi
-
-    # 使用检测到的 shell 进入容器
-    green "正在进入容器..."
-    kubectl exec -it "$pod_name" -n "$ns" -- "$detected_shell"
+    local shell=$(_shell "$resource_name" "$ns")
+    green "检测到 shell: $shell，正在进入容器..."
+    kubectl exec -it "$resource_name" -n "$ns" -- "$shell"
 }
