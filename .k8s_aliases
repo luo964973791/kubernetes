@@ -10,19 +10,6 @@ yellow() {
     echo -e "\e[01;33m$(date "+%Y-%m-%d %H:%M:%S") [WARNNING] $*\e[01;00m"
 }
 
-upcm() {
-    local cm_name=$1
-    local file_path=$2
-    
-    # 自动获取命名空间，如果找不到则默认使用 kube-system
-    local ns=$(kubectl get cm -A | grep -w "$cm_name" | awk '{print $1}' | head -n 1)
-    ns=${ns:-kube-system}
-
-    green "正在更新命名空间 [ $ns ] 下的 ConfigMap: $cm_name ..."
-    kubectl create configmap "$cm_name" --from-file="$file_path" -n "$ns" --dry-run=client -o yaml | kubectl apply -f -
-}
-
-
 kdel() {
     local keyword=$1
     if [ -z "$keyword" ]; then
