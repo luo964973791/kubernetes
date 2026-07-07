@@ -113,7 +113,22 @@ kports() {
     fi
     
     _find_resource "pod" "$1" || return 1
-    kubectl debug "$resource_name" -n "$ns" -it --image=nicolaka/netshoot --image-pull-policy=IfNotPresent
+    
+    # 动态获取当前 Pod 的第一个容器名称
+    local container_name=$(kubectl get pod "$resource_name" -n "$ns" -o jsonpath='{.spec.containers[0].name}' 2>/dev/null)
+    
+    if [ -z "$container_name" ]; then
+        red "错误: 无法获取 Pod [ $resource_name ] 的容器名称"
+        return 1
+    fi
+    
+    green "发现容器 [ $container_name ]，正在加入其进程和网络命名空间..."
+    
+    # 增加 --target 参数共享 PID 命名空间
+    kubectl debug "$resource_name" -n "$ns" -it \
+        --image=nicolaka/netshoot \
+        --image-pull-policy=IfNotPresent \
+        --target="$container_name"
 }
 
 kgcm() {
