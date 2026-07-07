@@ -106,7 +106,7 @@ pod_status() {
     fi
 }
 
-kports() {
+kdebug() {
     if [ -z "$1" ]; then
         red "使用方法: kports <pod名称关键字>"
         return 1
