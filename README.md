@@ -1,74 +1,15 @@
 ### kubernetes更新证书
 ```javascript
-vi /root/.bashrc
-
-
-##边车代理模式.
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: squid-conf
-  namespace: nginx
-data:
-  squid.conf: |
-    http_port 3128
-    acl all src all
-    http_access allow all
-    cache_peer 192.168.197.21 parent 22 0 no-query no-digest   #这是我的代理地址:192.168.197.21:22
-    never_direct allow all
----
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: nginx-with-proxy
-  namespace: nginx
-spec:
-  replicas: 3
-  selector:
-    matchLabels:
-      app: nginx-with-proxy
-  template:
-    metadata:
-      labels:
-        app: nginx-with-proxy
-    spec:
-      containers:
-      - name: nginx
-        image: nginx:latest
-        ports:
-        - containerPort: 80
-        env:
-        - name: HTTP_PROXY
-          value: "http://localhost:3128"
-        - name: HTTPS_PROXY
-          value: "http://localhost:3128"
-      - name: http-proxy
-        image: sameersbn/squid:latest
-        ports:
-        - containerPort: 3128
-        volumeMounts:
-        - name: squid-conf
-          mountPath: /etc/squid/squid.conf
-          subPath: squid.conf
-      volumes:
-      - name: squid-conf
-        configMap:
-          name: squid-conf
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: nginx-service
-  namespace: nginx
-spec:
-  selector:
-    app: nginx-with-proxy
-  ports:
-  - protocol: TCP
-    port: 80
-    targetPort: 80
-  type: NodePort
-
+yum install python3.11 -y
+cd kubespray
+python3.11 -m venv venv
+source venv/bin/activate
+pip --version
+pip install -U pip
+pip install -r requirements.txt
+yum install python3-libselinux -y
+ssh-keygen -f /root/.ssh/id_rsa -t rsa -N ''
+ansible-playbook -i inventory/mycluster/inventory.ini --private-key=/root/.ssh/id_rsa -b cluster.yml
 
 kubectl get configmap coredns -n kube-system -o go-template="{{range \$k,\$v:=.data}}{{printf \"%s=%s\n\" \$k \$v}}{{end}}"
 cat /proc/cmdline | grep -q nokmem || (sed -i '/^GRUB_CMDLINE_LINUX=/ s/"$/ cgroup.memory=nokmem"/' /etc/default/grub && grub2-mkconfig --output=$(find /boot/ -name grub.cfg))
