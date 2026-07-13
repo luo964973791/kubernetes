@@ -11,6 +11,45 @@ yum install python3-libselinux -y
 ssh-keygen -f /root/.ssh/id_rsa -t rsa -N ''
 ansible-playbook -i inventory/mycluster/inventory.ini --private-key=/root/.ssh/id_rsa -b cluster.yml
 
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-deployment
+  namespace: kube-system 
+  labels:
+    app: my-nginx
+spec:
+  replicas: 2
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 2        # 升级时立刻额外创建 2 个新 Pod（实现先创后销）
+      maxUnavailable: 0  # 确保老 Pod 在新 Pod 就绪前绝对不被销毁
+  selector:
+    matchLabels:
+      app: my-nginx
+  template:
+    metadata:
+      labels:
+        app: my-nginx
+    spec:
+      containers:
+      - name: nginx
+        image: nginx 
+        ports:
+        - containerPort: 80
+        
+        # 就绪探针
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 80
+          initialDelaySeconds: 5
+          periodSeconds: 5
+          successThreshold: 1
+          failureThreshold: 3
+
+
 kubectl get configmap coredns -n kube-system -o go-template="{{range \$k,\$v:=.data}}{{printf \"%s=%s\n\" \$k \$v}}{{end}}"
 cat /proc/cmdline | grep -q nokmem || (sed -i '/^GRUB_CMDLINE_LINUX=/ s/"$/ cgroup.memory=nokmem"/' /etc/default/grub && grub2-mkconfig --output=$(find /boot/ -name grub.cfg))
 sed -i '/ swap /s/^/#/' /etc/fstab
