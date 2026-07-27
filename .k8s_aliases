@@ -1,3 +1,8 @@
+#vi /root/.bashrc
+#if [ -f /root/.k8s_aliases ]; then
+#    source /root/.k8s_aliases
+#fi
+
 # ============ 日志函数 ============
 green() {
     echo -e "\e[01;32m$(date "+%Y-%m-%d %H:%M:%S") [INFO] $*\e[01;00m"
