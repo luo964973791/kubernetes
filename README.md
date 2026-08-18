@@ -7,6 +7,28 @@ source venv/bin/activate
 pip --version
 pip install -U pip
 pip install -r requirements.txt
+cp -rfp inventory/sample inventory/mycluster
+vi inventory/mycluster/inventory.ini
+[all]
+node1 ansible_host=172.27.0.6
+
+[kube_control_plane]
+node1
+
+[etcd]
+node1
+
+[kube_node]
+node1
+
+[calico_rr]
+
+[k8s_cluster:children]
+kube_control_plane
+kube_node
+calico_rr
+
+
 yum install python3-libselinux -y
 ssh-keygen -f /root/.ssh/id_rsa -t rsa -N ''
 ansible-playbook -i inventory/mycluster/inventory.ini --private-key=/root/.ssh/id_rsa -b cluster.yml
