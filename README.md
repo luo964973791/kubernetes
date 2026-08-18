@@ -117,6 +117,9 @@ tcpdump -i any -nnll -s0 -A port 80
 kubectl get pod -n kube-system nginx-deployment-96b9d695-tlb8c -o jsonpath='{.spec.containers[*].name}'; echo
 kubectl debug -it -n kube-system nginx-deployment-96b9d695-tlb8c --image=nicolaka/netshoot --target=nginx
 kubectl debug -it node/node --image=nicolaka/netshoot
+
+container_exec() { nsenter -t $(nerdctl inspect --format '{{.State.Pid}}' "$1") -n -p sh; }
+
 # kubectl 过滤工具
 alias kg="kubectl get pod -o wide --all-namespaces |grep "
 
