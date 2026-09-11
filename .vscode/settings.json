@@ -1,0 +1,22 @@
+{
+  "[shellscript]": {
+    "editor.wordWrap": "on",
+    "editor.wordWrapColumn": 80,
+    "editor.formatOnSave": true
+  },
+  "[python]": {
+    "editor.wordWrap": "on",
+    "editor.wordWrapColumn": 88,
+    "editor.formatOnSave": true
+  },
+  "editor.rulers": [80, 88],
+  "editor.renderWhitespace": "trailing",
+  "editor.trimAutoWhitespace": true,
+  "files.trimTrailingWhitespace": true,
+  "files.insertFinalNewline": true,
+  "files.trimFinalNewlines": true,
+  "[markdown]": {
+    "editor.wordWrap": "on",
+    "editor.wordWrapColumn": 100
+  }
+}
