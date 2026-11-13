@@ -29,6 +29,11 @@ kube_node
 calico_rr
 
 
+#放开内网规则
+iptables -D INPUT -m multiport -p tcp --dport 2181 -j DROP
+iptables -A INPUT -m multiport -p tcp -s 172.27.0.0/24 --dport 2181  -j ACCEPT
+iptables -A INPUT -m multiport -p tcp --dport 2181 -j DROP
+
 yum install python3-libselinux -y
 ssh-keygen -f /root/.ssh/id_rsa -t rsa -N ''
 ansible-playbook -i inventory/mycluster/inventory.ini --private-key=/root/.ssh/id_rsa -b cluster.yml
